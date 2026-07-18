@@ -1,0 +1,14 @@
+[
+  {
+    "id": 3,
+    "title": "Hidden trailing whitespace causing code failure",
+    "issue": "Model overcomplicated the root cause",
+    "improvement": "Need better simple bug examples"
+  },
+  {
+    "id": 7,
+    "title": "Package version conflict breaking application",
+    "issue": "Root cause was correct but scoring was low",
+    "improvement": "Improve semantic matching"
+  }
+]

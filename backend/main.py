@@ -11,6 +11,8 @@ from pydantic import BaseModel, Field, field_validator
 from config import get_settings
 from logger import get_logger
 from prompt import PROMPT_VERSION, SYSTEM_PROMPT, build_user_message
+from database import SessionLocal
+from models import BugReport, Analysis
 
 logger = get_logger(__name__)
 settings = get_settings()
@@ -224,6 +226,41 @@ async def unhandled_exception_handler(request: Request, exc: Exception):
         ).model_dump(),
     )
 
+def save_bug_analysis(bug: BugReportRequest, result: BugAnalysisResponse):
+    db = SessionLocal()
+
+    try:
+        bug_report = BugReport(
+            description=bug.description,
+            stack_trace=bug.stack_trace,
+            language=bug.language,
+            severity=bug.severity.value if bug.severity else None,
+            status="open"
+        )
+
+        db.add(bug_report)
+        db.commit()
+        db.refresh(bug_report)
+
+        analysis = Analysis(
+            bug_report_id=bug_report.id,
+            root_cause=result.root_cause,
+            explanation=result.bug_summary,
+            reproduction_steps="\n".join(result.investigation_steps),
+            suggested_fix=result.fix_recommendation,
+            prompt_version=result.prompt_version,
+            model_used=settings.openrouter_model
+        )
+
+        db.add(analysis)
+        db.commit()
+
+    except Exception as e:
+        db.rollback()
+        logger.error("Database save failed: %s", e)
+
+    finally:
+        db.close()
 
 # ===== Routes =====
 
@@ -256,5 +293,14 @@ async def analyze_bug_endpoint(payload: BugReportRequest) -> BugAnalysisResponse
             "type": "value_error",
         }])
 
-    logger.info("Analyzing bug report (%d chars, language=%s)", len(payload.description), payload.language)
-    return await analyze_bug(payload)
+    logger.info(
+    "Analyzing bug report (%d chars, language=%s)",
+    len(payload.description),
+    payload.language
+    )
+
+    result = await analyze_bug(payload)
+
+    save_bug_analysis(payload, result)
+
+    return result

@@ -1,0 +1,72 @@
+[
+  {
+    "id": 1,
+    "bug_category": "Memory Leak",
+    "prompt_v1_score": 13,
+    "prompt_v2_score": 0,
+    "improvement": 0
+  },
+  {
+    "id": 2,
+    "bug_category": "Race Condition",
+    "prompt_v1_score": 13,
+    "prompt_v2_score": 0,
+    "improvement": 0
+  },
+  {
+    "id": 3,
+    "bug_category": "Hidden Formatting Issue",
+    "prompt_v1_score": 11,
+    "prompt_v2_score": 0,
+    "improvement": 0
+  },
+  {
+    "id": 4,
+    "bug_category": "CSS Overflow",
+    "prompt_v1_score": 13,
+    "prompt_v2_score": 1,
+    "improvement": -12
+  },
+  {
+    "id": 5,
+    "bug_category": "Debugger Compiler Mismatch",
+    "prompt_v1_score": 13,
+    "prompt_v2_score": 3,
+    "improvement": -10
+  },
+  {
+    "id": 6,
+    "bug_category": "Misleading Stack Trace",
+    "prompt_v1_score": 11,
+    "prompt_v2_score": 0,
+    "improvement": 0
+  },
+  {
+    "id": 7,
+    "bug_category": "Dependency Version Conflict",
+    "prompt_v1_score": 14,
+    "prompt_v2_score": 0,
+    "improvement": 0
+  },
+  {
+    "id": 8,
+    "bug_category": "DLL Mismatch",
+    "prompt_v1_score": 13,
+    "prompt_v2_score": 0,
+    "improvement": 0
+  },
+  {
+    "id": 9,
+    "bug_category": "Legacy Code Problem",
+    "prompt_v1_score": 13,
+    "prompt_v2_score": 1,
+    "improvement": -12
+  },
+  {
+    "id": 10,
+    "bug_category": "Old Software Bug",
+    "prompt_v1_score": 11,
+    "prompt_v2_score": 1,
+    "improvement": -10
+  }
+]

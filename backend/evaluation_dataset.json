@@ -1,0 +1,172 @@
+[
+  {
+    "id": 1,
+    "title": "Memory leak causing application crash after 48+ hours",
+    "category": "Hard-to-Reproduce Bugs",
+    "bug_input": "Memory leak causing application crash after 48+ hours",
+    "expected_root_causes": [
+      "memory leak",
+      "unused resources",
+      "memory allocation issue"
+    ],
+    "expected_fix": [
+      "profile memory usage",
+      "release unused resources",
+      "add memory monitoring"
+    ],
+    "source": "Reddit"
+  },
+  {
+    "id": 2,
+    "title": "Race condition causing random failure",
+    "category": "Hard-to-Reproduce Bugs",
+    "bug_input": "Race condition causing random failure",
+    "expected_root_causes": [
+      "concurrent access",
+      "thread synchronization",
+      "timing issue"
+    ],
+    "expected_fix": [
+      "add locks",
+      "synchronize threads",
+      "improve thread safety"
+    ],
+    "source": "Reddit"
+  },
+  {
+    "id": 3,
+    "title": "Hidden trailing whitespace causing code failure",
+    "category": "Hidden Causes / Invisible Issues",
+    "bug_input": "Trailing whitespace breaking code",
+    "expected_root_causes": [
+      "hidden characters",
+      "formatting issue",
+      "invisible characters"
+    ],
+    "expected_fix": [
+      "clean input",
+      "check formatting rules",
+      "use linting tools"
+    ],
+    "source": "Reddit"
+  },
+  {
+    "id": 4,
+    "title": "CSS overflow issue causing unexpected layout problem",
+    "category": "Hidden Causes / Invisible Issues",
+    "bug_input": "CSS overflow issue",
+    "expected_root_causes": [
+      "layout calculation",
+      "container size",
+      "responsive design problem"
+    ],
+    "expected_fix": [
+      "inspect element sizes",
+      "fix CSS properties",
+      "adjust layout rules"
+    ],
+    "source": "Reddit"
+  },
+  {
+    "id": 5,
+    "title": "Debugger showing different behavior from compiler",
+    "category": "Misleading Errors / Debugging Information",
+    "bug_input": "Debugger showing different behavior from compiler",
+    "expected_root_causes": [
+      "compiler optimization",
+      "debug configuration",
+      "build mismatch"
+    ],
+    "expected_fix": [
+      "check compiler flags",
+      "disable optimization",
+      "rebuild project"
+    ],
+    "source": "Reddit"
+  },
+  {
+    "id": 6,
+    "title": "Confusing stack trace pointing wrong direction",
+    "category": "Misleading Errors / Debugging Information",
+    "bug_input": "Stack trace points to wrong file",
+    "expected_root_causes": [
+      "misleading stack trace",
+      "incorrect error location",
+      "wrong execution path"
+    ],
+    "expected_fix": [
+      "trace execution flow",
+      "inspect related components",
+      "add logging"
+    ],
+    "source": "Reddit"
+  },
+  {
+    "id": 7,
+    "title": "Package version conflict breaking application",
+    "category": "Dependency & Version Conflicts",
+    "bug_input": "Package version conflict",
+    "expected_root_causes": [
+      "dependency mismatch",
+      "incompatible versions",
+      "library conflict"
+    ],
+    "expected_fix": [
+      "update dependencies",
+      "check package compatibility",
+      "use version lock files"
+    ],
+    "source": "Reddit"
+  },
+  {
+    "id": 8,
+    "title": "DLL mismatch causing application failure",
+    "category": "Dependency & Version Conflicts",
+    "bug_input": "DLL mismatch causing application failure",
+    "expected_root_causes": [
+      "missing dependency",
+      "incompatible library version",
+      "runtime conflict"
+    ],
+    "expected_fix": [
+      "verify installed libraries",
+      "replace DLL",
+      "check compatibility"
+    ],
+    "source": "Reddit"
+  },
+  {
+    "id": 9,
+    "title": "Old undocumented code causing issue",
+    "category": "Legacy Code Problems",
+    "bug_input": "Legacy code bug nobody understood",
+    "expected_root_causes": [
+      "legacy code",
+      "unknown architecture",
+      "technical debt"
+    ],
+    "expected_fix": [
+      "document code",
+      "understand architecture",
+      "refactor carefully"
+    ],
+    "source": "Reddit"
+  },
+  {
+    "id": 10,
+    "title": "20-year-old software bug",
+    "category": "Legacy Code Problems",
+    "bug_input": "Old software bug",
+    "expected_root_causes": [
+      "legacy system",
+      "hidden assumption",
+      "outdated design"
+    ],
+    "expected_fix": [
+      "analyse historical code",
+      "reproduce issue",
+      "patch carefully"
+    ],
+    "source": "Reddit"
+  }
+]
