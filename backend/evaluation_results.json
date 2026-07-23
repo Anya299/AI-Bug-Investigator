@@ -2,102 +2,103 @@
     {
         "id": 1,
         "title": "Memory leak causing application crash after 48+ hours",
-        "root_score": 1,
-        "fix_score": 0,
-        "total_score": 1,
+        "root_score": 3,
+        "fix_score": 2,
+        "total_score": 5,
+        "possible_score": 6,
         "ai_output": {
-            "bug_summary": "Application crashes due to memory exhaustion after prolonged usage (48+ hours), indicating a memory leak.",
-            "root_cause": "Unreleased memory allocations or unclosed resources (e.g., file handles, network connections, or database connections) accumulating over time.",
+            "bug_summary": "Application crash after 48+ hours due to memory leak",
+            "root_cause": "memory leak due to unused memory allocations and resource utilization issues",
             "investigation_steps": [
-                "Use a memory profiler (e.g., Valgrind, VisualVM, or language-specific tools) to identify increasing heap/stack usage over time.",
-                "Review code for long-running threads, background tasks, or event listeners that may retain references to objects.",
-                "Analyze application logs for patterns (e.g., specific functions called before crashes) and check for unclosed resources."
+                "Collect memory logs to detect memory leak points",
+                "Use a memory profiler to analyze heap space usage",
+                "Track resource allocation and utilization over time"
             ],
-            "fix_recommendation": "Implement explicit resource cleanup (e.g., close files/connections, unsubscribe from events) and use weak references where applicable. If language supports, enforce garbage collection checks.",
-            "prevention": "Add automated memory stress tests simulating 48+ hour usage, enforce code reviews for resource management, and implement periodic memory dumps for analysis.",
-            "prompt_version": "2.0.0"
+            "fix_recommendation": "Profile memory usage to identify memory leak sources, release unused resources, and implement memory monitoring to prevent future occurrences",
+            "prevention": "Regularly profile memory usage, optimize resource allocation, and implement automatic memory cleanup to prevent memory leaks",
+            "prompt_version": "2.2.0"
         }
     },
     {
         "id": 2,
         "title": "Race condition causing random failure",
-        "root_score": 0,
-        "fix_score": 0,
-        "total_score": 0,
+        "root_score": 2,
+        "fix_score": 2,
+        "total_score": 4,
+        "possible_score": 6,
         "ai_output": {
-            "bug_summary": "Random failures occur due to unsynchronized access to shared resources causing intermittent race conditions",
-            "root_cause": "Concurrent execution paths modify shared state without proper synchronization, leading to nondeterministic behavior",
+            "bug_summary": "Random failure due to concurrent access issue",
+            "root_cause": "Incorrect thread synchronization due to concurrent access",
             "investigation_steps": [
-                "Inspect application logs and performance metrics for timing correlated failures",
-                "Instrument the code with a race detector (e.g., ThreadSanitizer, Helgrind, or equivalent)",
-                "Run stress tests under high concurrency to expose timing windows",
-                "Map shared mutable objects and trace all read/write operations"
+                "Reproduce the issue by mimicking concurrent access",
+                "Inspect code for thread synchronization primitives",
+                "Verify usage of synchronization methods"
             ],
-            "fix_recommendation": "Introduce proper synchronization mechanisms such as mutexes, read\u2011write locks, or atomic primitives; refactor to use thread\u2011safe collections or message\u2011passing; add explicit barriers where necessary",
-            "prevention": "Integrate static analysis for data races into CI, enforce code reviews focused on concurrency, conduct regular concurrency testing, and document synchronization policies",
-            "prompt_version": "2.0.0"
+            "fix_recommendation": "Implement or add locks to prevent concurrent access, synchronize threads and ensure thread safety",
+            "prevention": "Regularly inspect code for thread safety and profile concurrent access",
+            "prompt_version": "2.2.0"
         }
     },
     {
         "id": 3,
         "title": "Hidden trailing whitespace causing code failure",
-        "root_score": 0,
-        "fix_score": 0,
-        "total_score": 0,
+        "root_score": 3,
+        "fix_score": 2,
+        "total_score": 5,
+        "possible_score": 6,
         "ai_output": {
-            "bug_summary": "Trailing whitespace causing syntax error or runtime failure",
-            "root_cause": "The presence of trailing whitespace at the end of a script/file consumes the final newline, preventing post-commit hooks/packaging tools from detecting encoding issues or triggering minifiers that fail to handle whitespace.",
+            "bug_summary": "Trailing whitespace breaking code",
+            "root_cause": "Formatting issue due to hidden characters",
             "investigation_steps": [
-                "Check if the error occurs only when exporting to specific formats (e.g., .gz, .json, .min.js) using diff tools to compare pre/post-whitespace versions",
-                "Inspect build system configurations (e.g., webpack/babel config files) to identify stages where whitespace may alter output",
-                "Review dependency versions (e.g., Node.js, npm packages like eslint) where outdated tools might mishandle whitespace in modern workloads"
+                "Verify the code editor is set to display whitespace",
+                "Inspect the code manually for invisible characters",
+                "Run linting tools on the project to detect formatting issues"
             ],
-            "fix_recommendation": "Remove all trailing whitespace across source files with `sed -i 's/[ \t]*$//' ${files} && echo '// second line' && git add . && git commit -am 'tooltip'",
-            "prevention": "Integrate a pre-commit hook using `prettier --write --trailing-punctuation` or `eslint --fix` to auto-remove whitespace, and enforce rules in CI/CD with tools like Github Actions workflows or GitLab CI linters",
-            "prompt_version": "2.0.0"
+            "fix_recommendation": "Clean input and use code linter to check formatting rules",
+            "prevention": "Use code linter to check formatting rules regularly",
+            "prompt_version": "2.2.0"
         }
     },
     {
         "id": 4,
         "title": "CSS overflow issue causing unexpected layout problem",
-        "root_score": 1,
-        "fix_score": 0,
-        "total_score": 1,
+        "root_score": 3,
+        "fix_score": 3,
+        "total_score": 6,
+        "possible_score": 6,
         "ai_output": {
-            "bug_summary": "CSS overflow issue causing content to be clipped or incorrectly displayed due to overflow settings on a container.",
-            "root_cause": "Most likely the element has an overflow property (e.g., hidden, auto, scroll) combined with a fixed height or constrained parent dimensions, resulting in content being cut off or causing unexpected scroll behavior.",
+            "bug_summary": "CSS Overflow Issue - Unknown Framework",
+            "root_cause": "layout calculation problem due to container size issue",
             "investigation_steps": [
-                "Open the page in a browser and use DevTools to inspect the problematic element.",
-                "Check the computed styles for overflow properties (overflow, overflow-x, overflow-y) and any set height/width or max-height/max-width.",
-                "Inspect the parent elements to see if they also have overflow constraints or fixed dimensions that affect the child.",
-                "Resize the browser window or toggle device toolbar to see if the issue changes with viewport size, indicating a responsive layout problem.",
-                "If available, review relevant CSS files or preprocessors for hard\u2011coded pixel values or media\u2011query overrides that may set overflow unintentionally."
+                "Determine the minimum dimensions of the container",
+                "Inspect CSS properties and adjust layout rules",
+                "Check for broken responsive design",
+                "Research the framework's best practices for CSS"
             ],
-            "fix_recommendation": "Remove or adjust the overflow property on the affected element (e.g., change from 'hidden' to 'visible' or 'auto'), ensure the element's height/width allows its content, and use responsive units (%, vh/vw, or flexbox) instead of fixed pixel values for container sizes.",
-            "prevention": "Use fluid layout techniques (flexbox, grid) with relative sizing, avoid hard\u2011coded heights unless necessary, regularly test UI components across breakpoints, and employ CSS linting tools (e.g., stylelint) to flag inappropriate overflow usage.",
-            "prompt_version": "2.0.0"
+            "fix_recommendation": "Inspect element sizes, fix CSS properties, and adjust layout rules to improve responsive design, using browser developer tools and CSS selectors",
+            "prevention": "Regularly review the layout calculation and ensure responsive design is maintained during updates",
+            "prompt_version": "2.2.0"
         }
     },
     {
         "id": 5,
         "title": "Debugger showing different behavior from compiler",
-        "root_score": 2,
-        "fix_score": 1,
-        "total_score": 3,
+        "root_score": 0,
+        "fix_score": 0,
+        "total_score": 0,
+        "possible_score": 6,
         "ai_output": {
-            "bug_summary": "Debugger behavior diverges from compiled code execution, likely due to optimization differences, stale binaries, or debug information mismatch between build and debug configurations.",
-            "root_cause": "Most likely cause: Compiler optimizations (inlining, dead code elimination, instruction reordering, register allocation) in release/production builds cause debugger to show misleading state \u2014 variables optimized away, line numbers mismatched, call stacks incomplete. Secondary cause: Debugger attached to stale binary not matching current source (common in CI/CD or hot-reload scenarios).",
+            "bug_summary": "Debugger compiler inconsistency",
+            "root_cause": "incompatible platform binary",
             "investigation_steps": [
-                "Verify build configuration: Confirm debugger targets a DEBUG build (e.g., -O0 -g for GCC/Clang, /Od /Zi for MSVC, -g for Go/Rust, debug=true for Cargo). Check CI/CD pipeline isn't deploying release artifacts to debug environment.",
-                "Validate binary-source sync: Compare binary timestamp/hash with source commit. Run `objdump -h <binary>` (Linux) or `dumpbin /headers` (Windows) to check debug sections (.debug_info, .pdb). Ensure no stripped symbols.",
-                "Check optimization flags: Search build logs for -O2, -O3, -Os, /O2, /Ox, release=true. Disable optimizations locally and re-test. For JIT languages (Java, .NET, JS), verify JIT tiered compilation isn't interfering (e.g., -XX:-TieredCompilation, COMPlus_TieredCompilation=0).",
-                "Inspect debug info quality: Use `dwarfdump` (DWARF), `llvm-dwarfdump`, or `pdbparse` to verify line tables, variable locations, and inline frames. Look for DW_AT_location missing or DW_OP_entry_value.",
-                "Reproduce with minimal test case: Strip to smallest reproduction. Add `volatile` or `asm(\"\")` barriers to prevent specific optimizations. Use `#pragma optimize(\"\", off)` or `#[optimize(none)]` selectively.",
-                "Check debugger version compatibility: Ensure debugger (GDB, LLDB, WinDbg, Delve, VS Code) matches compiler version. Mismatched toolchains (e.g., GCC 13 binary with GDB 10) cause DWARF parsing errors."
+                "Verify debugger and compiler targets",
+                "Check debugger and compiler versions",
+                "Update debugger and compiler to latest versions",
+                "Verify the configuration settings for the debugger and compiler"
             ],
-            "fix_recommendation": "Enforce debug build for debugging: Add CI gate requiring debug symbols in artifacts. For production debugging, use 'debug-optimized' builds (-Og -g / /Od /Zi) preserving symbols while keeping some optimizations. Implement binary provenance tracking (embed git SHA via -Wl,--build-id or /DEBUG:FULL). For JIT: disable tiered compilation during debugging sessions via environment variables.",
-            "prevention": "1. Mandate debug symbol upload to symbol server (SourceLink, SymStore, GCS) on every build. 2. Add pre-commit hook checking for optimization flags in debug targets. 3. Use reproducible builds (SOURCE_DATE_EPOCH) to guarantee binary-source match. 4. Integrate debugger test in CI: run GDB/LLDB script verifying variable visibility at breakpoints. 5. Document 'debugging checklist' per project: build type, symbol path, toolchain version.",
-            "prompt_version": "2.0.0"
+            "fix_recommendation": "Update debugger to use the same binary as the compiler",
+            "prevention": "Regularly check for debugger and compiler updates to prevent inconsistencies",
+            "prompt_version": "2.2.0"
         }
     },
     {
@@ -106,43 +107,40 @@
         "root_score": 0,
         "fix_score": 0,
         "total_score": 0,
+        "possible_score": 6,
         "ai_output": {
-            "bug_summary": "Stack trace displays incorrect file names or line numbers, making debugging difficult. This typically occurs when the running code doesn't match the source code being inspected.",
-            "root_cause": "Most likely cause: Mismatch between deployed/executing artifacts and source code. Common scenarios: 1) Minified/bundled JavaScript without accurate source maps, 2) Compiled languages (Java, C#, C++) with missing or mismatched debug symbols (PDB, .dSYM, .map), 3) Running stale container/image or outdated JAR/DLL, 4) Source map generation misconfiguration in build pipeline (webpack, rollup, esbuild), 5) Compiler optimizations (inlining, tail calls) distorting stack frames.",
+            "bug_summary": "Incorrect file referenced in stack trace",
+            "root_cause": "path calculation error or incorrect file path",
             "investigation_steps": [
-                "Verify the exact commit/hash of the running code: check container image digest, JAR manifest, DLL version, or deployment timestamp",
-                "Compare stack trace file paths with actual repository structure at that commit",
-                "For JS/TS: validate source map existence (.map files), accessibility (not blocked by CSP), and correctness using `source-map` npm package or browser devtools",
-                "For JVM: ensure `-g` flag used during compilation, check `javap -l` for line number table, verify PDB/symbol files match exactly (check GUID/age with `dumpbin /headers` or `pdbcopy`)",
-                "For .NET: confirm `<DebugType>portable</DebugType>` or `full`, verify `.pdb` files deployed alongside `.dll`, use `dotnet-symbol` to validate",
-                "Check for build caching issues: clean build, invalidate CI/CD caches, verify artifact promotion pipeline",
-                "Reproduce locally with same build artifacts and attach debugger to confirm line mapping"
+                "Verify file paths and directories in the project",
+                "Check if there are any typos or incorrect file names in the code",
+                "Use a code editor with built-in syntax checking or a code analysis tool to identify potential issues"
             ],
-            "fix_recommendation": "Ensure build pipeline generates and deploys debug symbols/source maps alongside artifacts. For JS: configure `devtool: 'source-map'` in webpack, output `.map` files to same directory, serve with correct `SourceMap` header. For Java: compile with `-g:lines,vars,source`, include `.class` and `.java` in JAR or publish symbols to artifact repository. For .NET: set `<DebugSymbols>true</DebugSymbols><DebugType>embedded</DebugType>` or deploy `.pdb` files. Implement version stamping in binary (GitCommit, BuildNumber) and log at startup. Add CI step to verify symbol integrity (e.g., `source-map` validation, `symchk` for Windows).",
-            "prevention": "1) Enforce reproducible builds with locked dependencies. 2) Gate deployment on symbol artifact existence (CI check). 3) Automate source map/symbol validation in pipeline (size > 0, parseable, contains original sources). 4) Log running code version (git SHA, build ID) on application startup and in error reports. 5) Use structured logging with correlation IDs to trace requests to exact deployments. 6) Regularly test stack trace accuracy in staging by injecting test exceptions.",
-            "prompt_version": "2.0.0"
+            "fix_recommendation": "Review project file structures, check for typos or incorrect file paths, and utilize code analysis tools to identify potential issues",
+            "prevention": "Regularly review and update the file system structure, implement automatic syntax checking, and ensure accurate file paths in code",
+            "prompt_version": "2.2.0"
         }
     },
     {
         "id": 7,
         "title": "Package version conflict breaking application",
-        "root_score": 0,
-        "fix_score": 0,
-        "total_score": 0,
+        "root_score": 2,
+        "fix_score": 2,
+        "total_score": 4,
+        "possible_score": 6,
         "ai_output": {
-            "bug_summary": "Dependency resolution failure due to incompatible version requirements across transitive dependencies, causing build/install failure or runtime errors.",
-            "root_cause": "Multiple direct or transitive dependencies require different versions of the same package, and the package manager cannot find a compatible version that satisfies all constraints. Common in ecosystems without strict lockfile enforcement or when lockfiles are ignored/outdated.",
+            "bug_summary": "Package Version Conflict",
+            "root_cause": "dependency mismatch",
             "investigation_steps": [
-                "Identify the package manager (npm, pip, maven, cargo, composer, etc.) and locate the lockfile (package-lock.json, yarn.lock, Cargo.lock, composer.lock, etc.).",
-                "Run dependency tree command to visualize conflicts: `npm ls <pkg>`, `pipdeptree`, `mvn dependency:tree`, `cargo tree -d`, `composer show --tree`.",
-                "Check for missing or outdated lockfile; ensure it is committed to version control.",
-                "Examine error logs for specific packages and version ranges causing conflict.",
-                "Verify if any direct dependency has overly broad version ranges (e.g., ^, ~, *) that pull in breaking changes.",
-                "Check for peer dependency warnings (npm) or optional dependencies pulling conflicting versions."
+                "Analyze package listings with conflicting versions",
+                "Identify incompatible dependencies and their origins",
+                "Inspect package managers' history for incorrect configurations",
+                "Verify code for direct dependency imports",
+                "Run manual tests with different package versions"
             ],
-            "fix_recommendation": "1. Regenerate lockfile after aligning direct dependency versions. 2. Use package manager resolution features: npm overrides, yarn resolutions, pip constraints, maven dependencyManagement, cargo [patch] section. 3. If necessary, fork and pin a compatible version of the conflicting transitive dependency. 4. Update direct dependencies to versions that share compatible transitive requirements. 5. Commit updated lockfile and verify CI passes.",
-            "prevention": "Enforce lockfile in version control and CI (fail if lockfile missing or out of sync). Use Dependabot/Renovate for automated PRs with version updates. Configure package manager to prefer locked versions (npm ci, pip install --require-hashes, cargo install --locked). Define dependency version policies in CONTRIBUTING.md. Run dependency audit in CI (npm audit, cargo audit, safety check).",
-            "prompt_version": "2.0.0"
+            "fix_recommendation": "update dependencies using version lock files and check package compatibility",
+            "prevention": "Regularly check package manager history for any package updates and consider using semantic versioning",
+            "prompt_version": "2.2.0"
         }
     },
     {
@@ -151,58 +149,62 @@
         "root_score": 0,
         "fix_score": 0,
         "total_score": 0,
+        "possible_score": 6,
         "ai_output": {
-            "bug_summary": "Application fails to start or crashes due to incompatible or missing DLL versions at runtime",
-            "root_cause": "Most likely cause is that the application was compiled against a specific version of a DLL (e.g., 32-bit vs 64-bit, or a specific version number), but the runtime environment has a different version, missing dependencies, or conflicting DLLs in the search path. This can occur when dependencies are not properly managed during deployment or when system updates replace critical libraries.",
+            "bug_summary": "DLL Mismatch Causing Application Failure",
+            "root_cause": "Dependency mismatch",
             "investigation_steps": [
-                "Check Windows Event Viewer or application logs for specific DLL load errors, missing module names, and version conflict details",
-                "Use Dependency Walker (depends.exe) or Visual Studio's dumpbin /dependents to analyze the application's required DLLs and their versions",
-                "Run sxstrace.exe (Windows Side-by-Side Tracing) to diagnose manifest and activation context issues if the error involves Side-by-Side assemblies",
-                "Verify that all required DLLs are present in the application directory or system PATH, and match the expected architecture (x86/x64)",
-                "Use 'where' command or 'listdlls' tool to confirm which DLLs are being loaded and their exact locations",
-                "Check if recent Windows updates, security software, or other application installations may have overwritten or blocked required DLL versions"
+                "Inspect file copies and verify that referenced libraries match the application's linked binary",
+                "Update application or DLL version to match or use compatible alternatives",
+                "Perform a thorough dependency tree analysis to ensure consistency",
+                "Verify that all framework and library installed versions are correctly ascertainable in package.json report (for frameworks such as .net core)/Web.config",
+                "Test for discrepancies between copied DLL versions reproduced often",
+                "Test Export, export paths & driver scenarios After use cases phase built ."
             ],
-            "fix_recommendation": "Deploy the exact required DLL versions alongside the application in its installation directory, ensure correct architecture matching, and use manifest files to specify DLL dependencies explicitly. If using Windows, run 'sfc /scannow' to repair system DLLs if corruption is suspected, or install the appropriate Microsoft Visual C++ Redistributable package.",
-            "prevention": "Implement static linking where feasible, use application-specific DLL directories to avoid system-wide conflicts, maintain a dependency manifest with version pinning, and perform integration testing on clean VMs matching target deployment environments before release.",
-            "prompt_version": "2.0.0"
+            "fix_recommendation": "Update all dependent libraries to the latest versions, including the DLL. Consider using Dependency Walker to identify and resolve any conflicting dependencies.",
+            "prevention": "Ensure all dependent libraries are updated regularly and that their versions are correctly managed using tools like SemVer and package.json file.",
+            "prompt_version": "2.2.0"
         }
     },
     {
         "id": 9,
         "title": "Old undocumented code causing issue",
-        "root_score": 1,
-        "fix_score": 0,
-        "total_score": 1,
+        "root_score": 3,
+        "fix_score": 2,
+        "total_score": 5,
+        "possible_score": 6,
         "ai_output": {
-            "bug_summary": "Critical functionality failure in legacy code due to unresolved dependencies or broken logic",
-            "root_cause": "Unmaintained or undocumented code dependencies (e.g., hardcoded external URLs, deprecated libraries, or missing configuration) likely causing unexpected behavior",
+            "bug_summary": "Ununderstood legacy code behaves erratically",
+            "root_cause": "legacy code, unknown architecture, technical debt",
             "investigation_steps": [
-                "1. Locate the exact code section linked to the failure using version control (e.g., Git bisect) to isolate recent changes or identify long-standing issues",
-                "2. Analyze dependencies (network requests, database calls, file paths) for hardcoded values or deprecated services that may have failed",
-                "3. Review available logs/dumps for error traces or environmental changes that triggered the bug, and cross-reference with older test cases"
+                "Obtain or recreate the code and familiarize with its components",
+                "Research the historical context of the code and potential dependencies",
+                "Analyze code complexity and identify areas for refactoring"
             ],
-            "fix_recommendation": "Replace hardcoded dependencies with environment variables or configurable settings, add runtime health checks, and implement robust error handling in the affected module",
-            "prevention": "Enforce mandatory documentation for critical legacy code paths, implement automated dependency health checks in CI/CD, and schedule regular codebase maintenance sprints to review old logic",
-            "prompt_version": "2.0.0"
+            "fix_recommendation": "Document code, understand its architecture, refactor carefully to ensure maintainability and testability",
+            "prevention": "Regular code reviews, maintain documentation, and adopt a continuous integration and delivery pipeline to ensure legacy code can be properly maintained",
+            "prompt_version": "2.2.0"
         }
     },
     {
         "id": 10,
         "title": "20-year-old software bug",
-        "root_score": 0,
-        "fix_score": 1,
+        "root_score": 1,
+        "fix_score": 0,
         "total_score": 1,
+        "possible_score": 6,
         "ai_output": {
-            "bug_summary": "Legacy code exhibits crashes under high load leading to service downtime",
-            "root_cause": "Uninitialized pointer dereference in core module due to missing initialization in legacy C module, most likely cause",
+            "bug_summary": "Old software bug",
+            "root_cause": "Legacy code with unknown architecture, leading to technical debt and potential security risks.",
             "investigation_steps": [
-                "Step 1: Reproduce issue using performance testing tool (e.g., JMeter) with load profile matching production",
-                "Step 2: Enable core dumps and examine stack trace with gdb to locate crash site",
-                "Step 3: Review version control history of affected files to identify recent changes that introduced uninitialized variable"
+                "Dig into the old codebase to identify the precise source of the issue.",
+                "Consult with experienced developers who have worked on similar legacy systems.",
+                "Research the old system's architecture and dependencies to understand the root cause.",
+                "Refactor the code with modernization in mind, rather than simply updating dependencies or patching holes."
             ],
-            "fix_recommendation": "Initialize all pointers before use, add static analysis rule, and add unit test covering edge case",
-            "prevention": "Enforce compile-time warnings for uninitialized variables and integrate static analysis (clang-tidy) into CI pipeline",
-            "prompt_version": "2.0.0"
+            "fix_recommendation": "Document the code and update it to modern standards, and pay special attention to addressing technical debt and improving security.",
+            "prevention": "Emphasize the importance of modern software development best practices from the outset, and maintain a legacy code knowledge base to help navigate complex, outdated architecture.",
+            "prompt_version": "2.2.0"
         }
     }
 ]

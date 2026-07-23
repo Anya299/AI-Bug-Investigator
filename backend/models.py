@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey, Float
+from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey, Float, Boolean
 from sqlalchemy.orm import relationship
 from datetime import datetime
 
@@ -103,3 +103,45 @@ class Analysis(Base):
         "BugReport",
         back_populates="analysis"
     )
+class BugKnowledgeBase(Base):
+    __tablename__ = "bug_knowledge_base"
+
+    id = Column(Integer, primary_key=True, index=True)
+    title = Column(String, nullable=False)
+    language = Column(String, nullable=False)
+    framework = Column(String, nullable=False)
+    error_pattern = Column(String, nullable=False)
+    root_cause = Column(Text, nullable=False)
+    solution = Column(Text, nullable=False)
+class BugPattern(Base):
+    __tablename__ = "bug_patterns"
+
+    id = Column(Integer, primary_key=True, index=True)
+
+    error_type = Column(String(100), index=True)
+    error_message = Column(Text)
+
+    language = Column(String(100))
+    framework = Column(String(100))
+
+    root_cause = Column(Text)
+    common_fix = Column(Text)
+
+    tags = Column(String(255))
+
+    success_rate = Column(Float, default=0.0)
+
+    is_verified = Column(
+        Boolean,
+        default=False
+    )
+
+    usage_count = Column(
+        Integer,
+        default=0
+    )
+
+    created_at = Column(
+        DateTime,
+        default=datetime.utcnow
+    )    

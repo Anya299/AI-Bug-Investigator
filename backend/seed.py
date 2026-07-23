@@ -1,24 +1,33 @@
+import json
 from database import SessionLocal
-from models import BugReport
+from models import BugKnowledgeBase
 
 
 db = SessionLocal()
 
+try:
+    with open("seed_data.json", "r") as file:
+        bugs = json.load(file)
 
-bug = BugReport(
-    title="FastAPI validation error",
-    language="Python",
-    framework="FastAPI",
-    description="API returns 422 error when JSON input is wrong",
-    stack_trace="ValidationError: field required",
-    severity="medium",
-    status="open"
-)
+    for bug in bugs:
+        record = BugKnowledgeBase(
+            title=bug["title"],
+            language=bug["language"],
+            framework=bug["framework"],
+            error_pattern=bug["error_pattern"],
+            root_cause=bug["root_cause"],
+            solution=bug["solution"]
+        )
 
+        db.add(record)
 
-db.add(bug)
-db.commit()
+    db.commit()
 
-print("Bug case added successfully ✅")
+    print(f"Inserted {len(bugs)} bug records successfully")
 
-db.close()
+except Exception as e:
+    db.rollback()
+    print("Error:", e)
+
+finally:
+    db.close()

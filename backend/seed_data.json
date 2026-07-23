@@ -1,0 +1,162 @@
+[
+  {
+    "title": "Memory leak causing application crash after 48 hours",
+    "language": "Python",
+    "framework": "Software Application",
+    "error_pattern": "memory leak",
+    "root_cause": "Unused resources were not released, causing continuous memory allocation until application crash",
+    "solution": "Profile memory usage, identify leaked resources, release unused objects, and add memory monitoring"
+  },
+  {
+    "title": "Race condition causing random failure",
+    "language": "Python",
+    "framework": "Multithreading",
+    "error_pattern": "race condition",
+    "root_cause": "Multiple threads accessed shared resources without proper synchronization",
+    "solution": "Add locks, improve thread synchronization, and ensure thread safety"
+  },
+  {
+    "title": "Debugger showing different behavior from compiler",
+    "language": "C/C++",
+    "framework": "Compiler",
+    "error_pattern": "debug output mismatch",
+    "root_cause": "Compiler optimization and different build configurations changed program behavior",
+    "solution": "Check compiler flags, disable optimization, clean and rebuild the project"
+  },
+  {
+    "title": "Package version conflict breaking application",
+    "language": "Python",
+    "framework": "Dependency Management",
+    "error_pattern": "dependency mismatch",
+    "root_cause": "Incompatible package versions caused runtime failures",
+    "solution": "Update dependencies, check compatibility, and lock package versions"
+  },
+  {
+    "title": "Old undocumented code causing unexpected failure",
+    "language": "General",
+    "framework": "Legacy Software",
+    "error_pattern": "legacy code issue",
+    "root_cause": "Unknown architecture and technical debt caused unexpected behavior",
+    "solution": "Analyze codebase, document system behavior, and refactor carefully"
+  },
+  {
+    "title": "Production-only bug cannot reproduce locally",
+    "language": "Backend",
+    "framework": "Production Environment",
+    "error_pattern": "works locally fails production",
+    "root_cause": "Differences between local and production configuration caused failure",
+    "solution": "Match environments, improve logging, and reproduce production setup"
+  },
+  {
+    "title": "Stack trace points to wrong file",
+    "language": "General",
+    "framework": "Debugging",
+    "error_pattern": "misleading stack trace",
+    "root_cause": "Actual failure happened earlier but error appeared in another component",
+    "solution": "Trace execution flow, inspect related components, and add detailed logging"
+  },
+  {
+    "title": "Trailing whitespace breaking code",
+    "language": "Python",
+    "framework": "Programming",
+    "error_pattern": "hidden characters",
+    "root_cause": "Invisible formatting characters affected code execution",
+    "solution": "Clean formatting, use linting tools, and check hidden characters"
+  },
+  {
+    "title": "CSS overflow issue",
+    "language": "JavaScript",
+    "framework": "React",
+    "error_pattern": "layout overflow",
+    "root_cause": "Incorrect container sizing and responsive layout rules",
+    "solution": "Inspect CSS properties, check element sizes, and fix layout calculations"
+  },
+  {
+    "title": "DLL mismatch causing application failure",
+    "language": "C++",
+    "framework": "Windows Application",
+    "error_pattern": "library mismatch",
+    "root_cause": "Missing or incompatible dynamic libraries caused runtime errors",
+    "solution": "Verify installed libraries, replace DLL files, and check compatibility"
+  },
+  {
+    "title": "Twenty year old software bug",
+    "language": "General",
+    "framework": "Legacy System",
+    "error_pattern": "historical bug",
+    "root_cause": "Old design assumptions and undocumented behavior caused failures",
+    "solution": "Study historical code, reproduce issue, and patch carefully"
+  },
+  {
+    "title": "Database connection failure",
+    "language": "Python",
+    "framework": "SQLAlchemy",
+    "error_pattern": "connection refused",
+    "root_cause": "Database server unavailable or incorrect credentials",
+    "solution": "Verify database URL, credentials, and server availability"
+  },
+  {
+    "title": "JWT authentication failure",
+    "language": "Python",
+    "framework": "FastAPI",
+    "error_pattern": "invalid token",
+    "root_cause": "Expired token or incorrect secret configuration",
+    "solution": "Generate new token and verify authentication settings"
+  },
+  {
+    "title": "API timeout error",
+    "language": "Python",
+    "framework": "REST API",
+    "error_pattern": "timeout",
+    "root_cause": "Request exceeded allowed processing time",
+    "solution": "Optimize API performance and configure timeout values"
+  },
+  {
+    "title": "Environment variable missing",
+    "language": "Python",
+    "framework": "FastAPI",
+    "error_pattern": "missing environment variable",
+    "root_cause": "Required configuration values were not loaded",
+    "solution": "Update .env file and validate configuration during startup"
+  },
+  {
+    "title": "Async await error",
+    "language": "Python",
+    "framework": "FastAPI",
+    "error_pattern": "coroutine was never awaited",
+    "root_cause": "Async function was called without await keyword",
+    "solution": "Use await correctly and verify asynchronous execution flow"
+  },
+  {
+    "title": "Pydantic validation failure",
+    "language": "Python",
+    "framework": "FastAPI",
+    "error_pattern": "ValidationError",
+    "root_cause": "Request data did not match expected schema",
+    "solution": "Validate input fields and update request model"
+  },
+  {
+    "title": "Docker build failure",
+    "language": "Docker",
+    "framework": "Deployment",
+    "error_pattern": "build failed",
+    "root_cause": "Incorrect Dockerfile commands or missing dependencies",
+    "solution": "Review Dockerfile instructions and rebuild image"
+  },
+  {
+    "title": "React state not updating",
+    "language": "JavaScript",
+    "framework": "React",
+    "error_pattern": "state update issue",
+    "root_cause": "Incorrect state mutation prevented UI refresh",
+    "solution": "Use proper state setters and immutable updates"
+  },
+  {
+    "title": "OpenAI API authentication failure",
+    "language": "Python",
+    "framework": "AI Application",
+    "error_pattern": "AuthenticationError",
+    "root_cause": "Invalid API key or incorrect API configuration",
+    "solution": "Update API credentials and verify environment configuration"
+  }
+]

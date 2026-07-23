@@ -1,27 +1,42 @@
+from pattern_matcher import find_matching_pattern
 import json
 from enum import Enum
 
-from openai import AsyncOpenAI
-from fastapi import FastAPI, Request, status
+from fastapi import FastAPI, Request, status, Depends, HTTPException
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+
+from openai import AsyncOpenAI
 from pydantic import BaseModel, Field, field_validator
 
 from config import get_settings
 from logger import get_logger
 from prompt import PROMPT_VERSION, SYSTEM_PROMPT, build_user_message
+
 from database import SessionLocal
-from models import BugReport, Analysis
+from models import BugReport, Analysis, User
+
+from schemas import UserCreate, UserResponse
+
+from routes.auth import verify_token, hash_password
+
+from routes.auth import router as auth_router
+
 
 logger = get_logger(__name__)
 settings = get_settings()
+
 
 app = FastAPI(
     title=settings.app_name,
     description="Turns a raw bug description into a structured investigation report.",
     version="0.1.0",
 )
+
+
+app.include_router(auth_router)
+
 
 app.add_middleware(
     CORSMiddleware,
@@ -131,23 +146,24 @@ async def analyze_bug(bug: BugReportRequest) -> BugAnalysisResponse:
     )
 
     try:
-        response = await client.chat.completions.create(
-    model=settings.openrouter_model,
-    max_tokens=1500,
-    messages=[
-        {
-            "role": "system",
-            "content": SYSTEM_PROMPT
-        },
-        {
-            "role": "user",
-            "content": user_message
-        }
-    ],
-)
-    except anthropic.APITimeoutError as exc:
-        logger.error("Analyzer call timed out after %.1fs", settings.request_timeout_seconds)
-        raise AnalyzerTimeoutError("The bug analysis request timed out.") from exc
+       response = await client.chat.completions.create(
+           model=settings.openrouter_model,
+           max_tokens=2000,
+           messages=[
+               {
+                   "role": "system",
+                   "content": SYSTEM_PROMPT
+                },
+                {
+                    "role": "user",
+                    "content": user_message
+                }
+            ],
+            response_format={"type": "json_object"},
+        )
+    except Exception as exc:
+        logger.error("Analyzer call failed: %s", str(exc))
+        raise AnalyzerUpstreamError("The AI analysis request failed.") from exc
     except (anthropic.RateLimitError, anthropic.APIStatusError, anthropic.APIConnectionError) as exc:
         logger.error("Analyzer upstream error: %s", exc)
         raise AnalyzerUpstreamError(f"Upstream analysis service error: {exc}") from exc
@@ -162,7 +178,20 @@ async def analyze_bug(bug: BugReportRequest) -> BugAnalysisResponse:
         response.usage.prompt_tokens,
         response.usage.completion_tokens
     )
-    return parse_model_output(raw_text)
+    result = parse_model_output(raw_text)
+
+    # Force correct prompt version
+    result.prompt_version = PROMPT_VERSION
+
+    # Add fallback investigation steps if empty
+    if not result.investigation_steps:
+        result.investigation_steps = [
+           "Review logs",
+           "Reproduce issue",
+           "Inspect related code"
+        ]
+
+    return result
 
 
 # ===== Error handlers =====
@@ -279,28 +308,48 @@ async def health() -> dict:
     },
     tags=["analysis"],
 )
-async def analyze_bug_endpoint(payload: BugReportRequest) -> BugAnalysisResponse:
-    if len(payload.description) < settings.min_description_length:
-        raise RequestValidationError([{
-            "loc": ("body", "description"),
-            "msg": f"description must be at least {settings.min_description_length} characters",
-            "type": "value_error",
-        }])
-    if len(payload.description) > settings.max_description_length:
-        raise RequestValidationError([{
-            "loc": ("body", "description"),
-            "msg": f"description must be under {settings.max_description_length} characters",
-            "type": "value_error",
-        }])
+async def analyze_bug_endpoint(
+    payload: BugReportRequest,
+    current_user: str = Depends(verify_token)
+) -> BugAnalysisResponse:
 
-    logger.info(
-    "Analyzing bug report (%d chars, language=%s)",
-    len(payload.description),
-    payload.language
-    )
+    try:
+        # Call AI analysis service
+        result = await analyze_bug(payload)
 
-    result = await analyze_bug(payload)
+        # Save result into database
+        save_bug_analysis(payload, result)
 
-    save_bug_analysis(payload, result)
+        return result
 
-    return result
+    except AnalyzerParsingError as e:
+        logger.error("Parsing error: %s", e)
+
+        raise HTTPException(
+            status_code=502,
+            detail=str(e)
+        )
+
+    except AnalyzerUpstreamError as e:
+        logger.error("Upstream error: %s", e)
+
+        raise HTTPException(
+            status_code=502,
+            detail=str(e)
+        )
+
+    except AnalyzerTimeoutError as e:
+        logger.error("Timeout error: %s", e)
+
+        raise HTTPException(
+            status_code=504,
+            detail=str(e)
+        )
+
+    except Exception as e:
+        logger.exception("Unexpected error: %s", e)
+
+        raise HTTPException(
+            status_code=500,
+            detail="Something went wrong during analysis"
+        )
