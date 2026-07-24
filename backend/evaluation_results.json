@@ -3,40 +3,40 @@
         "id": 1,
         "title": "Memory leak causing application crash after 48+ hours",
         "root_score": 3,
-        "fix_score": 2,
-        "total_score": 5,
+        "fix_score": 0,
+        "total_score": 3,
         "possible_score": 6,
         "ai_output": {
-            "bug_summary": "Application crash after 48+ hours due to memory leak",
-            "root_cause": "memory leak due to unused memory allocations and resource utilization issues",
+            "bug_summary": "Application crashes after 48+ hours likely due to memory leak",
+            "root_cause": "Memory allocation issue, possibly due to unused resources",
             "investigation_steps": [
-                "Collect memory logs to detect memory leak points",
-                "Use a memory profiler to analyze heap space usage",
-                "Track resource allocation and utilization over time"
+                "Profiling memory usage to identify leak-source",
+                "Review system configuration for resource management",
+                "Analyze code for potential patterns of memory allocation/deallocation"
             ],
-            "fix_recommendation": "Profile memory usage to identify memory leak sources, release unused resources, and implement memory monitoring to prevent future occurrences",
-            "prevention": "Regularly profile memory usage, optimize resource allocation, and implement automatic memory cleanup to prevent memory leaks",
-            "prompt_version": "2.2.0"
+            "fix_recommendation": "Profiling memory usage, releasing unused resources, and implementing memory monitoring",
+            "prevention": "Regularly reviewing system configuration and code for resource management best practices",
+            "prompt_version": "2.3.0"
         }
     },
     {
         "id": 2,
         "title": "Race condition causing random failure",
-        "root_score": 2,
+        "root_score": 3,
         "fix_score": 2,
-        "total_score": 4,
+        "total_score": 5,
         "possible_score": 6,
         "ai_output": {
-            "bug_summary": "Random failure due to concurrent access issue",
-            "root_cause": "Incorrect thread synchronization due to concurrent access",
+            "bug_summary": "Race condition causing random failure",
+            "root_cause": "Concurrency-related issue due to insufficient thread synchronization",
             "investigation_steps": [
-                "Reproduce the issue by mimicking concurrent access",
-                "Inspect code for thread synchronization primitives",
-                "Verify usage of synchronization methods"
+                "Collect and analyze logs to identify potential thread concurrency issues",
+                "Use debuggers to step through code and inspect thread execution order",
+                "Analyze memory usage and data consistency for signs of concurrent access"
             ],
-            "fix_recommendation": "Implement or add locks to prevent concurrent access, synchronize threads and ensure thread safety",
-            "prevention": "Regularly inspect code for thread safety and profile concurrent access",
-            "prompt_version": "2.2.0"
+            "fix_recommendation": "Add locks and synchronize threads to prevent concurrent access issues",
+            "prevention": "Use synchronization primitives and mutex locks to ensure proper thread safety tuning",
+            "prompt_version": "2.3.0"
         }
     },
     {
@@ -47,37 +47,36 @@
         "total_score": 5,
         "possible_score": 6,
         "ai_output": {
-            "bug_summary": "Trailing whitespace breaking code",
-            "root_cause": "Formatting issue due to hidden characters",
+            "bug_summary": "Trailing whitespace is breaking code execution",
+            "root_cause": "Hidden characters (trailing whitespace) are being treated as literal string input causing unexpected code behavior.",
             "investigation_steps": [
-                "Verify the code editor is set to display whitespace",
-                "Inspect the code manually for invisible characters",
-                "Run linting tools on the project to detect formatting issues"
+                "Review the code for any signs of whitespace issues",
+                "Check if there are any tools/linters used to catch this sort of issue",
+                "Verify if the input is being sanitized before processing"
             ],
-            "fix_recommendation": "Clean input and use code linter to check formatting rules",
-            "prevention": "Use code linter to check formatting rules regularly",
-            "prompt_version": "2.2.0"
+            "fix_recommendation": "Use linting tools to detect whitespace issues and clean input before processing it to prevent similar unexpected behavior",
+            "prevention": "Use a code editor with features that detect and highlight whitespace issues and sanitize input before processing",
+            "prompt_version": "2.3.0"
         }
     },
     {
         "id": 4,
         "title": "CSS overflow issue causing unexpected layout problem",
-        "root_score": 3,
-        "fix_score": 3,
-        "total_score": 6,
+        "root_score": 2,
+        "fix_score": 1,
+        "total_score": 3,
         "possible_score": 6,
         "ai_output": {
-            "bug_summary": "CSS Overflow Issue - Unknown Framework",
-            "root_cause": "layout calculation problem due to container size issue",
+            "bug_summary": "CSS overflow issue causing layout problems",
+            "root_cause": "computational layout calculation error involving container overflow detection in a complex design",
             "investigation_steps": [
-                "Determine the minimum dimensions of the container",
-                "Inspect CSS properties and adjust layout rules",
-                "Check for broken responsive design",
-                "Research the framework's best practices for CSS"
+                "1. Inspect the HTML structure and element sizes to identify potential overflow",
+                "2. Verify that CSS properties such as overflow-x and overflow-y are correctly set",
+                "3. Review responsive design rules and adjust layout as needed"
             ],
-            "fix_recommendation": "Inspect element sizes, fix CSS properties, and adjust layout rules to improve responsive design, using browser developer tools and CSS selectors",
-            "prevention": "Regularly review the layout calculation and ensure responsive design is maintained during updates",
-            "prompt_version": "2.2.0"
+            "fix_recommendation": "Update CSS properties to fix overflow issues; adjust layout rules to ensure proper calculation of element sizes",
+            "prevention": "Regularly inspect layout and element sizes, verifying overflow properties and design rules",
+            "prompt_version": "2.3.0"
         }
     },
     {
@@ -88,17 +87,16 @@
         "total_score": 0,
         "possible_score": 6,
         "ai_output": {
-            "bug_summary": "Debugger compiler inconsistency",
-            "root_cause": "incompatible platform binary",
+            "bug_summary": "Discrepancies between debugger and compiler behavior causing issues",
+            "root_cause": "Insufficient or incorrect debugging information, possible configuration mismatch",
             "investigation_steps": [
-                "Verify debugger and compiler targets",
-                "Check debugger and compiler versions",
-                "Update debugger and compiler to latest versions",
-                "Verify the configuration settings for the debugger and compiler"
+                "Collect debugging information from compiler and debugger",
+                "Verify compiler and debugger versions and updates",
+                "Compare configuration and settings for both tools"
             ],
-            "fix_recommendation": "Update debugger to use the same binary as the compiler",
-            "prevention": "Regularly check for debugger and compiler updates to prevent inconsistencies",
-            "prompt_version": "2.2.0"
+            "fix_recommendation": "Review and update debugging settings, validate tool configurations",
+            "prevention": "Regularly update tools and frameworks, monitor debugging logs",
+            "prompt_version": "2.3.0"
         }
     },
     {
@@ -109,38 +107,36 @@
         "total_score": 0,
         "possible_score": 6,
         "ai_output": {
-            "bug_summary": "Incorrect file referenced in stack trace",
-            "root_cause": "path calculation error or incorrect file path",
+            "bug_summary": "Incorrect file path in stack trace",
+            "root_cause": "Insufficient information to determine the exact technical cause. Further debugging information is needed",
             "investigation_steps": [
-                "Verify file paths and directories in the project",
-                "Check if there are any typos or incorrect file names in the code",
-                "Use a code editor with built-in syntax checking or a code analysis tool to identify potential issues"
+                "1. Obtain detailed stack trace and review it for any clues",
+                "2. Examine the codebase for any recent changes or updates",
+                "3. Check for any logging or debugging statements that might provide context"
             ],
-            "fix_recommendation": "Review project file structures, check for typos or incorrect file paths, and utilize code analysis tools to identify potential issues",
-            "prevention": "Regularly review and update the file system structure, implement automatic syntax checking, and ensure accurate file paths in code",
-            "prompt_version": "2.2.0"
+            "fix_recommendation": "None, further investigation required",
+            "prevention": "Regular code reviews and thorough testing can help prevent such issues",
+            "prompt_version": "2.3.0"
         }
     },
     {
         "id": 7,
         "title": "Package version conflict breaking application",
-        "root_score": 2,
-        "fix_score": 2,
-        "total_score": 4,
+        "root_score": 3,
+        "fix_score": 3,
+        "total_score": 6,
         "possible_score": 6,
         "ai_output": {
-            "bug_summary": "Package Version Conflict",
-            "root_cause": "dependency mismatch",
+            "bug_summary": "Package version conflict detected in the project",
+            "root_cause": "dependency mismatch, incompatible versions, library conflict",
             "investigation_steps": [
-                "Analyze package listings with conflicting versions",
-                "Identify incompatible dependencies and their origins",
-                "Inspect package managers' history for incorrect configurations",
-                "Verify code for direct dependency imports",
-                "Run manual tests with different package versions"
+                "Analyze the project's dependencies and their versions using a dependency management tool",
+                "Check the package.json file for any manual version overrides or inconsistencies",
+                "Search for any related bugs or issues on project's bug tracker or community forums"
             ],
-            "fix_recommendation": "update dependencies using version lock files and check package compatibility",
-            "prevention": "Regularly check package manager history for any package updates and consider using semantic versioning",
-            "prompt_version": "2.2.0"
+            "fix_recommendation": "Update dependencies using a package manager, check package compatibility, and use version lock files to ensure consistent versions",
+            "prevention": "Regularly update dependencies using a continuous integration pipeline and use semantic versioning to manage dependencies",
+            "prompt_version": "2.3.0"
         }
     },
     {
@@ -151,60 +147,258 @@
         "total_score": 0,
         "possible_score": 6,
         "ai_output": {
-            "bug_summary": "DLL Mismatch Causing Application Failure",
-            "root_cause": "Dependency mismatch",
+            "bug_summary": "DLL mismatch causing application failure",
+            "root_cause": "dependency mismatch between dynamically linked libraries",
             "investigation_steps": [
-                "Inspect file copies and verify that referenced libraries match the application's linked binary",
-                "Update application or DLL version to match or use compatible alternatives",
-                "Perform a thorough dependency tree analysis to ensure consistency",
-                "Verify that all framework and library installed versions are correctly ascertainable in package.json report (for frameworks such as .net core)/Web.config",
-                "Test for discrepancies between copied DLL versions reproduced often",
-                "Test Export, export paths & driver scenarios After use cases phase built ."
+                "Collect system logs for error messages and DLL loading errors",
+                "Analyze system configuration and installed DLL versions",
+                "Use dependency analysis tools to identify incompatible libraries"
             ],
-            "fix_recommendation": "Update all dependent libraries to the latest versions, including the DLL. Consider using Dependency Walker to identify and resolve any conflicting dependencies.",
-            "prevention": "Ensure all dependent libraries are updated regularly and that their versions are correctly managed using tools like SemVer and package.json file.",
-            "prompt_version": "2.2.0"
+            "fix_recommendation": "update DLL versions to compatible releases or remove unused libraries",
+            "prevention": "regularly update libraries and dependencies, verify compatibility before updates",
+            "prompt_version": "2.3.0"
         }
     },
     {
         "id": 9,
         "title": "Old undocumented code causing issue",
-        "root_score": 3,
-        "fix_score": 2,
-        "total_score": 5,
+        "root_score": 2,
+        "fix_score": 0,
+        "total_score": 2,
         "possible_score": 6,
         "ai_output": {
-            "bug_summary": "Ununderstood legacy code behaves erratically",
-            "root_cause": "legacy code, unknown architecture, technical debt",
+            "bug_summary": "Error in unfamiliar legacy code leading to unexpected system behavior",
+            "root_cause": "Technical debt and unknow architectural concepts is suspected to be the cause of the problem",
             "investigation_steps": [
-                "Obtain or recreate the code and familiarize with its components",
-                "Research the historical context of the code and potential dependencies",
-                "Analyze code complexity and identify areas for refactoring"
+                "Inspect code with a syntax highlighter to identify unknown libraries and frameworks",
+                "Use code analysis tools to assess complexity and find potential bottlenecks",
+                "Implement logging mechanisms to gather additional information about system failures",
+                "Consult documentation and try to understand obsolete technologies and protocols being used"
             ],
-            "fix_recommendation": "Document code, understand its architecture, refactor carefully to ensure maintainability and testability",
-            "prevention": "Regular code reviews, maintain documentation, and adopt a continuous integration and delivery pipeline to ensure legacy code can be properly maintained",
-            "prompt_version": "2.2.0"
+            "fix_recommendation": "Refactor the code to use modern languages and architecture, with a strong focus on encapsulation and loose coupling.",
+            "prevention": "Implement proper documentation, code reviews, and automated testing to reduce the occurrence of technical debt.",
+            "prompt_version": "2.3.0"
         }
     },
     {
         "id": 10,
         "title": "20-year-old software bug",
+        "root_score": 0,
+        "fix_score": 0,
+        "total_score": 0,
+        "possible_score": 6,
+        "ai_output": {
+            "bug_summary": "Legacy Code Issue with Unknown Cause",
+            "root_cause": "Insufficient information, unable to determine the root cause of the legacy code issue",
+            "investigation_steps": [
+                "Obtain source code or documentation for the legacy software",
+                "Analyze the code architecture and identify potential technical debt",
+                "Perform systematic debugging, focusing on critical functionality and high-risk areas"
+            ],
+            "fix_recommendation": "Carefully refactor the legacy code to improve readability, maintainability, and scalability",
+            "prevention": "Regular code reviews, documentation updates, and technical debt reduction exercises",
+            "prompt_version": "2.3.0"
+        }
+    },
+    {
+        "id": 11,
+        "title": "Database connection failure",
+        "root_score": 0,
+        "fix_score": 0,
+        "total_score": 0,
+        "possible_score": 6,
+        "ai_output": {
+            "bug_summary": "Database connection refused",
+            "root_cause": "Insufficient debugging information, requires additional investigation or logs to determine the root cause, possibly including connection configuration, credentials or network/service availability",
+            "investigation_steps": [
+                "Verify database connection string and credentials",
+                "Check database status and network/service availability",
+                "Review database configuration files and ensure proper settings"
+            ],
+            "fix_recommendation": "Verify connection string and credentials, check database status, and validate credentials",
+            "prevention": "Regularly review and update database configuration, and ensure proper database connection handling within the application",
+            "prompt_version": "2.3.0"
+        }
+    },
+    {
+        "id": 12,
+        "title": "JWT authentication failure",
+        "root_score": 0,
+        "fix_score": 0,
+        "total_score": 0,
+        "possible_score": 6,
+        "ai_output": {
+            "bug_summary": "JWT authentication failure due to invalid token",
+            "root_cause": "invalid authentication credentials",
+            "investigation_steps": [
+                "Analyze the authentication flow and verify token generation",
+                "Validate user credentials and ensure correct username/password",
+                "Inspect token configuration and settings, including expiration times"
+            ],
+            "fix_recommendation": "verify authentication credentials, regenerate token if expired, update token configuration settings",
+            "prevention": "Implement token validation and failure handling, provide detailed error messages for token-related errors",
+            "prompt_version": "2.3.0"
+        }
+    },
+    {
+        "id": 13,
+        "title": "API timeout error",
+        "root_score": 0,
+        "fix_score": 0,
+        "total_score": 0,
+        "possible_score": 6,
+        "ai_output": {
+            "bug_summary": "REST API request timed out",
+            "root_cause": "Insufficient debugging information to determine the exact root cause, but potential causes could include network or server-side issues.",
+            "investigation_steps": [
+                "Enable detailed logging for the API request to gather more information about the timeout.",
+                "Check the network connection and server status to ensure they are operational.",
+                "Verify the API connection configuration, including the URL, credentials, and timeouts.",
+                "Analyze the API request flow to identify any potential bottlenecks or slow operations."
+            ],
+            "fix_recommendation": "Improve the API request timeout handling and adjust the timeout values as necessary.",
+            "prevention": "Implement robust error handling and logging mechanisms to detect and mitigate such issues promptly.",
+            "prompt_version": "2.3.0"
+        }
+    },
+    {
+        "id": 14,
+        "title": "Environment variable missing",
         "root_score": 1,
         "fix_score": 0,
         "total_score": 1,
         "possible_score": 6,
         "ai_output": {
-            "bug_summary": "Old software bug",
-            "root_cause": "Legacy code with unknown architecture, leading to technical debt and potential security risks.",
+            "bug_summary": "Environment Variable Reference Error",
+            "root_cause": "Missing environment variable reference or configuration issue.",
             "investigation_steps": [
-                "Dig into the old codebase to identify the precise source of the issue.",
-                "Consult with experienced developers who have worked on similar legacy systems.",
-                "Research the old system's architecture and dependencies to understand the root cause.",
-                "Refactor the code with modernization in mind, rather than simply updating dependencies or patching holes."
+                "Review project source code for environment variable references.",
+                "Verify that environment variables are properly set up in the project configuration.",
+                "Check if the environment variable is correctly declared in the execution environment."
             ],
-            "fix_recommendation": "Document the code and update it to modern standards, and pay special attention to addressing technical debt and improving security.",
-            "prevention": "Emphasize the importance of modern software development best practices from the outset, and maintain a legacy code knowledge base to help navigate complex, outdated architecture.",
-            "prompt_version": "2.2.0"
+            "fix_recommendation": "Verify environment variable configuration and properly declare/refactor environment variable references.",
+            "prevention": "Document and enforce standard environment variable naming conventions.",
+            "prompt_version": "2.3.0"
+        }
+    },
+    {
+        "id": 15,
+        "title": "Async await error",
+        "root_score": 0,
+        "fix_score": 0,
+        "total_score": 0,
+        "possible_score": 6,
+        "ai_output": {
+            "bug_summary": "Coroutine was never awaited",
+            "root_cause": "failure to properly await an asynchronous operation",
+            "investigation_steps": [
+                "Inspect code for asynchronous functions and their return types",
+                "Verify that all coroutines are being awaited or properly handled",
+                "Use a debugger or logging to inspect the execution flow"
+            ],
+            "fix_recommendation": "Properly await coroutines using the await keyword and handle any potential exceptions",
+            "prevention": "Regularly review code for asynchronous operations and ensure proper handling of coroutines",
+            "prompt_version": "2.3.0"
+        }
+    },
+    {
+        "id": 16,
+        "title": "Pydantic validation failure",
+        "root_score": 0,
+        "fix_score": 0,
+        "total_score": 0,
+        "possible_score": 6,
+        "ai_output": {
+            "bug_summary": "Error raised by Pydantic while validation",
+            "root_cause": "Insufficient debugging information available to identify root cause",
+            "investigation_steps": [
+                "Collect Pydantic configuration and validation code",
+                "Inspect error message for further clues",
+                "Check if Pydantic version conflicts with other dependencies"
+            ],
+            "fix_recommendation": "Increase debugging verbosity of Pydantic",
+            "prevention": "Provide Python framework details to facilitate systematic debugging",
+            "prompt_version": "2.3.0"
+        }
+    },
+    {
+        "id": 17,
+        "title": "Docker build failure",
+        "root_score": 0,
+        "fix_score": 1,
+        "total_score": 1,
+        "possible_score": 6,
+        "ai_output": {
+            "bug_summary": "Docker build failed, unable to create image",
+            "root_cause": "Uncertain, requires additional debugging information",
+            "investigation_steps": [
+                "Review Dockerfile and build commands for syntax errors.",
+                "Check Docker compose version and configuration.",
+                "Verify system requirements and dependencies."
+            ],
+            "fix_recommendation": "Update Docker and DockerCompose to latest versions and retry.",
+            "prevention": "Regularly update Docker and DockerCompose, and validate system requirements.",
+            "prompt_version": "2.3.0"
+        }
+    },
+    {
+        "id": 18,
+        "title": "React state not updating",
+        "root_score": 0,
+        "fix_score": 0,
+        "total_score": 0,
+        "possible_score": 6,
+        "ai_output": {
+            "bug_summary": "React state not updating",
+            "root_cause": "Uncertain, requires additional debugging information",
+            "investigation_steps": [
+                "Verify React lifecycle methods are correct",
+                "Check if state updates are happening properly during rendering",
+                "Inspect React component state and callback functions for unexpected behavior"
+            ],
+            "fix_recommendation": "Review React documentation for common state update issues",
+            "prevention": "Provide walkthrough of component code and debugging process",
+            "prompt_version": "2.3.0"
+        }
+    },
+    {
+        "id": 19,
+        "title": "OpenAI API authentication failure",
+        "root_score": 0,
+        "fix_score": 0,
+        "total_score": 0,
+        "possible_score": 6,
+        "ai_output": {
+            "bug_summary": "AuthenticationError while calling OpenAI API",
+            "root_cause": "invalid credentials",
+            "investigation_steps": [
+                "Verify that the API key/credentials are correct and properly configured",
+                "Check the OpenAI API documentation for any latest updates on authentication methods",
+                "Validate the authentication flow to ensure it matches the API requirements"
+            ],
+            "fix_recommendation": "verify credentials, regenerate token/key, validate authentication flow",
+            "prevention": "double-check API credentials, authenticate properly, reference API documentation",
+            "prompt_version": "2.3.0"
+        }
+    },
+    {
+        "id": 20,
+        "title": "Unknown bug pattern not found in knowledge base",
+        "root_score": 0,
+        "fix_score": 0,
+        "total_score": 0,
+        "possible_score": 6,
+        "ai_output": {
+            "bug_summary": "Unknown bug with high severity occurred in an unidentified language/framework",
+            "root_cause": "Uncertain due to insufficient debugging information",
+            "investigation_steps": [
+                "Collect additional logs and error messages to better understand the issue",
+                "Provide more context about the language/framework used",
+                "Review system settings and configurations to identify potential causes"
+            ],
+            "fix_recommendation": "Unable to provide a specific solution without further information",
+            "prevention": "Collecting thorough error logs and debugging information is crucial for efficient debugging",
+            "prompt_version": "2.3.0"
         }
     }
 ]

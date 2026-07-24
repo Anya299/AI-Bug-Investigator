@@ -168,5 +168,175 @@
       "patch carefully"
     ],
     "source": "Reddit"
+  },
+  {
+    "id": 11,
+    "title": "Database connection failure",
+    "category": "Database Issues",
+    "bug_input": "Database connection refused",
+    "expected_root_causes": [
+      "database server unavailable",
+      "incorrect connection string",
+      "invalid database credentials"
+    ],
+    "expected_fix": [
+      "verify database URL",
+      "check database credentials",
+      "ensure database server is running"
+    ],
+    "source": "Knowledge Base"
+  },
+  {
+    "id": 12,
+    "title": "JWT authentication failure",
+    "category": "Authentication & Security",
+    "bug_input": "JWT authentication failed with invalid token",
+    "expected_root_causes": [
+      "expired token",
+      "invalid secret key",
+      "incorrect JWT configuration"
+    ],
+    "expected_fix": [
+      "generate a new token",
+      "verify JWT secret",
+      "check token expiration settings"
+    ],
+    "source": "Knowledge Base"
+  },
+  {
+    "id": 13,
+    "title": "API timeout error",
+    "category": "API & Networking",
+    "bug_input": "REST API request timed out",
+    "expected_root_causes": [
+      "request timeout exceeded",
+      "slow API response",
+      "network latency"
+    ],
+    "expected_fix": [
+      "optimize API performance",
+      "increase timeout limit",
+      "investigate network issues"
+    ],
+    "source": "Knowledge Base"
+  },
+  {
+    "id": 14,
+    "title": "Environment variable missing",
+    "category": "Configuration Issues",
+    "bug_input": "Missing environment variable",
+    "expected_root_causes": [
+      "missing environment variable",
+      "configuration error",
+      "invalid .env configuration"
+    ],
+    "expected_fix": [
+      "update .env file",
+      "validate environment variables",
+      "restart the application"
+    ],
+    "source": "Knowledge Base"
+  },
+  {
+    "id": 15,
+    "title": "Async await error",
+    "category": "Python Async Programming",
+    "bug_input": "Coroutine was never awaited",
+    "expected_root_causes": [
+      "missing await keyword",
+      "incorrect async usage",
+      "coroutine not executed"
+    ],
+    "expected_fix": [
+      "use await correctly",
+      "verify async function calls",
+      "review asynchronous code"
+    ],
+    "source": "Knowledge Base"
+  },
+  {
+    "id": 16,
+    "title": "Pydantic validation failure",
+    "category": "FastAPI Validation",
+    "bug_input": "ValidationError raised by Pydantic",
+    "expected_root_causes": [
+      "schema mismatch",
+      "invalid request data",
+      "missing required fields"
+    ],
+    "expected_fix": [
+      "validate request payload",
+      "update schema definitions",
+      "provide required fields"
+    ],
+    "source": "Knowledge Base"
+  },
+  {
+    "id": 17,
+    "title": "Docker build failure",
+    "category": "Deployment",
+    "bug_input": "Docker build failed",
+    "expected_root_causes": [
+      "Dockerfile error",
+      "missing dependencies",
+      "incorrect build configuration"
+    ],
+    "expected_fix": [
+      "review Dockerfile",
+      "install required dependencies",
+      "rebuild the Docker image"
+    ],
+    "source": "Knowledge Base"
+  },
+  {
+    "id": 18,
+    "title": "React state not updating",
+    "category": "Frontend Development",
+    "bug_input": "React state not updating",
+    "expected_root_causes": [
+      "state mutation",
+      "incorrect state update",
+      "component re-render issue"
+    ],
+    "expected_fix": [
+      "use state setter functions",
+      "avoid direct state mutation",
+      "verify component rendering"
+    ],
+    "source": "Knowledge Base"
+  },
+  {
+    "id": 19,
+    "title": "OpenAI API authentication failure",
+    "category": "AI Applications",
+    "bug_input": "AuthenticationError while calling OpenAI API",
+    "expected_root_causes": [
+      "invalid API key",
+      "authentication failure",
+      "incorrect API configuration"
+    ],
+    "expected_fix": [
+      "update API credentials",
+      "verify API key",
+      "check environment variables"
+    ],
+    "source": "Knowledge Base"
+  },
+  {
+    "id": 20,
+    "title": "Unknown bug pattern not found in knowledge base",
+    "category": "Knowledge Base",
+    "bug_input": "Unknown bug pattern",
+    "expected_root_causes": [
+      "missing knowledge base entry",
+      "pattern matching limitation",
+      "unknown bug type"
+    ],
+    "expected_fix": [
+      "add a new bug pattern",
+      "expand the knowledge base",
+      "improve semantic matching"
+    ],
+    "source": "Knowledge Base"
   }
 ]
