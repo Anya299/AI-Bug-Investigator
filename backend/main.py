@@ -112,6 +112,7 @@ class AnalyzerParsingError(AnalyzerError):
 
 def parse_model_output(raw_text: str) -> BugAnalysisResponse:
     text = raw_text.strip()
+
     if text.startswith("```"):
         text = text.strip("`")
         if text.lower().startswith("json"):
@@ -127,16 +128,19 @@ def parse_model_output(raw_text: str) -> BugAnalysisResponse:
         return BugAnalysisResponse(**data)
     except Exception as exc:
         logger.error("Model JSON did not match expected schema: %s", exc)
-        raise AnalyzerParsingError("Model output did not match the expected schema.") from exc
+        raise AnalyzerParsingError(
+            "Model output did not match the expected schema."
+        ) from exc
 
 
 async def analyze_bug(bug: BugReportRequest) -> BugAnalysisResponse:
+
     client = AsyncOpenAI(
-    api_key=settings.openrouter_api_key,
-    base_url=settings.openrouter_base_url,
-    timeout=settings.request_timeout_seconds,
-    max_retries=settings.max_retries,
-)
+        api_key=settings.openrouter_api_key,
+        base_url=settings.openrouter_base_url,
+        timeout=settings.request_timeout_seconds,
+        max_retries=settings.max_retries,
+    )
 
     user_message = build_user_message(
         description=bug.description,
@@ -146,49 +150,40 @@ async def analyze_bug(bug: BugReportRequest) -> BugAnalysisResponse:
     )
 
     try:
-       response = await client.chat.completions.create(
-           model=settings.openrouter_model,
-           max_tokens=2000,
-           messages=[
-               {
-                   "role": "system",
-                   "content": SYSTEM_PROMPT
+        response = await client.chat.completions.create(
+            model=settings.openrouter_model,
+            messages=[
+                {
+                    "role": "system",
+                    "content": SYSTEM_PROMPT,
                 },
                 {
                     "role": "user",
-                    "content": user_message
-                }
+                    "content": user_message,
+                },
             ],
+            max_tokens=2000,
             response_format={"type": "json_object"},
         )
+
     except Exception as exc:
-        logger.error("Analyzer call failed: %s", str(exc))
-        raise AnalyzerUpstreamError("The AI analysis request failed.") from exc
-    except (anthropic.RateLimitError, anthropic.APIStatusError, anthropic.APIConnectionError) as exc:
-        logger.error("Analyzer upstream error: %s", exc)
-        raise AnalyzerUpstreamError(f"Upstream analysis service error: {exc}") from exc
+        logger.exception("Analyzer call failed")
+        raise AnalyzerUpstreamError(str(exc))
 
     raw_text = response.choices[0].message.content
-    if not raw_text.strip():
+
+    if not raw_text:
         raise AnalyzerParsingError("Model returned an empty response.")
 
-    logger.info(
-        "Analysis complete | model=%s | prompt_v=%s | input_tokens=%s | output_tokens=%s",
-        settings.openrouter_model,
-        response.usage.prompt_tokens,
-        response.usage.completion_tokens
-    )
     result = parse_model_output(raw_text)
 
-    # Force correct prompt version
     result.prompt_version = PROMPT_VERSION
 
-    # Add fallback investigation steps if empty
     if not result.investigation_steps:
         result.investigation_steps = [
-           "Review logs",
-           "Reproduce issue",
-           "Inspect related code"
+            "Review logs",
+            "Reproduce issue",
+            "Inspect related code",
         ]
 
     return result

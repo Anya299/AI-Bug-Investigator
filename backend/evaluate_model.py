@@ -141,7 +141,7 @@ def calculate_score(ai_response, expected_keywords):
 API_URL = "http://127.0.0.1:8000/analyze-bug"
 
 # Paste your JWT access token here
-TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJiaG9vbWlAdGVzdC5jb20iLCJleHAiOjE3ODQ4NzI0MDV9.Wu_BfSk6ZCy7Ya1uNS28FVJOvH_oQj0jyCqSv9Vv2Dk"
+TOKEN =  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJiaG9vbWlAdGVzdC5jb20iLCJleHAiOjE3ODQ5NDc1NDd9.t77zp1u6Vsj1zFSsb2UUmdL0S8M_C2xDgQvcbynpavo"
 
 HEADERS = {
     "Authorization": f"Bearer {TOKEN}"
