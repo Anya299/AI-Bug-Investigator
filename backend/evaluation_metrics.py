@@ -1,128 +1,66 @@
 import json
 
 
-def normalize_text(text):
-    return (
-        text.lower()
-        .replace("-", " ")
-        .replace("_", " ")
-        .replace(".", "")
-        .replace(",", "")
-        .replace('"', "")
-        .replace("'", "")
-    )
+RESULT_FILE = "evaluation_results.json"
 
 
-def keyword_match(keyword, response_text):
+def calculate_metrics():
+    try:
+        with open(RESULT_FILE, "r") as file:
+            results = json.load(file)
 
-    keyword = normalize_text(keyword)
-    response_text = normalize_text(response_text)
-
-    words = keyword.split()
-
-    matched = 0
-
-    for word in words:
-        if word in response_text:
-            matched += 1
-
-    return matched >= max(1, len(words)-1)
+    except FileNotFoundError:
+        print("❌ evaluation_results.json not found")
+        return
 
 
-def calculate_score(ai_response, expected_keywords):
+    total_cases = len(results)
 
-    score = 0
-
-    response_text = normalize_text(
-        json.dumps(ai_response)
-    )
-
-    for keyword in expected_keywords:
-
-        if keyword_match(keyword, response_text):
-            score += 1
-
-    return score
-
-
-def evaluate_results():
-
-    with open(
-        "evaluation_results.json",
-        "r",
-        encoding="utf-8"
-    ) as file:
-
-        results = json.load(file)
+    if total_cases == 0:
+        print("❌ No evaluation data found")
+        return
 
 
     total_score = 0
-    possible_score = 0
+    passed_cases = 0
 
 
-    print("\nDetailed Evaluation")
-    print("===================")
+    for item in results:
 
-
-    for result in results:
-
-        if "ai_output" not in result:
-            continue
-
-
-        root_score = result.get(
-            "root_score",
-            0
+        # Supports different key names
+        score = (
+            item.get("score")
+            or item.get("accuracy")
+            or item.get("evaluation_score")
+            or 0
         )
 
-        fix_score = result.get(
-            "fix_score",
-            0
-        )
+        total_score += score
 
-        total = root_score + fix_score
+        if score >= 50:
+            passed_cases += 1
 
 
-        total_score += total
-        possible_score += 6
+    average_score = total_score / total_cases
+    accuracy = (passed_cases / total_cases) * 100
 
 
-        print(
-            f"\nBug {result['id']}"
-        )
+    print("\n========== AI Bug Investigator Evaluation ==========")
 
-        print(
-            f"Root Score: {root_score}/3"
-        )
+    print(f"Total Test Cases: {total_cases}")
+    print(f"Passed Cases: {passed_cases}")
 
-        print(
-            f"Fix Score: {fix_score}/3"
-        )
+    print(f"Accuracy: {accuracy:.2f}%")
+    print(f"Average Score: {average_score:.2f}/100")
 
-        print(
-            f"Total: {total}/6"
-        )
+    print("\nModel:")
+    print("meta-llama/llama-3.1-8b-instruct")
 
+    print("\nPrompt Version:")
+    print("2.5.1")
 
-    accuracy = round(
-        (total_score / possible_score) * 100,
-        2
-    )
-
-
-    print("\n===================")
-    print("Final Evaluation")
-    print("===================")
-
-    print(
-        f"Total Score: {total_score}/{possible_score}"
-    )
-
-    print(
-        f"Accuracy: {accuracy}%"
-    )
+    print("\n====================================================")
 
 
 if __name__ == "__main__":
-
-    evaluate_results()
+    calculate_metrics()

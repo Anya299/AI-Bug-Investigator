@@ -8,6 +8,7 @@ from jose import jwt, JWTError
 
 from database import SessionLocal
 from models import User
+from config import get_settings
 
 
 router = APIRouter(
@@ -15,7 +16,11 @@ router = APIRouter(
     tags=["Authentication"]
 )
 
+settings = get_settings()
 
+# NOTE: hardcoded here for now. Before deploying anywhere public, move this
+# to settings/.env (e.g. settings.jwt_secret_key) so it's not sitting in
+# source control. Fine for local dev, not fine for production.
 SECRET_KEY = "change_this_secret_key"
 ALGORITHM = "HS256"
 
@@ -53,8 +58,12 @@ def create_access_token(data: dict):
 
     to_encode = data.copy()
 
+    # Configurable via settings.access_token_expire_minutes -- defaults to
+    # a much longer dev-friendly window so local testing sessions (like
+    # running evaluate_model.py repeatedly) don't keep hitting expiry.
+    # Tighten this back down for production (e.g. 30-60 min) via .env.
     expire = datetime.utcnow() + timedelta(
-        minutes=60
+        minutes=settings.access_token_expire_minutes
     )
 
     to_encode.update({

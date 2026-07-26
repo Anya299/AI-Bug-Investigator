@@ -1,148 +1,30 @@
 import json
 import requests
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
 
-def calculate_score(ai_response, expected_keywords):
+# ---------------------------------------------------------------------------
+# FREE, FAST, LOCAL grader using TF-IDF + cosine similarity.
+# No API calls, no large model downloads (scikit-learn is a small install
+# you likely already have). Runs in well under a second for 20 bugs.
+#
+# Trade-off vs. true embeddings: this matches based on shared words/roots,
+# not deep meaning. So "release unused resources" vs "close unclosed
+# connections" will get partial credit for overlapping words like
+# "resources"/"unused", but won't catch pure synonyms with zero shared
+# vocabulary as well as sentence-transformers would. Good enough to move
+# fast today; you can swap in the embeddings version later if you want
+# more accuracy and have time to let the model download in the background.
+# ---------------------------------------------------------------------------
 
-    response_text = normalize_text(
-        json.dumps(ai_response)
-    )
-
-    score = 0
-
-
-    synonym_map = {
-
-        "memory leak": [
-            "memory leak",
-            "memory growth",
-            "heap exhaustion",
-            "continuous object creation"
-        ],
-
-        "unused resources": [
-            "unused resources",
-            "unclosed resources",
-            "resource leak",
-            "database connections",
-            "file handles"
-        ],
-
-        "memory allocation issue": [
-            "memory allocation",
-            "object creation",
-            "garbage collection"
-        ],
-
-
-        "concurrent access": [
-            "concurrent access",
-            "shared state",
-            "multiple threads"
-        ],
-
-        "thread synchronization": [
-            "thread synchronization",
-            "mutex",
-            "lock",
-            "semaphore"
-        ],
-
-        "timing issue": [
-            "timing issue",
-            "race condition",
-            "interleaving"
-        ],
-
-
-        "hidden characters": [
-            "hidden characters",
-            "unicode characters",
-            "invisible characters"
-        ],
-
-        "formatting issue": [
-            "formatting issue",
-            "whitespace",
-            "trailing whitespace"
-        ],
-
-
-        "layout calculation": [
-            "layout calculation",
-            "css box model",
-            "layout"
-        ],
-
-        "container size": [
-            "container size",
-            "container boundaries"
-        ],
-
-
-        "compiler optimization": [
-            "compiler optimization",
-            "optimization flags"
-        ],
-
-        "debug configuration": [
-            "debug configuration",
-            "debugger settings"
-        ],
-
-
-        "dependency mismatch": [
-            "dependency mismatch",
-            "package conflict",
-            "version conflict"
-        ],
-
-
-        "legacy code": [
-            "legacy code",
-            "old code",
-            "outdated architecture"
-        ],
-
-        "technical debt": [
-            "technical debt",
-            "lack of documentation",
-            "legacy system"
-        ]
-    }
-
-
-    for keyword in expected_keywords:
-
-        keyword = normalize_text(keyword)
-
-        matched = False
-
-
-        if keyword in response_text:
-            matched = True
-
-
-        for key, values in synonym_map.items():
-
-            if keyword == key:
-
-                for value in values:
-                    if value in response_text:
-                        matched = True
-                        break
-
-
-        if matched:
-            score += 1
-
-
-    return score
+SIMILARITY_THRESHOLD = 0.15  # TF-IDF similarities run lower than embedding
+                              # similarities since it's pure word overlap.
+                              # Tune this after eyeballing a few results.
 
 API_URL = "http://127.0.0.1:8000/analyze-bug"
 
 # Paste your JWT access token here
-TOKEN =  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJiaG9vbWlAdGVzdC5jb20iLCJleHAiOjE3ODQ5NDc1NDd9.t77zp1u6Vsj1zFSsb2UUmdL0S8M_C2xDgQvcbynpavo"
-
+TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJiaG9vbWlAdGVzdC5jb20iLCJleHAiOjE3ODUwNjQ2NTh9.MTwpz4trPb3Hm6uqSsjVi6QGat_nF5vMrWVwQVlSSg0"
 HEADERS = {
     "Authorization": f"Bearer {TOKEN}"
 }
@@ -153,173 +35,54 @@ def load_dataset():
         return json.load(file)
 
 
-def normalize_text(text):
-    return (
-        text.lower()
-        .replace("-", " ")
-        .replace("_", " ")
-    )
-
-
-def calculate_score(ai_response, expected_keywords):
-    response_text = normalize_text(json.dumps(ai_response))
-    score = 0
-
-    synonym_map = {
-
-    # Memory leak
-    "memory leak": [
-        "memory leak",
-        "memory growth",
-        "heap exhaustion",
-        "increasing memory usage"
-    ],
-
-    "unused resources": [
-        "unused resources",
-        "resource leak",
-        "unclosed resources",
-        "unclosed database connections",
-        "file handles",
-        "connections not closed"
-    ],
-
-    "memory allocation issue": [
-        "memory allocation",
-        "heap allocation",
-        "heap exhaustion",
-        "memory usage growth"
-    ],
-
-
-    # Race condition
-    "concurrent access": [
-        "concurrent access",
-        "shared mutable state",
-        "multiple threads accessing"
-    ],
-
-    "thread synchronization": [
-        "thread synchronization",
-        "synchronization",
-        "mutex",
-        "lock",
-        "semaphore"
-    ],
-
-    "timing issue": [
-        "timing issue",
-        "race condition",
-        "interleaving"
-    ],
-
-
-    # Hidden characters
-    "hidden characters": [
-        "hidden characters",
-        "invisible characters",
-        "non printable"
-    ],
-
-    "formatting issue": [
-        "formatting issue",
-        "whitespace",
-        "trailing whitespace"
-    ],
-
-    "invisible characters": [
-        "invisible characters",
-        "hidden characters",
-        "whitespace"
-    ],
-
-
-    # CSS issues
-    "layout calculation": [
-        "layout calculation",
-        "layout",
-        "css property"
-    ],
-
-    "container size": [
-        "container size",
-        "dimensions",
-        "container boundaries"
-    ],
-
-    "responsive design problem": [
-        "responsive design",
-        "responsive",
-        "flexbox",
-        "grid layout"
-    ],
-
-
-    # Debugger/compiler
-    "compiler optimization": [
-        "compiler optimization",
-        "optimization",
-        "compiler flags"
-    ],
-
-    "debug configuration": [
-        "debug configuration",
-        "debug build",
-        "debugger settings"
-    ],
-
-    "build mismatch": [
-        "build mismatch",
-        "release build",
-        "version mismatch"
-    ],
-
-
-    # Dependency conflicts
-    "dependency mismatch": [
-        "dependency mismatch",
-        "dependency conflict",
-        "package conflict"
-    ],
-
-    "incompatible versions": [
-        "incompatible versions",
-        "version conflict",
-        "different versions"
-    ],
-
-    "library conflict": [
-        "library conflict",
-        "dependency conflict",
-        "package conflict"
-    ],
-
-
-    # Legacy code
-    "legacy code": [
-        "legacy code",
-        "old code",
-        "legacy system"
-    ],
-
-    "technical debt": [
-        "technical debt",
-        "legacy system",
-        "old architecture",
-        "lack of documentation"
+def response_to_text(ai_response):
+    parts = [
+        ai_response.get("bug_summary", ""),
+        ai_response.get("root_cause", ""),
+        " ".join(ai_response.get("investigation_steps", []) or []),
+        ai_response.get("fix_recommendation", ""),
+        ai_response.get("prevention", ""),
     ]
-}
+    return " ".join(p for p in parts if p)
 
-    for keyword in expected_keywords:
-        keyword = normalize_text(keyword)
-        variations = synonym_map.get(keyword, [keyword])
 
-        for variation in variations:
-            if variation in response_text:
-                score += 1
-                break
+def calculate_score_tfidf(ai_response, expected_keywords):
+    response_text = response_to_text(ai_response)
 
-    return score
+    chunks = [c.strip() for c in response_text.replace(";", ".").split(".") if c.strip()]
+    if not chunks:
+        chunks = [response_text]
+
+    # Fit TF-IDF over (chunks + keywords) together so they share a vocabulary space
+    corpus = chunks + expected_keywords
+    try:
+        vectorizer = TfidfVectorizer(stop_words="english")
+        tfidf_matrix = vectorizer.fit_transform(corpus)
+    except ValueError:
+        # Happens if corpus is all stopwords / empty after stripping
+        return 0, [{"keyword": k, "matched": False, "similarity": 0.0, "best_matching_text": ""} for k in expected_keywords]
+
+    chunk_vectors = tfidf_matrix[:len(chunks)]
+    keyword_vectors = tfidf_matrix[len(chunks):]
+
+    sims = cosine_similarity(keyword_vectors, chunk_vectors)  # [num_keywords, num_chunks]
+
+    score = 0
+    match_details = []
+    for i, keyword in enumerate(expected_keywords):
+        best_sim = float(sims[i].max())
+        best_chunk_idx = int(sims[i].argmax())
+        matched = best_sim >= SIMILARITY_THRESHOLD
+        if matched:
+            score += 1
+        match_details.append({
+            "keyword": keyword,
+            "matched": matched,
+            "similarity": round(best_sim, 3),
+            "best_matching_text": chunks[best_chunk_idx]
+        })
+
+    return score, match_details
 
 
 def run_evaluation():
@@ -351,12 +114,12 @@ def run_evaluation():
         if response.status_code == 200:
             ai_result = response.json()
 
-            root_score = calculate_score(
+            root_score, root_details = calculate_score_tfidf(
                 ai_result,
                 bug["expected_root_causes"]
             )
 
-            fix_score = calculate_score(
+            fix_score, fix_details = calculate_score_tfidf(
                 ai_result,
                 bug["expected_fix"]
             )
@@ -374,6 +137,8 @@ def run_evaluation():
                 "fix_score": fix_score,
                 "total_score": total_score,
                 "possible_score": possible_score,
+                "root_match_details": root_details,
+                "fix_match_details": fix_details,
                 "ai_output": ai_result
             })
 
@@ -389,10 +154,11 @@ def run_evaluation():
 
     accuracy = (total_earned / total_possible) * 100 if total_possible > 0 else 0
 
-    print("\nEvaluation Completed ✅")
+    print("\nEvaluation Completed \u2705")
     print("Results saved: evaluation_results.json")
     print(f"Total Score: {total_earned}/{total_possible}")
     print(f"Accuracy: {accuracy:.1f}%")
+    print(f"\n(Similarity threshold used: {SIMILARITY_THRESHOLD} \u2014 tune in the script if scores look too strict/lenient)")
 
 
 if __name__ == "__main__":

@@ -144,4 +144,27 @@ class BugPattern(Base):
     created_at = Column(
         DateTime,
         default=datetime.utcnow
-    )    
+    )
+
+
+class UsageLog(Base):
+    __tablename__ = "usage_logs"
+
+    id = Column(Integer, primary_key=True, index=True)
+
+    user_id = Column(
+        Integer,
+        ForeignKey("users.id"),
+        index=True
+    )
+
+    endpoint = Column(String(255))
+    tier_at_time = Column(String(20))
+
+    timestamp = Column(
+        DateTime,
+        default=datetime.utcnow,
+        index=True
+    )
+
+    user = relationship("User")
