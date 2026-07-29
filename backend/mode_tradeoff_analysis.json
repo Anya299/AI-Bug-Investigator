@@ -1,0 +1,7 @@
+{
+    "analysis": "Quick vs Full mode quality tradeoff",
+    "threshold": "Full mode score >= Quick mode score + 1",
+    "cases_found": 0,
+    "cases": [],
+    "conclusion": "No significant quality difference was detected between Quick and Full modes on the current evaluation dataset. Future testing with more complex production failures is recommended."
+}
