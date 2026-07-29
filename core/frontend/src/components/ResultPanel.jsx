@@ -162,7 +162,7 @@ export default function ResultPanel({ status, result, mode, elapsedMs, onCopyFix
   if (!result) return null;
 
   return (
-    <div className="animate-fadeUp space-y-4 rounded-lg border border-line bg-surface p-6 shadow-card">
+    <div className="result-enter space-y-4 rounded-lg border border-line bg-surface p-6 shadow-card">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <h3 className="font-mono-display text-lg font-semibold text-textPrimary">
