@@ -1,0 +1,53 @@
+{
+  "project": "AI Bug Investigator",
+  "evaluation_type": "Prompt V1 vs Prompt V2 comparison",
+  "date": "2026-07-29",
+
+  "dataset": {
+    "total_bug_cases": 20,
+    "evaluation_modes": [
+      "quick",
+      "full"
+    ],
+    "similarity_threshold": 0.15
+  },
+
+  "results": {
+    "prompt_v1": {
+      "accuracy": 68.1,
+      "root_score_mean": 2.31,
+      "fix_score_mean": 1.77,
+      "total_score_mean": 4.09,
+      "latency_mean_ms": 22.78
+    },
+
+    "prompt_v2": {
+      "accuracy": 63.16,
+      "root_score_mean": 2.21,
+      "fix_score_mean": 1.58,
+      "total_score_mean": 3.79,
+      "latency_mean_ms": 2014.79
+    }
+  },
+
+  "comparison": {
+    "accuracy_change": -4.94,
+    "root_score_change": -0.10,
+    "fix_score_change": -0.19,
+    "total_score_change": -0.30,
+    "latency_change_ms": 1992.01
+  },
+
+  "methodology": {
+    "evaluation_dimensions": [
+      "root cause identification",
+      "suggested fix quality",
+      "overall investigation score",
+      "response latency"
+    ],
+    "dataset_source": "20 curated real-world software failure scenarios",
+    "evaluation_process": "Each bug case was tested using both prompt versions through the /analyze-bug endpoint."
+  },
+
+  "conclusion": "Prompt V2 improved structured investigation behavior but introduced higher latency and slightly lower aggregate scores under the current evaluation criteria."
+}
