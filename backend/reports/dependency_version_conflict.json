@@ -1,0 +1,21 @@
+{
+  "bug": "Package version conflict breaking application",
+  "root_cause": [
+    "Dependency mismatch",
+    "Incompatible package versions",
+    "Breaking API changes"
+  ],
+  "investigation_steps": [
+    "Compare package versions",
+    "Inspect dependency tree",
+    "Review release notes",
+    "Reproduce in a clean environment"
+  ],
+  "recommended_fix": [
+    "Pin compatible versions",
+    "Update lock files",
+    "Rebuild the environment",
+    "Verify dependency compatibility"
+  ],
+  "confidence": "97%"
+}

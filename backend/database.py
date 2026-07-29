@@ -4,10 +4,13 @@ from dotenv import load_dotenv
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import declarative_base, sessionmaker
 
-
 load_dotenv()
 
-DATABASE_URL = os.getenv("DATABASE_URL")
+from config import get_settings
+
+settings = get_settings()
+
+DATABASE_URL = settings.database_url
 
 
 engine = create_engine(DATABASE_URL)
@@ -21,6 +24,21 @@ SessionLocal = sessionmaker(
 
 
 Base = declarative_base()
+
+
+def check_database():
+
+    try:
+        db = SessionLocal()
+
+        db.execute(text("SELECT 1"))
+
+        db.close()
+
+        return True
+
+    except Exception:
+        return False
 
 
 # Test database connection

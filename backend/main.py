@@ -1,4 +1,10 @@
-from pattern_matcher import find_matching_pattern
+import time
+import uuid
+
+from metrics import get_metrics, record_request
+
+from pattern_matcher import find_matching_pattern, record_pattern_usage
+from confidence import calculate_confidence
 import json
 import re
 from enum import Enum
@@ -8,15 +14,17 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
-from openai import AsyncOpenAI
-from pydantic import BaseModel, Field, field_validator
+from openai import AsyncOpenAI, APITimeoutError
+from pydantic import BaseModel, Field
+
+from schemas import BugReportRequest
 
 from config import get_settings
 from logger import get_logger
 from prompt import PROMPT_VERSION, SYSTEM_PROMPT, build_user_message
 
-from database import SessionLocal
-from models import BugReport, Analysis, User
+from database import SessionLocal, check_database
+from models import BugReport, Analysis, User, BugPattern
 
 from schemas import UserCreate, UserResponse
 
@@ -25,9 +33,14 @@ from routes.auth import verify_token, hash_password
 from routes.auth import router as auth_router
 
 from redis_client import check_redis, get_redis_status
-from cache import (get_cached_analysis,set_cached_analysis,check_rate_limit
-)
+from cache import (get_cached_analysis, set_cached_analysis, check_rate_limit)
 
+
+from circuit_breaker import (
+    is_circuit_open,
+    record_failure,
+    record_success
+)
 
 logger = get_logger(__name__)
 settings = get_settings()
@@ -57,6 +70,32 @@ app = FastAPI(
 )
 
 
+@app.middleware("http")
+async def request_logging_middleware(request: Request, call_next):
+
+    start_time = time.time()
+    request_id = str(uuid.uuid4())
+    request.state.request_id = request_id
+
+    response = await call_next(request)
+
+    latency_ms = round((time.time() - start_time) * 1000, 2)
+
+    logger.info(
+        "request_completed | request_id=%s method=%s path=%s status_code=%s latency_ms=%s",
+        request_id,
+        request.method,
+        request.url.path,
+        response.status_code,
+        latency_ms,
+    )
+
+    record_request(response.status_code, latency_ms)
+    response.headers["X-Request-ID"] = request_id
+
+    return response
+
+
 app.include_router(auth_router)
 
 
@@ -78,26 +117,6 @@ class Severity(str, Enum):
     critical = "critical"
 
 
-class BugReportRequest(BaseModel):
-    description: str = Field(..., description="What happened, expected vs actual.")
-    stack_trace: str | None = Field(default=None, description="Optional error log.")
-    language: str | None = Field(default=None, description="e.g. 'Python/FastAPI'.")
-    severity: Severity | None = Field(default=None)
-
-    @field_validator("description")
-    @classmethod
-    def description_not_blank(cls, v: str) -> str:
-        cleaned = v.strip()
-        if not cleaned:
-            raise ValueError("description must not be empty or whitespace-only")
-        return cleaned
-
-    @field_validator("stack_trace")
-    @classmethod
-    def strip_stack_trace(cls, v: str | None) -> str | None:
-        return v.strip() or None if v else v
-
-
 class BugAnalysisResponse(BaseModel):
     bug_summary: str
     root_cause: str
@@ -107,11 +126,15 @@ class BugAnalysisResponse(BaseModel):
     confidence_score: int = Field(default=0, ge=0, le=100)
     evidence: list[str] = Field(default_factory=list)
     prompt_version: str = PROMPT_VERSION
+    source: str = "llm"  # "llm" | "pattern_match" | "cache" -- lets the
+                          # frontend show *how* an answer was produced
 
 
 class ErrorResponse(BaseModel):
     error: str
     detail: str
+    request_id: str | None = None
+    retryable: bool = False
 
 
 # ===== Service-layer exceptions =====
@@ -138,16 +161,16 @@ class AnalyzerQualityError(AnalyzerError):
     pass
 
 
-# ===== Quality guard =====
-#
-# Bug-9-style failures aren't JSON parsing errors -- the JSON is valid,
-# the schema matches, but the text inside the fields is incoherent
-# (long runs of unrelated words with no real grammar). This heuristic
-# catches that class of failure so we can retry instead of shipping
-# garbage to a user or to the eval script.
+class DatabaseUnavailableError(Exception):
+    pass
 
-# Common English function words. A coherent sentence has these
-# sprinkled throughout; a degenerate word-salad output largely lacks them.
+
+class CircuitOpenError(Exception):
+    pass
+
+
+# ===== Quality guard =====
+
 _COMMON_WORDS = {
     "the", "a", "an", "and", "or", "of", "to", "in", "is", "are", "was",
     "for", "on", "with", "this", "that", "it", "be", "as", "by", "at",
@@ -162,20 +185,12 @@ def _looks_like_gibberish(text: str) -> bool:
 
     words = re.findall(r"[A-Za-z']+", text)
     if len(words) < 6:
-        return False  # too short to judge, don't false-positive
+        return False
 
     lower_words = [w.lower() for w in words]
 
-    # 1. Coherent English text has a healthy share of short function words.
-    #    Word-salad output tends to be almost all "content" words strung together.
     common_ratio = sum(1 for w in lower_words if w in _COMMON_WORDS) / len(lower_words)
-
-    # 2. Degenerate output tends to have unusually long average word length
-    #    (rare/invented-sounding words) with few short connector words.
     avg_word_len = sum(len(w) for w in lower_words) / len(lower_words)
-
-    # 3. Degenerate output is often a huge run-on: very few sentence breaks
-    #    relative to length.
     sentence_breaks = len(re.findall(r"[.!?]", text))
     words_per_break = len(words) / max(sentence_breaks, 1)
 
@@ -204,18 +219,9 @@ def _validate_response_quality(result: "BugAnalysisResponse") -> None:
 # ===== Service layer =====
 
 def _coerce_model_output(data: dict) -> dict:
-    """
-    Small models sometimes produce JSON that's syntactically valid but
-    slightly off-schema in predictable ways -- e.g. confidence_score as a
-    range string like "40-69" instead of an int, or as a float. Rather than
-    hard-failing on these known quirks, normalize them here. Anything not
-    covered by these rules still fails validation as before.
-    """
     if "confidence_score" in data:
         score = data["confidence_score"]
         if isinstance(score, str):
-            # Handle "40-69" style ranges by taking the midpoint; handle
-            # plain numeric strings like "75" directly.
             numbers = re.findall(r"\d+", score)
             if numbers:
                 nums = [int(n) for n in numbers]
@@ -225,12 +231,10 @@ def _coerce_model_output(data: dict) -> dict:
         elif isinstance(score, float):
             data["confidence_score"] = int(round(score))
 
-    # Clamp into valid range rather than fail validation on an out-of-range int.
     if isinstance(data.get("confidence_score"), int):
         data["confidence_score"] = max(0, min(100, data["confidence_score"]))
 
     if "evidence" in data and isinstance(data["evidence"], str):
-        # Model occasionally returns a single string instead of a list.
         data["evidence"] = [data["evidence"]] if data["evidence"] else []
 
     if "investigation_steps" in data and isinstance(data["investigation_steps"], str):
@@ -264,7 +268,51 @@ def parse_model_output(raw_text: str) -> BugAnalysisResponse:
         ) from exc
 
 
-async def _call_model(bug: BugReportRequest, *, temperature: float) -> BugAnalysisResponse:
+def _response_from_pattern(pattern: BugPattern, bug: BugReportRequest) -> BugAnalysisResponse:
+    """
+    Builds an instant response straight from a verified BugPattern, no LLM
+    call involved. This is what makes "Quick fix" genuinely fast (and
+    free) for bugs we've already solved before.
+    """
+    confidence = calculate_confidence(
+        stack_trace=bug.stack_trace,
+        description=bug.description,
+        framework=bug.framework,
+        environment=bug.environment,
+        reproduction_steps=bug.reproduction_steps,
+        expected_behavior=bug.expected_behavior,
+        actual_behavior=bug.actual_behavior,
+        pattern_match=True,
+    )
+
+    return BugAnalysisResponse(
+        bug_summary=f"Matches known pattern: {pattern.error_type}",
+        root_cause=pattern.root_cause or "See matched pattern for details.",
+        investigation_steps=[
+            f"Confirm the symptom matches: {pattern.error_type}",
+            "Apply the fix below and check the reported behavior clears",
+            "Add a regression test so this doesn't silently return",
+        ],
+        fix_recommendation=pattern.common_fix or "Apply the standard fix for this pattern.",
+        prevention="Add a regression test covering this pattern; monitor for recurrence.",
+        confidence_score=confidence,
+        evidence=[f"Matched verified pattern: {pattern.error_type}"],
+        prompt_version=f"pattern-match:{pattern.id}",
+        source="pattern_match",
+    )
+
+
+async def _call_model(
+    bug: BugReportRequest,
+    *,
+    temperature: float,
+    pattern_hint: BugPattern | None = None,
+) -> BugAnalysisResponse:
+
+    if is_circuit_open():
+        logger.warning("Circuit breaker open. Skipping AI request.")
+        raise CircuitOpenError()
+
     client = AsyncOpenAI(
         api_key=settings.openrouter_api_key,
         base_url=settings.openrouter_base_url,
@@ -275,8 +323,15 @@ async def _call_model(bug: BugReportRequest, *, temperature: float) -> BugAnalys
     user_message = build_user_message(
         description=bug.description,
         language=bug.language,
-        severity=bug.severity.value if bug.severity else None,
+        severity=bug.severity if bug.severity else None,
         stack_trace=bug.stack_trace,
+        framework=bug.framework,
+        environment=bug.environment,
+        reproduction_steps=bug.reproduction_steps,
+        expected_behavior=bug.expected_behavior,
+        actual_behavior=bug.actual_behavior,
+        mode=bug.mode or "quick",
+        pattern_hint=pattern_hint,
     )
 
     try:
@@ -286,20 +341,18 @@ async def _call_model(bug: BugReportRequest, *, temperature: float) -> BugAnalys
                 {"role": "system", "content": SYSTEM_PROMPT},
                 {"role": "user", "content": user_message},
             ],
-            # Lower max_tokens: the JSON schema here needs a few hundred
-            # tokens at most. Giving the model room for 2000 tokens is what
-            # let low-signal inputs (e.g. vague/legacy-code descriptions)
-            # wander into degenerate, ungrounded text once it ran out of
-            # anything real to say.
             max_tokens=settings.model_max_tokens,
             temperature=temperature,
-            # Discourage repeating/rare-token runs, a common precursor to
-            # word-salad degeneration.
             frequency_penalty=settings.model_frequency_penalty,
             presence_penalty=settings.model_presence_penalty,
             response_format={"type": "json_object"},
         )
+    except APITimeoutError:
+        logger.exception("Analyzer request timed out")
+        raise AnalyzerTimeoutError()
+
     except Exception as exc:
+        record_failure()
         logger.exception("Analyzer call failed")
         raise AnalyzerUpstreamError(str(exc))
 
@@ -309,7 +362,25 @@ async def _call_model(bug: BugReportRequest, *, temperature: float) -> BugAnalys
         raise AnalyzerParsingError("Model returned an empty response.")
 
     result = parse_model_output(raw_text)
+
+    record_success()
+
     result.prompt_version = PROMPT_VERSION
+    result.source = "llm"
+
+    # The model's own confidence_score is self-reported and inconsistent
+    # across calls -- replace it with a score computed directly from what
+    # evidence was actually supplied, so it means the same thing every time.
+    result.confidence_score = calculate_confidence(
+        stack_trace=bug.stack_trace,
+        description=bug.description,
+        framework=bug.framework,
+        environment=bug.environment,
+        reproduction_steps=bug.reproduction_steps,
+        expected_behavior=bug.expected_behavior,
+        actual_behavior=bug.actual_behavior,
+        pattern_match=pattern_hint is not None,
+    )
 
     if not result.investigation_steps:
         result.investigation_steps = [
@@ -321,46 +392,39 @@ async def _call_model(bug: BugReportRequest, *, temperature: float) -> BugAnalys
     return result
 
 
-async def analyze_bug(bug: BugReportRequest) -> BugAnalysisResponse:
+async def analyze_bug(
+    bug: BugReportRequest,
+    pattern_hint: BugPattern | None = None,
+) -> BugAnalysisResponse:
     """
     Calls the model, with a quality guard: if the response passes JSON/schema
     validation but reads as incoherent word-salad, retry once at a lower
-    temperature before giving up. This is what prevents Bug-9-style output
-    from ever reaching a user or the eval script.
+    temperature before giving up.
     """
     last_error: Exception | None = None
 
-    # First attempt at normal temperature, one retry at a much lower
-    # (more conservative/deterministic) temperature if quality check fails.
     for attempt, temperature in enumerate(
         [settings.model_temperature, settings.model_temperature_retry]
     ):
         try:
-            result = await _call_model(bug, temperature=temperature)
+            result = await _call_model(bug, temperature=temperature, pattern_hint=pattern_hint)
             _validate_response_quality(result)
             return result
         except AnalyzerQualityError as exc:
-            logger.warning(
-                "Attempt %d produced low-quality output, retrying: %s",
-                attempt + 1, exc
-            )
+            logger.warning("Attempt %d produced low-quality output, retrying: %s", attempt + 1, exc)
             last_error = exc
             continue
         except AnalyzerParsingError as exc:
-            logger.warning(
-                "Attempt %d produced malformed/off-schema output, retrying: %s",
-                attempt + 1, exc
-            )
+            logger.warning("Attempt %d produced malformed/off-schema output, retrying: %s", attempt + 1, exc)
             last_error = exc
             continue
         except AnalyzerUpstreamError:
-            # Don't retry on upstream/network errors here; let the route
-            # handler's existing error handling deal with those as before.
+            raise
+        except AnalyzerTimeoutError:
+            raise
+        except CircuitOpenError:
             raise
 
-    # Both attempts failed (either quality check or schema validation).
-    # Fail loudly rather than silently shipping garbage or a malformed
-    # response -- this surfaces as a 502 the same way it did before.
     logger.error("Both generation attempts failed.")
     raise AnalyzerParsingError(
         "Model output failed validation after retry."
@@ -377,18 +441,7 @@ async def validation_error_handler(request: Request, exc: RequestValidationError
         content=ErrorResponse(
             error="validation_error",
             detail="Your request did not pass validation. Check 'description' length and types.",
-        ).model_dump(),
-    )
-
-
-@app.exception_handler(AnalyzerTimeoutError)
-async def analyzer_timeout_handler(request: Request, exc: AnalyzerTimeoutError):
-    logger.error("Analyzer timeout: %s", exc)
-    return JSONResponse(
-        status_code=status.HTTP_504_GATEWAY_TIMEOUT,
-        content=ErrorResponse(
-            error="analysis_timeout",
-            detail="The bug analysis took too long and timed out. Please try again.",
+            request_id=request.state.request_id,
         ).model_dump(),
     )
 
@@ -401,18 +454,20 @@ async def analyzer_upstream_handler(request: Request, exc: AnalyzerUpstreamError
         content=ErrorResponse(
             error="upstream_error",
             detail="The analysis provider returned an error. Please try again shortly.",
+            request_id=request.state.request_id,
         ).model_dump(),
     )
 
 
-@app.exception_handler(AnalyzerParsingError)
-async def analyzer_parsing_handler(request: Request, exc: AnalyzerParsingError):
-    logger.error("Analyzer parsing error: %s", exc)
+@app.exception_handler(AnalyzerTimeoutError)
+async def analyzer_timeout_handler(request: Request, exc: AnalyzerTimeoutError):
+    logger.error("Analyzer timeout: %s", exc)
     return JSONResponse(
-        status_code=status.HTTP_502_BAD_GATEWAY,
+        status_code=status.HTTP_504_GATEWAY_TIMEOUT,
         content=ErrorResponse(
-            error="malformed_analysis",
-            detail="The analysis result could not be parsed. Please try again.",
+            error="timeout",
+            detail="The analysis request timed out. Please try again.",
+            request_id=request.state.request_id,
         ).model_dump(),
     )
 
@@ -425,18 +480,51 @@ async def unhandled_exception_handler(request: Request, exc: Exception):
         content=ErrorResponse(
             error="internal_error",
             detail="Something went wrong on our end. Please try again.",
+            request_id=request.state.request_id,
         ).model_dump(),
     )
 
+
+@app.exception_handler(DatabaseUnavailableError)
+async def database_error_handler(request: Request, exc: DatabaseUnavailableError):
+    logger.error("Database unavailable: %s", exc)
+    return JSONResponse(
+        status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+        content=ErrorResponse(
+            error="database_unavailable",
+            detail="Database service is temporarily unavailable.",
+            request_id=request.state.request_id,
+            retryable=True,
+        ).model_dump(),
+    )
+
+
+@app.exception_handler(CircuitOpenError)
+async def circuit_open_handler(request: Request, exc: CircuitOpenError):
+    return JSONResponse(
+        status_code=503,
+        content=ErrorResponse(
+            error="service_unavailable",
+            detail="AI service temporarily unavailable. Please retry later.",
+            request_id=request.state.request_id,
+            retryable=True,
+        ).model_dump(),
+    )
+
+
 def save_bug_analysis(bug: BugReportRequest, result: BugAnalysisResponse):
-    db = SessionLocal()
+    try:
+        db = SessionLocal()
+    except Exception as e:
+        logger.exception("Database connection failed")
+        raise DatabaseUnavailableError("Database is currently unavailable") from e
 
     try:
         bug_report = BugReport(
             description=bug.description,
             stack_trace=bug.stack_trace,
             language=bug.language,
-            severity=bug.severity.value if bug.severity else None,
+            severity=bug.severity if bug.severity else None,
             status="open"
         )
 
@@ -451,7 +539,7 @@ def save_bug_analysis(bug: BugReportRequest, result: BugAnalysisResponse):
             reproduction_steps="\n".join(result.investigation_steps),
             suggested_fix=result.fix_recommendation,
             prompt_version=result.prompt_version,
-            model_used=settings.openrouter_model
+            model_used=settings.openrouter_model if result.source == "llm" else "pattern_match"
         )
 
         db.add(analysis)
@@ -459,25 +547,40 @@ def save_bug_analysis(bug: BugReportRequest, result: BugAnalysisResponse):
 
     except Exception as e:
         db.rollback()
-        logger.error("Database save failed: %s", e)
+        logger.exception("Database operation failed")
+        raise DatabaseUnavailableError("Database operation failed") from e
 
     finally:
         db.close()
+
 
 # ===== Routes =====
 
 @app.get("/health", tags=["meta"])
 async def health() -> dict:
+    redis_status = check_redis()
+    database_status = check_database()
+
     return {
-        "status": "ok",
+        "status": "healthy" if redis_status and database_status else "degraded",
         "service": settings.app_name,
-        "prompt_version": PROMPT_VERSION,
-        "redis": check_redis()
+        "dependencies": {
+            "redis": "up" if redis_status else "down",
+            "database": "up" if database_status else "down"
+        },
+        "prompt_version": PROMPT_VERSION
     }
+
 
 @app.get("/cache/stats", tags=["meta"])
 async def cache_stats():
     return get_redis_status()
+
+
+@app.get("/stats", tags=["meta"])
+async def stats():
+    return get_metrics()
+
 
 @app.post(
     "/analyze-bug",
@@ -485,6 +588,7 @@ async def cache_stats():
     responses={
         422: {"model": ErrorResponse, "description": "Invalid input"},
         502: {"model": ErrorResponse, "description": "Upstream/parsing failure"},
+        503: {"model": ErrorResponse, "description": "Database unavailable"},
         504: {"model": ErrorResponse, "description": "Analysis timed out"},
     },
     tags=["analysis"],
@@ -497,27 +601,41 @@ async def analyze_bug_endpoint(
     try:
         # ---- Rate limit check ----
         allowed = await check_rate_limit(current_user)
-
         if not allowed:
-            raise HTTPException(
-                status_code=429,
-                detail="Rate limit exceeded. Try again later."
-            )
+            raise HTTPException(status_code=429, detail="Rate limit exceeded. Try again later.")
 
         # ---- Cache check ----
         cached_result = get_cached_analysis(
             payload.description,
             payload.stack_trace,
             payload.language,
-            payload.severity.value if payload.severity else None,
+            payload.severity if payload.severity else None
         )
 
         if cached_result:
             logger.info("Returning cached analysis")
+            cached_result.setdefault("source", "cache")
             return BugAnalysisResponse(**cached_result)
 
-        # ---- Cache MISS: Call AI ----
-        result = await analyze_bug(payload)
+        # ---- Pattern match check ----
+        # Quick mode: a verified pattern match is used directly, skipping
+        # the LLM call entirely -- this is the actual speed advantage of
+        # "quick fix" over "full investigation".
+        # Full mode: a match is still looked up, but only as grounding
+        # context passed into the LLM prompt, not as a shortcut.
+        matched_pattern = find_matching_pattern(
+            payload.stack_trace or payload.description,
+            language=payload.language,
+            framework=payload.framework,
+        )
+
+        if matched_pattern and matched_pattern.is_verified and payload.mode == "quick":
+            result = _response_from_pattern(matched_pattern, payload)
+            record_pattern_usage(matched_pattern.id)
+        else:
+            if matched_pattern:
+                record_pattern_usage(matched_pattern.id)
+            result = await analyze_bug(payload, pattern_hint=matched_pattern)
 
         # ---- Save result into database ----
         save_bug_analysis(payload, result)
@@ -528,43 +646,19 @@ async def analyze_bug_endpoint(
             result.model_dump(),
             payload.stack_trace,
             payload.language,
-            payload.severity.value if payload.severity else None,
+            payload.severity if payload.severity else None,
         )
 
         return result
 
-    except AnalyzerParsingError as e:
-        logger.error("Parsing error: %s", e)
-
-        raise HTTPException(
-            status_code=502,
-            detail=str(e)
-        )
-
-    except AnalyzerUpstreamError as e:
-        logger.error("Upstream error: %s", e)
-
-        raise HTTPException(
-            status_code=502,
-            detail=str(e)
-        )
-
-    except AnalyzerTimeoutError as e:
-        logger.error("Timeout error: %s", e)
-
-        raise HTTPException(
-            status_code=504,
-            detail=str(e)
-        )
-
-    # Keep FastAPI HTTP errors (like rate limit 429) unchanged
+    except AnalyzerParsingError:
+        raise
+    except AnalyzerUpstreamError:
+        raise
+    except AnalyzerTimeoutError:
+        raise
     except HTTPException:
         raise
-
     except Exception as e:
         logger.exception("Unexpected error: %s", e)
-
-        raise HTTPException(
-            status_code=500,
-            detail="Something went wrong during analysis"
-        )
+        raise HTTPException(status_code=500, detail="Something went wrong during analysis")

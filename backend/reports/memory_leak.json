@@ -1,0 +1,24 @@
+{
+  "bug": "Memory leak causing application crash after 48+ hours",
+  "root_cause": [
+    "Objects are retained longer than necessary",
+    "Resources are not released properly",
+    "Large collections continue growing",
+    "Background tasks accumulate references"
+  ],
+  "investigation_steps": [
+    "Monitor memory usage over time",
+    "Profile heap allocations",
+    "Inspect unreleased resources",
+    "Review background tasks",
+    "Analyze object lifecycle"
+  ],
+  "recommended_fix": [
+    "Release unused resources",
+    "Close file and database connections",
+    "Limit cache growth",
+    "Optimize object lifecycle",
+    "Add memory monitoring"
+  ],
+  "confidence": "95%"
+}

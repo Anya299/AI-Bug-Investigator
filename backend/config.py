@@ -5,6 +5,8 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
+    database_url: str = "sqlite:///./bug_investigator.db"
+
     openrouter_api_key: str = ""
     openrouter_model: str = "meta-llama/llama-3.1-8b-instruct"
     openrouter_base_url: str = "https://openrouter.ai/api/v1"
@@ -25,6 +27,13 @@ class Settings(BaseSettings):
     max_description_length: int = 6000
     min_description_length: int = 15
     max_retries: int = 2
+
+    # JWT signing secret. MUST be overridden via .env in any real
+    # deployment -- this default only exists so local dev doesn't crash on
+    # a missing value. is_production below checks for this and warns loudly
+    # if it's still set at startup.
+    secret_key: str = "dev-only-insecure-default-change-me"
+    jwt_algorithm: str = "HS256"
 
     # Dev-friendly default (24 hours) so repeated local testing sessions
     # don't keep hitting token expiry. Set this lower (e.g. 60) via .env
@@ -61,6 +70,10 @@ class Settings(BaseSettings):
         small_model_markers = ["8b", "7b", "3b", "1b", "mini", "haiku", "small"]
         model_lower = self.openrouter_model.lower()
         return any(marker in model_lower for marker in small_model_markers)
+
+    @property
+    def has_insecure_secret_key(self) -> bool:
+        return self.secret_key == "dev-only-insecure-default-change-me"
 
 
 @lru_cache

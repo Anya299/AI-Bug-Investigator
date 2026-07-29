@@ -13,42 +13,33 @@ def calculate_metrics():
         print("❌ evaluation_results.json not found")
         return
 
-
     total_cases = len(results)
 
     if total_cases == 0:
         print("❌ No evaluation data found")
         return
 
+    scored_results = [r for r in results if r.get("score_percent") is not None]
+    failed_results = [r for r in results if r.get("score_percent") is None]
 
-    total_score = 0
-    passed_cases = 0
+    if not scored_results:
+        print("❌ No test cases produced a scored response — every call failed before scoring.")
+        print(f"   {len(failed_results)}/{total_cases} failed. Check 'error'/'status_code' fields in {RESULT_FILE}.")
+        return
 
+    total_score = sum(r["score_percent"] for r in scored_results)
+    passed_cases = sum(1 for r in scored_results if r["score_percent"] >= 50)
 
-    for item in results:
-
-        # Supports different key names
-        score = (
-            item.get("score")
-            or item.get("accuracy")
-            or item.get("evaluation_score")
-            or 0
-        )
-
-        total_score += score
-
-        if score >= 50:
-            passed_cases += 1
-
-
-    average_score = total_score / total_cases
-    accuracy = (passed_cases / total_cases) * 100
-
+    average_score = total_score / len(scored_results)
+    accuracy = (passed_cases / len(scored_results)) * 100
 
     print("\n========== AI Bug Investigator Evaluation ==========")
 
     print(f"Total Test Cases: {total_cases}")
-    print(f"Passed Cases: {passed_cases}")
+    print(f"Scored Cases: {len(scored_results)}")
+    if failed_results:
+        print(f"Failed (unscored) Cases: {len(failed_results)}  <-- excluded from accuracy/average below")
+    print(f"Passed Cases (score >= 50): {passed_cases}")
 
     print(f"Accuracy: {accuracy:.2f}%")
     print(f"Average Score: {average_score:.2f}/100")
@@ -57,7 +48,7 @@ def calculate_metrics():
     print("meta-llama/llama-3.1-8b-instruct")
 
     print("\nPrompt Version:")
-    print("2.5.1")
+    print("2.6.0")
 
     print("\n====================================================")
 

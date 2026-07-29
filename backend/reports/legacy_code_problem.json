@@ -1,0 +1,22 @@
+{
+  "bug": "Old undocumented code causing unexpected failure",
+  "root_cause": [
+    "Technical debt",
+    "Hidden assumptions",
+    "Unknown architecture",
+    "Missing documentation"
+  ],
+  "investigation_steps": [
+    "Trace execution flow",
+    "Review module dependencies",
+    "Add logging",
+    "Create regression tests"
+  ],
+  "recommended_fix": [
+    "Refactor incrementally",
+    "Document the codebase",
+    "Reduce tight coupling",
+    "Add automated tests"
+  ],
+  "confidence": "92%"
+}

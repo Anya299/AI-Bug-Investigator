@@ -23,8 +23,10 @@ SIMILARITY_THRESHOLD = 0.15  # TF-IDF similarities run lower than embedding
 
 API_URL = "http://127.0.0.1:8000/analyze-bug"
 
-# Paste your JWT access token here
-TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJiaG9vbWlAdGVzdC5jb20iLCJleHAiOjE3ODUwNjQ2NTh9.MTwpz4trPb3Hm6uqSsjVi6QGat_nF5vMrWVwQVlSSg0"
+# Paste your JWT access token here. It expires (access_token_expire_minutes
+# in config.py) -- if every bug in a run comes back 401, this is stale,
+# get a fresh one from /auth/login before re-running.
+TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJiaG9vbWlAdGVzdC5jb20iLCJleHAiOjE3ODUzOTI2NDd9.fJTAwxQFvIqwqInwnmLC_SU1yX7SPUaPUL73PSLGcYM"
 HEADERS = {
     "Authorization": f"Bearer {TOKEN}"
 }
@@ -91,16 +93,22 @@ def run_evaluation():
 
     total_possible = 0
     total_earned = 0
+    failed_calls = 0
 
     for bug in dataset:
         print(f"Testing Bug {bug['id']}: {bug['title']}")
 
         payload = {
             "description": bug["bug_input"],
-            "stack_trace": "",
             "language": "Unknown",
-            "severity": "high"
+            "severity": "high",
+            "mode": "full",  # evaluation should always run the full analysis,
+                              # not risk an instant pattern-match shortcut
         }
+        # stack_trace is optional now -- only send it if the dataset actually
+        # provides one, instead of forcing an empty string through.
+        if bug.get("stack_trace"):
+            payload["stack_trace"] = bug["stack_trace"]
 
         response = requests.post(
             API_URL,
@@ -126,6 +134,7 @@ def run_evaluation():
 
             total_score = root_score + fix_score
             possible_score = len(bug["expected_root_causes"]) + len(bug["expected_fix"])
+            score_percent = (total_score / possible_score * 100) if possible_score > 0 else 0.0
 
             total_earned += total_score
             total_possible += possible_score
@@ -137,16 +146,20 @@ def run_evaluation():
                 "fix_score": fix_score,
                 "total_score": total_score,
                 "possible_score": possible_score,
+                "score_percent": round(score_percent, 2),  # <-- what evaluation_metrics.py reads
                 "root_match_details": root_details,
                 "fix_match_details": fix_details,
                 "ai_output": ai_result
             })
 
         else:
+            failed_calls += 1
             results.append({
                 "id": bug["id"],
                 "title": bug["title"],
-                "error": response.text
+                "error": response.text,
+                "status_code": response.status_code,
+                "score_percent": None,  # explicitly "not scored", not "scored zero"
             })
 
     with open("evaluation_results.json", "w") as file:
@@ -158,6 +171,8 @@ def run_evaluation():
     print("Results saved: evaluation_results.json")
     print(f"Total Score: {total_earned}/{total_possible}")
     print(f"Accuracy: {accuracy:.1f}%")
+    if failed_calls:
+        print(f"⚠ {failed_calls}/{len(dataset)} bugs failed to get a scored response (see 'error' fields) — excluded from accuracy above.")
     print(f"\n(Similarity threshold used: {SIMILARITY_THRESHOLD} \u2014 tune in the script if scores look too strict/lenient)")
 
 

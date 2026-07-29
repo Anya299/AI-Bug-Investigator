@@ -1,0 +1,22 @@
+{
+  "bug": "Stack trace points to the wrong file",
+  "root_cause": [
+    "Indirect exception propagation",
+    "Wrapped exceptions",
+    "Async execution flow",
+    "Misleading error location"
+  ],
+  "investigation_steps": [
+    "Trace the complete call chain",
+    "Enable detailed logging",
+    "Inspect exception handling",
+    "Review async boundaries"
+  ],
+  "recommended_fix": [
+    "Preserve original exceptions",
+    "Improve structured logging",
+    "Avoid swallowing errors",
+    "Add contextual error messages"
+  ],
+  "confidence": "91%"
+}

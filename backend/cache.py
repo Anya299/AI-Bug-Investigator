@@ -94,7 +94,7 @@ def set_cached_analysis(
         # A failed cache write should not fail the request -- the user
         # still gets their analysis, it just won't be cached this time.
         logger.error("Redis cache SET failed (key=%s): %s", key, e)
-async def check_rate_limit(user_id: str, limit: int = 10):
+async def check_rate_limit(user_id: str, limit: int = 100):
     key = f"rate_limit:{user_id}"
 
     current = redis_client.get(key)
