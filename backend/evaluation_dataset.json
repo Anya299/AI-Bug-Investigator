@@ -4,16 +4,25 @@
     "title": "Memory leak causing application crash after 48+ hours",
     "category": "Hard-to-Reproduce Bugs",
     "bug_input": "Memory leak causing application crash after 48+ hours",
+
     "expected_root_causes": [
       "memory leak",
       "unused resources",
       "memory allocation issue"
     ],
+
     "expected_fix": [
       "profile memory usage",
       "release unused resources",
       "add memory monitoring"
     ],
+
+    "expected_evidence": [
+      "application crashes after 48 hours",
+      "memory usage increases over time",
+      "unreleased resources detected"
+    ],
+
     "source": "Reddit"
   },
   {

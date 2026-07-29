@@ -12,7 +12,7 @@ from enum import Enum
 from fastapi import FastAPI, Request, status, Depends, HTTPException
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, StreamingResponse
 
 from openai import AsyncOpenAI, APITimeoutError
 from pydantic import BaseModel, Field
@@ -662,3 +662,30 @@ async def analyze_bug_endpoint(
     except Exception as e:
         logger.exception("Unexpected error: %s", e)
         raise HTTPException(status_code=500, detail="Something went wrong during analysis")
+
+
+# ===== Streaming Analysis Endpoint =====
+
+@app.post("/analyze-bug-stream", tags=["analysis"])
+async def analyze_bug_stream(
+    payload: BugReportRequest,
+    current_user: str = Depends(verify_token)
+):
+
+    async def event_generator():
+
+        yield "data: Checking cache...\n\n"
+
+        yield "data: Matching known bug patterns...\n\n"
+
+        yield "data: Running investigation...\n\n"
+
+        result = await analyze_bug(payload)
+
+        yield f"data: {json.dumps(result.model_dump())}\n\n"
+
+
+    return StreamingResponse(
+        event_generator(),
+        media_type="text/event-stream"
+    )

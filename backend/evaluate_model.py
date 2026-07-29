@@ -1,5 +1,6 @@
 import json
 import requests
+import time
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
@@ -88,93 +89,127 @@ def calculate_score_tfidf(ai_response, expected_keywords):
 
 
 def run_evaluation():
+
     dataset = load_dataset()
-    results = []
+    comparison_results = []
 
     total_possible = 0
     total_earned = 0
     failed_calls = 0
 
     for bug in dataset:
+
         print(f"Testing Bug {bug['id']}: {bug['title']}")
+
+        bug_result = {
+            "id": bug["id"],
+            "title": bug["title"],
+            "quick": {},
+            "full": {}
+        }
 
         payload = {
             "description": bug["bug_input"],
             "language": "Unknown",
-            "severity": "high",
-            "mode": "full",  # evaluation should always run the full analysis,
-                              # not risk an instant pattern-match shortcut
+            "severity": "high"
         }
-        # stack_trace is optional now -- only send it if the dataset actually
-        # provides one, instead of forcing an empty string through.
+
         if bug.get("stack_trace"):
             payload["stack_trace"] = bug["stack_trace"]
 
-        response = requests.post(
-            API_URL,
-            json=payload,
-            headers=HEADERS
-        )
+        for mode in ["quick", "full"]:
 
-        print(response.status_code)
-        print(response.text)
+            payload["mode"] = mode
 
-        if response.status_code == 200:
-            ai_result = response.json()
+            start_time = time.time()
 
-            root_score, root_details = calculate_score_tfidf(
-                ai_result,
-                bug["expected_root_causes"]
+            response = requests.post(
+                API_URL,
+                json=payload,
+                headers=HEADERS
             )
 
-            fix_score, fix_details = calculate_score_tfidf(
-                ai_result,
-                bug["expected_fix"]
+            time.sleep(2)
+
+            latency_ms = round(
+                (time.time() - start_time) * 1000,
+                2
             )
 
-            total_score = root_score + fix_score
-            possible_score = len(bug["expected_root_causes"]) + len(bug["expected_fix"])
-            score_percent = (total_score / possible_score * 100) if possible_score > 0 else 0.0
+            if response.status_code == 200:
 
-            total_earned += total_score
-            total_possible += possible_score
+                ai_result = response.json()
 
-            results.append({
-                "id": bug["id"],
-                "title": bug["title"],
-                "root_score": root_score,
-                "fix_score": fix_score,
-                "total_score": total_score,
-                "possible_score": possible_score,
-                "score_percent": round(score_percent, 2),  # <-- what evaluation_metrics.py reads
-                "root_match_details": root_details,
-                "fix_match_details": fix_details,
-                "ai_output": ai_result
-            })
+                root_score, _ = calculate_score_tfidf(
+                    ai_result,
+                    bug["expected_root_causes"]
+                )
 
-        else:
-            failed_calls += 1
-            results.append({
-                "id": bug["id"],
-                "title": bug["title"],
-                "error": response.text,
-                "status_code": response.status_code,
-                "score_percent": None,  # explicitly "not scored", not "scored zero"
-            })
+                fix_score, _ = calculate_score_tfidf(
+                    ai_result,
+                    bug["expected_fix"]
+                )
+
+                bug_result[mode] = {
+                    "root_score": root_score,
+                    "fix_score": fix_score,
+                    "total_score": root_score + fix_score,
+                    "latency_ms": latency_ms
+                }
+
+                total_earned += root_score + fix_score
+
+                total_possible += (
+                    len(bug["expected_root_causes"])
+                    +
+                    len(bug["expected_fix"])
+                )
+
+                print(
+                    f"{bug['title']} | {mode} | {latency_ms} ms"
+                )
+
+            else:
+                failed_calls += 1
+
+                bug_result[mode] = {
+                    "error": response.text,
+                    "status_code": response.status_code,
+                    "latency_ms": latency_ms
+                }
+
+                print(
+                    f"Failed: {bug['title']} | {mode} | {response.status_code}"
+                )
+
+        comparison_results.append(bug_result)
+
 
     with open("evaluation_results.json", "w") as file:
-        json.dump(results, file, indent=4)
+        json.dump(comparison_results, file, indent=4)
 
-    accuracy = (total_earned / total_possible) * 100 if total_possible > 0 else 0
 
-    print("\nEvaluation Completed \u2705")
+    accuracy = (
+        (total_earned / total_possible) * 100
+        if total_possible > 0
+        else 0
+    )
+
+    print("\nEvaluation Completed ✅")
     print("Results saved: evaluation_results.json")
     print(f"Total Score: {total_earned}/{total_possible}")
     print(f"Accuracy: {accuracy:.1f}%")
+
     if failed_calls:
-        print(f"⚠ {failed_calls}/{len(dataset)} bugs failed to get a scored response (see 'error' fields) — excluded from accuracy above.")
-    print(f"\n(Similarity threshold used: {SIMILARITY_THRESHOLD} \u2014 tune in the script if scores look too strict/lenient)")
+        print(
+            f"⚠ {failed_calls} API calls failed"
+        )
+
+    print(
+        f"\n(Similarity threshold used: {SIMILARITY_THRESHOLD})"
+    )
 
 
 if __name__ == "__main__":
     run_evaluation()
+

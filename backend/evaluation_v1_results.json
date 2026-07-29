@@ -1,0 +1,317 @@
+[
+    {
+        "id": 1,
+        "title": "Memory leak causing application crash after 48+ hours",
+        "quick": {
+            "root_score": 3,
+            "fix_score": 3,
+            "total_score": 6,
+            "latency_ms": 15.68
+        },
+        "full": {
+            "root_score": 3,
+            "fix_score": 3,
+            "total_score": 6,
+            "latency_ms": 9.72
+        }
+    },
+    {
+        "id": 2,
+        "title": "Race condition causing random failure",
+        "quick": {
+            "root_score": 2,
+            "fix_score": 2,
+            "total_score": 4,
+            "latency_ms": 17.26
+        },
+        "full": {
+            "root_score": 2,
+            "fix_score": 2,
+            "total_score": 4,
+            "latency_ms": 33.98
+        }
+    },
+    {
+        "id": 3,
+        "title": "Hidden trailing whitespace causing code failure",
+        "quick": {
+            "root_score": 1,
+            "fix_score": 3,
+            "total_score": 4,
+            "latency_ms": 39.68
+        },
+        "full": {
+            "root_score": 1,
+            "fix_score": 3,
+            "total_score": 4,
+            "latency_ms": 48.39
+        }
+    },
+    {
+        "id": 4,
+        "title": "CSS overflow issue causing unexpected layout problem",
+        "quick": {
+            "root_score": 2,
+            "fix_score": 1,
+            "total_score": 3,
+            "latency_ms": 32.14
+        },
+        "full": {
+            "root_score": 2,
+            "fix_score": 1,
+            "total_score": 3,
+            "latency_ms": 30.09
+        }
+    },
+    {
+        "id": 5,
+        "title": "Debugger showing different behavior from compiler",
+        "quick": {
+            "root_score": 3,
+            "fix_score": 1,
+            "total_score": 4,
+            "latency_ms": 22.45
+        },
+        "full": {
+            "root_score": 3,
+            "fix_score": 1,
+            "total_score": 4,
+            "latency_ms": 22.48
+        }
+    },
+    {
+        "id": 6,
+        "title": "Confusing stack trace pointing wrong direction",
+        "quick": {
+            "root_score": 2,
+            "fix_score": 1,
+            "total_score": 3,
+            "latency_ms": 22.92
+        },
+        "full": {
+            "root_score": 2,
+            "fix_score": 1,
+            "total_score": 3,
+            "latency_ms": 21.79
+        }
+    },
+    {
+        "id": 7,
+        "title": "Package version conflict breaking application",
+        "quick": {
+            "root_score": 3,
+            "fix_score": 3,
+            "total_score": 6,
+            "latency_ms": 24.21
+        },
+        "full": {
+            "root_score": 3,
+            "fix_score": 3,
+            "total_score": 6,
+            "latency_ms": 30.81
+        }
+    },
+    {
+        "id": 8,
+        "title": "DLL mismatch causing application failure",
+        "quick": {
+            "root_score": 1,
+            "fix_score": 2,
+            "total_score": 3,
+            "latency_ms": 28.81
+        },
+        "full": {
+            "root_score": 1,
+            "fix_score": 2,
+            "total_score": 3,
+            "latency_ms": 14.74
+        }
+    },
+    {
+        "id": 9,
+        "title": "Old undocumented code causing issue",
+        "quick": {
+            "root_score": 3,
+            "fix_score": 2,
+            "total_score": 5,
+            "latency_ms": 14.05
+        },
+        "full": {
+            "root_score": 3,
+            "fix_score": 2,
+            "total_score": 5,
+            "latency_ms": 18.76
+        }
+    },
+    {
+        "id": 10,
+        "title": "20-year-old software bug",
+        "quick": {
+            "root_score": 1,
+            "fix_score": 0,
+            "total_score": 1,
+            "latency_ms": 14.51
+        },
+        "full": {
+            "root_score": 1,
+            "fix_score": 0,
+            "total_score": 1,
+            "latency_ms": 15.7
+        }
+    },
+    {
+        "id": 11,
+        "title": "Database connection failure",
+        "quick": {
+            "root_score": 3,
+            "fix_score": 3,
+            "total_score": 6,
+            "latency_ms": 11.14
+        },
+        "full": {
+            "root_score": 3,
+            "fix_score": 3,
+            "total_score": 6,
+            "latency_ms": 24.93
+        }
+    },
+    {
+        "id": 12,
+        "title": "JWT authentication failure",
+        "quick": {
+            "root_score": 3,
+            "fix_score": 2,
+            "total_score": 5,
+            "latency_ms": 18.44
+        },
+        "full": {
+            "root_score": 3,
+            "fix_score": 2,
+            "total_score": 5,
+            "latency_ms": 17.32
+        }
+    },
+    {
+        "id": 13,
+        "title": "API timeout error",
+        "quick": {
+            "root_score": 2,
+            "fix_score": 1,
+            "total_score": 3,
+            "latency_ms": 17.78
+        },
+        "full": {
+            "root_score": 2,
+            "fix_score": 1,
+            "total_score": 3,
+            "latency_ms": 14.72
+        }
+    },
+    {
+        "id": 14,
+        "title": "Environment variable missing",
+        "quick": {
+            "root_score": 2,
+            "fix_score": 1,
+            "total_score": 3,
+            "latency_ms": 21.68
+        },
+        "full": {
+            "root_score": 2,
+            "fix_score": 1,
+            "total_score": 3,
+            "latency_ms": 22.66
+        }
+    },
+    {
+        "id": 15,
+        "title": "Async await error",
+        "quick": {
+            "root_score": 3,
+            "fix_score": 3,
+            "total_score": 6,
+            "latency_ms": 18.4
+        },
+        "full": {
+            "root_score": 3,
+            "fix_score": 3,
+            "total_score": 6,
+            "latency_ms": 10.24
+        }
+    },
+    {
+        "id": 16,
+        "title": "Pydantic validation failure",
+        "quick": {
+            "root_score": 2,
+            "fix_score": 1,
+            "total_score": 3,
+            "latency_ms": 16.56
+        },
+        "full": {
+            "root_score": 2,
+            "fix_score": 1,
+            "total_score": 3,
+            "latency_ms": 12.24
+        }
+    },
+    {
+        "id": 17,
+        "title": "Docker build failure",
+        "quick": {
+            "root_score": 3,
+            "fix_score": 1,
+            "total_score": 4,
+            "latency_ms": 41.33
+        },
+        "full": {
+            "root_score": 3,
+            "fix_score": 1,
+            "total_score": 4,
+            "latency_ms": 20.68
+        }
+    },
+    {
+        "id": 18,
+        "title": "React state not updating",
+        "quick": {
+            "root_score": 3,
+            "fix_score": 2,
+            "total_score": 5,
+            "latency_ms": 50.87
+        },
+        "full": {
+            "error": "{\"detail\":\"Rate limit exceeded. Try again later.\"}",
+            "status_code": 429,
+            "latency_ms": 43.35
+        }
+    },
+    {
+        "id": 19,
+        "title": "OpenAI API authentication failure",
+        "quick": {
+            "error": "{\"detail\":\"Rate limit exceeded. Try again later.\"}",
+            "status_code": 429,
+            "latency_ms": 17.85
+        },
+        "full": {
+            "error": "{\"detail\":\"Rate limit exceeded. Try again later.\"}",
+            "status_code": 429,
+            "latency_ms": 26.46
+        }
+    },
+    {
+        "id": 20,
+        "title": "Unknown bug pattern not found in knowledge base",
+        "quick": {
+            "error": "{\"detail\":\"Rate limit exceeded. Try again later.\"}",
+            "status_code": 429,
+            "latency_ms": 19.2
+        },
+        "full": {
+            "error": "{\"detail\":\"Rate limit exceeded. Try again later.\"}",
+            "status_code": 429,
+            "latency_ms": 15.16
+        }
+    }
+]
