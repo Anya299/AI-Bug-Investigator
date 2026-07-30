@@ -50,6 +50,9 @@ def get_cached_analysis(
     language: str | None = None,
     severity: str | None = None,
 ) -> dict | None:
+    if redis_client is None:
+        return None  # Redis disabled/unavailable -- always a cache miss
+
     key = generate_cache_key(description, stack_trace, language, severity)
 
     try:
@@ -81,6 +84,9 @@ def set_cached_analysis(
     language: str | None = None,
     severity: str | None = None,
 ) -> None:
+    if redis_client is None:
+        return  # Redis disabled/unavailable -- silently skip caching
+
     key = generate_cache_key(description, stack_trace, language, severity)
 
     try:
@@ -94,19 +100,34 @@ def set_cached_analysis(
         # A failed cache write should not fail the request -- the user
         # still gets their analysis, it just won't be cached this time.
         logger.error("Redis cache SET failed (key=%s): %s", key, e)
-async def check_rate_limit(user_id: str, limit: int = 100):
+
+
+async def check_rate_limit(user_id: str, limit: int = 100) -> bool:
+    """
+    Fail-open by design: if Redis is disabled or unreachable, rate limiting
+    is simply not enforced rather than blocking every request. Every other
+    Redis-touching function in this file already treats a Redis outage as
+    "skip the feature, don't break the request" -- this one previously
+    didn't, which meant a disabled/down Redis took the entire API down via
+    an unhandled AttributeError on the very first check of every request.
+    """
+    if redis_client is None:
+        return True
+
     key = f"rate_limit:{user_id}"
 
-    current = redis_client.get(key)
+    try:
+        current = redis_client.get(key)
 
-    if current and int(current) >= limit:
-        return False
+        if current and int(current) >= limit:
+            return False
 
-    pipe = redis_client.pipeline()
+        pipe = redis_client.pipeline()
+        pipe.incr(key)
+        pipe.expire(key, 3600)
+        pipe.execute()
 
-    pipe.incr(key)
-    pipe.expire(key, 3600)
-
-    pipe.execute()
-
-    return True
+        return True
+    except Exception as e:
+        logger.error("Redis rate-limit check failed for user=%s: %s", user_id, e)
+        return True
