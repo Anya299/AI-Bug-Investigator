@@ -74,6 +74,7 @@ export default function BugForm({ apiBaseUrl = "", authToken = "" }) {
   const [mode, setMode] = useState("quick"); // "quick" | "full"
   const [showDetails, setShowDetails] = useState(false);
   const [status, setStatus] = useState("idle"); // idle | loading | success | error
+  const [isWakingUp, setIsWakingUp] = useState(false);
   const [result, setResult] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
   const [elapsedMs, setElapsedMs] = useState(null);
@@ -95,6 +96,13 @@ export default function BugForm({ apiBaseUrl = "", authToken = "" }) {
     if (!isValid) return;
 
     setStatus("loading");
+    setIsWakingUp(false);
+
+    const wakeTimer = setTimeout(() => {
+      setIsWakingUp(true);
+    }, 4000);
+
+
     setErrorMessage("");
     setResult(null);
     setCopied(false);
@@ -130,11 +138,18 @@ export default function BugForm({ apiBaseUrl = "", authToken = "" }) {
 
       const finalResult = await res.json();
 
+      clearTimeout(wakeTimer);
+      setIsWakingUp(false);
+
       setElapsedMs(Math.round(performance.now() - startTimeRef.current));
             setResult(finalResult);
             setStatus("success");
 
     } catch (err) {
+
+      clearTimeout(wakeTimer);
+      setIsWakingUp(false);
+
       setErrorMessage(err.message || "Something went wrong. Try again.");
       setStatus("error");
     }
@@ -244,6 +259,19 @@ export default function BugForm({ apiBaseUrl = "", authToken = "" }) {
             ? mode === "quick" ? "Fixing…" : "Investigating…"
             : mode === "quick" ? "Get instant fix" : "Run full investigation"}
         </button>
+
+        {status === "loading" && isWakingUp && (
+          <div className="rounded-md border border-cyan/30 bg-cyan/10 p-4">
+            <p className="font-mono text-sm text-cyan">
+              🚀 Warming up the analysis engine...
+           </p>
+
+            <p className="mt-2 text-xs text-textSecondary">
+              This is the first request, so the AI service may take 30–60 seconds to start.
+              Once it's awake, future analyses will be much faster.
+           </p>
+         </div>
+       )}
 
         {status === "error" && <p className="text-sm text-redAccent">{errorMessage}</p>}
       </form>
