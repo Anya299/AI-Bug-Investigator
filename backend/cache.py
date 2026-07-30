@@ -18,19 +18,24 @@ def generate_cache_key(
     stack_trace: str | None = None,
     language: str | None = None,
     severity: str | None = None,
+    mode: str | None = None,
 ) -> str:
     """
     Creates a deterministic Redis key from the FULL bug request, not just
     the description. Two requests with the same description but different
-    stack traces, languages, or severities are treated as different bugs
-    and get different cache entries -- otherwise we'd return a cached
-    analysis that doesn't match the actual context of the new request.
+    stack traces, languages, severities, or MODE are treated as different
+    bugs and get different cache entries -- otherwise "quick" and "full"
+    requests for the same bug collide on the same key, and whichever mode
+    ran first gets served back for the other mode too. (This is exactly
+    what was happening before mode was added here: every "full" request
+    was silently returning the previously-cached "quick" answer.)
     """
     normalized_parts = [
         (description or "").strip().lower(),
         (stack_trace or "").strip().lower(),
         (language or "").strip().lower(),
         (severity or "").strip().lower(),
+        (mode or "").strip().lower(),
     ]
 
     # Delimiter between fields so "desc=ab" + "trace=c" can't collide with
@@ -49,11 +54,12 @@ def get_cached_analysis(
     stack_trace: str | None = None,
     language: str | None = None,
     severity: str | None = None,
+    mode: str | None = None,
 ) -> dict | None:
     if redis_client is None:
         return None  # Redis disabled/unavailable -- always a cache miss
 
-    key = generate_cache_key(description, stack_trace, language, severity)
+    key = generate_cache_key(description, stack_trace, language, severity, mode)
 
     try:
         cached = redis_client.get(key)
@@ -83,11 +89,12 @@ def set_cached_analysis(
     stack_trace: str | None = None,
     language: str | None = None,
     severity: str | None = None,
+    mode: str | None = None,
 ) -> None:
     if redis_client is None:
         return  # Redis disabled/unavailable -- silently skip caching
 
-    key = generate_cache_key(description, stack_trace, language, severity)
+    key = generate_cache_key(description, stack_trace, language, severity, mode)
 
     try:
         redis_client.setex(
@@ -102,7 +109,7 @@ def set_cached_analysis(
         logger.error("Redis cache SET failed (key=%s): %s", key, e)
 
 
-async def check_rate_limit(user_id: str, limit: int = 100) -> bool:
+async def check_rate_limit(user_id: str, limit: int | None = None) -> bool:
     """
     Fail-open by design: if Redis is disabled or unreachable, rate limiting
     is simply not enforced rather than blocking every request. Every other
@@ -111,6 +118,9 @@ async def check_rate_limit(user_id: str, limit: int = 100) -> bool:
     didn't, which meant a disabled/down Redis took the entire API down via
     an unhandled AttributeError on the very first check of every request.
     """
+    if limit is None:
+        limit = settings.rate_limit_per_hour
+
     if redis_client is None:
         return True
 

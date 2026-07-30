@@ -22,15 +22,20 @@ SIMILARITY_THRESHOLD = 0.15  # TF-IDF similarities run lower than embedding
                               # similarities since it's pure word overlap.
                               # Tune this after eyeballing a few results.
 
-API_URL = "http://127.0.0.1:8000/analyze-bug"
+API_URL = "https://ai-bug-investigator-9.onrender.com/analyze-bug"
 
 # Paste your JWT access token here. It expires (access_token_expire_minutes
 # in config.py) -- if every bug in a run comes back 401, this is stale,
 # get a fresh one from /auth/login before re-running.
-TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJiaG9vbWlAdGVzdC5jb20iLCJleHAiOjE3ODU0NTg5Mjh9.q-u6deHrWW9Ruaa9SvpRGAsuBsDEejqCsKUz8JiP5_A"
+TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJyYXlhcmlkYXJlQHRlc3QuY29tIiwiZXhwIjoxNzg1NDY0NTMwfQ.a0rS_B0y13WxJw_21NmDygU8OfQMZY56rJHb4rvhiLQ"
 HEADERS = {
-    "Authorization": f"Bearer {TOKEN}"
+    "Authorization": f"Bearer {TOKEN}",
+    "Content-Type": "application/json"
 }
+
+# Small pause between calls -- gentle on a free-tier instance/rate limiter,
+# and avoids hammering the same OpenRouter model back-to-back.
+DELAY_BETWEEN_CALLS_SECONDS = 2
 
 
 def load_dataset():
@@ -56,19 +61,17 @@ def calculate_score_tfidf(ai_response, expected_keywords):
     if not chunks:
         chunks = [response_text]
 
-    # Fit TF-IDF over (chunks + keywords) together so they share a vocabulary space
     corpus = chunks + expected_keywords
     try:
         vectorizer = TfidfVectorizer(stop_words="english")
         tfidf_matrix = vectorizer.fit_transform(corpus)
     except ValueError:
-        # Happens if corpus is all stopwords / empty after stripping
         return 0, [{"keyword": k, "matched": False, "similarity": 0.0, "best_matching_text": ""} for k in expected_keywords]
 
     chunk_vectors = tfidf_matrix[:len(chunks)]
     keyword_vectors = tfidf_matrix[len(chunks):]
 
-    sims = cosine_similarity(keyword_vectors, chunk_vectors)  # [num_keywords, num_chunks]
+    sims = cosine_similarity(keyword_vectors, chunk_vectors)
 
     score = 0
     match_details = []
@@ -88,13 +91,33 @@ def calculate_score_tfidf(ai_response, expected_keywords):
     return score, match_details
 
 
+def call_api_with_one_retry(payload):
+    """
+    Makes ONE request; on failure, waits, then retries ONCE. The retry only
+    fires when the first attempt actually raised an exception -- unlike the
+    previous version, a successful first call never triggers a second one.
+    Returns (response_or_none, error_or_none).
+    """
+    try:
+        return requests.post(API_URL, json=payload, headers=HEADERS, timeout=120), None
+    except requests.exceptions.RequestException as e:
+        print(f"Request failed, retrying once in 5s: {e}")
+        time.sleep(5)
+
+    try:
+        return requests.post(API_URL, json=payload, headers=HEADERS, timeout=120), None
+    except requests.exceptions.RequestException as e:
+        print(f"Retry failed: {e}")
+        return None, e
+
+
 def run_evaluation():
 
     dataset = load_dataset()
     comparison_results = []
 
-    total_possible = 0
-    total_earned = 0
+    overall_earned = 0
+    overall_possible = 0
     failed_calls = 0
 
     for bug in dataset:
@@ -108,108 +131,82 @@ def run_evaluation():
             "full": {}
         }
 
-        payload = {
+        base_payload = {
             "description": bug["bug_input"],
             "language": "Unknown",
-            "severity": "high"
+            "severity": "high",
         }
-
         if bug.get("stack_trace"):
-            payload["stack_trace"] = bug["stack_trace"]
+            base_payload["stack_trace"] = bug["stack_trace"]
+
+        possible_score = len(bug["expected_root_causes"]) + len(bug["expected_fix"])
 
         for mode in ["quick", "full"]:
 
-            payload["mode"] = mode
+            payload = {**base_payload, "mode": mode}
 
             start_time = time.time()
+            response, error = call_api_with_one_retry(payload)
+            latency_ms = round((time.time() - start_time) * 1000, 2)
 
-            response = requests.post(
-                API_URL,
-                json=payload,
-                headers=HEADERS
-            )
-
-            time.sleep(2)
-
-            latency_ms = round(
-                (time.time() - start_time) * 1000,
-                2
-            )
+            if error is not None or response is None:
+                failed_calls += 1
+                bug_result[mode] = {
+                    "error": str(error),
+                    "status_code": "connection_failed",
+                    "score_percent": None,
+                }
+                continue
 
             if response.status_code == 200:
-
                 ai_result = response.json()
 
-                root_score, _ = calculate_score_tfidf(
-                    ai_result,
-                    bug["expected_root_causes"]
-                )
+                root_score, _ = calculate_score_tfidf(ai_result, bug["expected_root_causes"])
+                fix_score, _ = calculate_score_tfidf(ai_result, bug["expected_fix"])
+                total_score = root_score + fix_score
+                score_percent = (total_score / possible_score * 100) if possible_score > 0 else 0.0
 
-                fix_score, _ = calculate_score_tfidf(
-                    ai_result,
-                    bug["expected_fix"]
-                )
+                overall_earned += total_score
+                overall_possible += possible_score
 
                 bug_result[mode] = {
                     "root_score": root_score,
                     "fix_score": fix_score,
-                    "total_score": root_score + fix_score,
-                    "latency_ms": latency_ms
+                    "total_score": total_score,
+                    "possible_score": possible_score,
+                    "score_percent": round(score_percent, 2),  # <-- what evaluation_metrics.py reads
+                    "latency_ms": latency_ms,
                 }
 
-                total_earned += root_score + fix_score
-
-                total_possible += (
-                    len(bug["expected_root_causes"])
-                    +
-                    len(bug["expected_fix"])
-                )
-
-                print(
-                    f"{bug['title']} | {mode} | {latency_ms} ms"
-                )
+                print(f"{bug['title']} | {mode} | {latency_ms} ms | {score_percent:.1f}%")
 
             else:
                 failed_calls += 1
-
                 bug_result[mode] = {
                     "error": response.text,
                     "status_code": response.status_code,
-                    "latency_ms": latency_ms
+                    "latency_ms": latency_ms,
+                    "score_percent": None,
                 }
+                print(f"Failed: {bug['title']} | {mode} | {response.status_code}")
 
-                print(
-                    f"Failed: {bug['title']} | {mode} | {response.status_code}"
-                )
+            time.sleep(DELAY_BETWEEN_CALLS_SECONDS)
 
         comparison_results.append(bug_result)
 
+        with open("evaluation_results.json", "w") as file:
+            json.dump(comparison_results, file, indent=4)
 
-    with open("evaluation_results.json", "w") as file:
-        json.dump(comparison_results, file, indent=4)
+    accuracy = (overall_earned / overall_possible * 100) if overall_possible > 0 else 0
 
-
-    accuracy = (
-        (total_earned / total_possible) * 100
-        if total_possible > 0
-        else 0
-    )
-
-    print("\nEvaluation Completed ✅")
+    print("\nEvaluation Completed \u2705")
     print("Results saved: evaluation_results.json")
-    print(f"Total Score: {total_earned}/{total_possible}")
+    print(f"Total Score: {overall_earned}/{overall_possible}")
     print(f"Accuracy: {accuracy:.1f}%")
-
     if failed_calls:
-        print(
-            f"⚠ {failed_calls} API calls failed"
-        )
-
-    print(
-        f"\n(Similarity threshold used: {SIMILARITY_THRESHOLD})"
-    )
+        print(f"\u26a0 {failed_calls} API calls failed")
+    print(f"\n(Similarity threshold used: {SIMILARITY_THRESHOLD})")
 
 
 if __name__ == "__main__":
     run_evaluation()
-

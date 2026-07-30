@@ -69,15 +69,7 @@ app = FastAPI(
     version="0.1.0",
 )
 
-@app.get("/")
-async def root():
-    return {
-        "name": "AI Bug Investigator",
-        "version": "0.1.0",
-        "status": "running",
-        "docs": "/docs"
-    }
-    
+
 @app.middleware("http")
 async def request_logging_middleware(request: Request, call_next):
 
@@ -650,7 +642,8 @@ async def analyze_bug_endpoint(
             payload.description,
             payload.stack_trace,
             payload.language,
-            payload.severity if payload.severity else None
+            payload.severity if payload.severity else None,
+            payload.mode,
         )
 
         if cached_result:
@@ -688,6 +681,7 @@ async def analyze_bug_endpoint(
             payload.stack_trace,
             payload.language,
             payload.severity if payload.severity else None,
+            payload.mode,
         )
 
         return result

@@ -28,6 +28,13 @@ class Settings(BaseSettings):
     min_description_length: int = 15
     max_retries: int = 2
 
+    # Requests per hour per user on /analyze-bug. 100 is a reasonable
+    # default for real users, but tight for development -- one full
+    # evaluate_model.py run alone is ~40 calls (20 bugs x quick+full), and
+    # any manual Swagger testing on the same account stacks on top of that
+    # in the same rolling hour. Raise via .env for testing, no code change.
+    rate_limit_per_hour: int = 100
+
     # JWT signing secret. MUST be overridden via .env in any real
     # deployment -- this default only exists so local dev doesn't crash on
     # a missing value. is_production below checks for this and warns loudly
