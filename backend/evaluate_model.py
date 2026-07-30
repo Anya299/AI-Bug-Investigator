@@ -27,7 +27,7 @@ API_URL = "http://127.0.0.1:8000/analyze-bug"
 # Paste your JWT access token here. It expires (access_token_expire_minutes
 # in config.py) -- if every bug in a run comes back 401, this is stale,
 # get a fresh one from /auth/login before re-running.
-TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJiaG9vbWlAdGVzdC5jb20iLCJleHAiOjE3ODUzOTI2NDd9.fJTAwxQFvIqwqInwnmLC_SU1yX7SPUaPUL73PSLGcYM"
+TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJiaG9vbWlAdGVzdC5jb20iLCJleHAiOjE3ODU0NTg5Mjh9.q-u6deHrWW9Ruaa9SvpRGAsuBsDEejqCsKUz8JiP5_A"
 HEADERS = {
     "Authorization": f"Bearer {TOKEN}"
 }
