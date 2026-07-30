@@ -14,7 +14,7 @@ function App() {
       <section id="investigate" className="mx-auto max-w-5xl px-6 py-16 sm:py-20">
         <BugForm
           apiBaseUrl={API_BASE_URL}
-          authToken= "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJyYXlhcmlkYXJlQHRlc3QuY29tIiwiZXhwIjoxNzg1NDk1OTA1fQ.SnR8UIcXExOfcUVZbn2j0myrRKQExEVShwOTw-VP1-4"
+          authToken={localStorage.getItem("token")}
         />
       </section>
 
