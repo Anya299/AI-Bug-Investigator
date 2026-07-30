@@ -12,7 +12,7 @@ from enum import Enum
 from fastapi import FastAPI, Request, status, Depends, HTTPException
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse, StreamingResponse
+from fastapi.responses import JSONResponse
 
 from openai import AsyncOpenAI, APITimeoutError
 from pydantic import BaseModel, Field
@@ -32,7 +32,7 @@ from routes.auth import verify_token, hash_password
 
 from routes.auth import router as auth_router
 
-from redis_client import check_redis, get_redis_status
+from redis_client import get_redis_status
 from cache import (get_cached_analysis, set_cached_analysis, check_rate_limit)
 
 
@@ -433,6 +433,24 @@ async def analyze_bug(
 
 # ===== Error handlers =====
 
+@app.exception_handler(AnalyzerParsingError)
+async def analyzer_parsing_handler(request: Request, exc: AnalyzerParsingError):
+    # This fires whenever the model's JSON doesn't match BugAnalysisResponse
+    # -- most commonly a prompt.py / main.py schema mismatch (SYSTEM_PROMPT
+    # asking for different fields than BugAnalysisResponse requires) rather
+    # than a transient model issue. Logged at error level since it usually
+    # means something needs a code fix, not a retry.
+    logger.error("Analyzer parsing/schema error: %s", exc)
+    return JSONResponse(
+        status_code=status.HTTP_502_BAD_GATEWAY,
+        content=ErrorResponse(
+            error="parsing_error",
+            detail="The analysis response didn't match the expected format. Please try again.",
+            request_id=request.state.request_id,
+        ).model_dump(),
+    )
+
+
 @app.exception_handler(RequestValidationError)
 async def validation_error_handler(request: Request, exc: RequestValidationError):
     logger.warning("Validation error on %s: %s", request.url.path, exc.errors())
@@ -558,14 +576,29 @@ def save_bug_analysis(bug: BugReportRequest, result: BugAnalysisResponse):
 
 @app.get("/health", tags=["meta"])
 async def health() -> dict:
-    redis_status = check_redis()
+    redis_state = get_redis_status()
     database_status = check_database()
 
+    redis_disabled = redis_state["cache_status"] == "disabled"
+    redis_up = redis_state["redis"]
+
+    if redis_disabled:
+        redis_label = "disabled"
+    elif redis_up:
+        redis_label = "up"
+    else:
+        redis_label = "down"
+
+    # A disabled Redis is an expected, working configuration -- it should
+    # never make the service look "degraded". Only an unreachable Redis
+    # that's supposed to be enabled counts as degraded.
+    is_healthy = database_status and (redis_disabled or redis_up)
+
     return {
-        "status": "healthy" if redis_status and database_status else "degraded",
+        "status": "healthy" if is_healthy else "degraded",
         "service": settings.app_name,
         "dependencies": {
-            "redis": "up" if redis_status else "down",
+            "redis": redis_label,
             "database": "up" if database_status else "down"
         },
         "prompt_version": PROMPT_VERSION
@@ -662,30 +695,3 @@ async def analyze_bug_endpoint(
     except Exception as e:
         logger.exception("Unexpected error: %s", e)
         raise HTTPException(status_code=500, detail="Something went wrong during analysis")
-
-
-# ===== Streaming Analysis Endpoint =====
-
-@app.post("/analyze-bug-stream", tags=["analysis"])
-async def analyze_bug_stream(
-    payload: BugReportRequest,
-    current_user: str = Depends(verify_token)
-):
-
-    async def event_generator():
-
-        yield "data: Checking cache...\n\n"
-
-        yield "data: Matching known bug patterns...\n\n"
-
-        yield "data: Running investigation...\n\n"
-
-        result = await analyze_bug(payload)
-
-        yield f"data: {json.dumps(result.model_dump())}\n\n"
-
-
-    return StreamingResponse(
-        event_generator(),
-        media_type="text/event-stream"
-    )
