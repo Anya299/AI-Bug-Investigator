@@ -128,48 +128,12 @@ export default function BugForm({ apiBaseUrl = "", authToken = "" }) {
         throw new Error(body.detail || `Request failed (${res.status})`);
       }
 
-  const reader = res.body.getReader();
-  const decoder = new TextDecoder();
+      const finalResult = await res.json();
 
-  let finalResult = null;
-  let streamText = "";
+      setElapsedMs(Math.round(performance.now() - startTimeRef.current));
+            setResult(finalResult);
+            setStatus("success");
 
-  while (true) {
-    const { done, value } = await reader.read();
-
-    if (done) break;
-
-    const chunk = decoder.decode(value, { stream: true });
-    streamText += chunk;
-
-    const lines = streamText.split("\n");
-
-    for (const line of lines) {
-      if (line.startsWith("data: ")) {
-        const message = line.replace("data: ", "").trim();
-
-        console.log("STREAM:", message);
-
-        try {
-          finalResult = JSON.parse(message);
-        } catch {
-          // progress messages like:
-          // Checking cache...
-          // Matching known bug patterns...
-          // Running investigation...
-          console.log("Progress:", message);
-        }
-      }
-    }
-  }
-
-  if (finalResult) {
-    setElapsedMs(Math.round(performance.now() - startTimeRef.current));
-    setResult(finalResult);
-    setStatus("success");
-  } else {
-    throw new Error("No analysis result received");
-  }
     } catch (err) {
       setErrorMessage(err.message || "Something went wrong. Try again.");
       setStatus("error");
