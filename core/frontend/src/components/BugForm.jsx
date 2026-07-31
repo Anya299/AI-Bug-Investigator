@@ -79,6 +79,7 @@ export default function BugForm({ apiBaseUrl = "", authToken = "" }) {
   const [errorMessage, setErrorMessage] = useState("");
   const [elapsedMs, setElapsedMs] = useState(null);
   const [copied, setCopied] = useState(false);
+  const [isWakingUp, setIsWakingUp] = useState(false);
   const startTimeRef = useRef(null);
 
   const update = (field) => (e) =>
@@ -107,6 +108,10 @@ export default function BugForm({ apiBaseUrl = "", authToken = "" }) {
     setResult(null);
     setCopied(false);
     startTimeRef.current = performance.now();
+
+    const wakeupTimer = setTimeout(() => {
+      setIsWakingUp(true);
+    }, 5000);
 
     try {
       const res = await fetch(`${apiBaseUrl}/analyze-bug`, {
@@ -206,6 +211,19 @@ export default function BugForm({ apiBaseUrl = "", authToken = "" }) {
         >
           {showDetails ? "hide extra context" : "+ add more context (optional, improves accuracy)"}
         </button>
+
+        {status === "loading" && isWakingUp && (
+          <div className="mt-4 rounded-md border border-cyan/30 bg-cyan/10 p-4">
+            <p className="font-mono text-sm text-cyan">
+              ⚡ Warming up the analysis engine...
+           </p>
+
+           <p className="mt-2 text-sm text-textSecondary">
+              The server is starting for the first request. This can take up to
+              30–60 seconds on the free tier. Please keep this page open.
+           </p>
+         </div>
+        )}
 
         {showDetails && (
           <div className="space-y-4 border-t border-line pt-4">
