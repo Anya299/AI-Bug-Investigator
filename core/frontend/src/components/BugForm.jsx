@@ -74,7 +74,6 @@ export default function BugForm({ apiBaseUrl = "", authToken = "" }) {
   const [mode, setMode] = useState("quick"); // "quick" | "full"
   const [showDetails, setShowDetails] = useState(false);
   const [status, setStatus] = useState("idle"); // idle | loading | success | error
-  const [isWakingUp, setIsWakingUp] = useState(false);
   const [result, setResult] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
   const [elapsedMs, setElapsedMs] = useState(null);
@@ -98,17 +97,14 @@ export default function BugForm({ apiBaseUrl = "", authToken = "" }) {
 
     setStatus("loading");
     setIsWakingUp(false);
-
-    const wakeTimer = setTimeout(() => {
-      setIsWakingUp(true);
-    }, 4000);
-
-
     setErrorMessage("");
     setResult(null);
     setCopied(false);
     startTimeRef.current = performance.now();
 
+    // Free-tier Render instances spin down when idle, so a genuinely cold
+    // first request can take 30-60s. Past 5s of waiting, swap in a message
+    // that names that reality so it reads as expected, not broken.
     const wakeupTimer = setTimeout(() => {
       setIsWakingUp(true);
     }, 5000);
@@ -143,16 +139,14 @@ export default function BugForm({ apiBaseUrl = "", authToken = "" }) {
 
       const finalResult = await res.json();
 
-      clearTimeout(wakeTimer);
+      clearTimeout(wakeupTimer);
       setIsWakingUp(false);
 
       setElapsedMs(Math.round(performance.now() - startTimeRef.current));
-            setResult(finalResult);
-            setStatus("success");
-
+      setResult(finalResult);
+      setStatus("success");
     } catch (err) {
-
-      clearTimeout(wakeTimer);
+      clearTimeout(wakeupTimer);
       setIsWakingUp(false);
 
       setErrorMessage(err.message || "Something went wrong. Try again.");
@@ -212,19 +206,6 @@ export default function BugForm({ apiBaseUrl = "", authToken = "" }) {
           {showDetails ? "hide extra context" : "+ add more context (optional, improves accuracy)"}
         </button>
 
-        {status === "loading" && isWakingUp && (
-          <div className="mt-4 rounded-md border border-cyan/30 bg-cyan/10 p-4">
-            <p className="font-mono text-sm text-cyan">
-              ⚡ Warming up the analysis engine...
-           </p>
-
-           <p className="mt-2 text-sm text-textSecondary">
-              The server is starting for the first request. This can take up to
-              30–60 seconds on the free tier. Please keep this page open.
-           </p>
-         </div>
-        )}
-
         {showDetails && (
           <div className="space-y-4 border-t border-line pt-4">
             <div className="grid grid-cols-2 gap-4">
@@ -281,15 +262,15 @@ export default function BugForm({ apiBaseUrl = "", authToken = "" }) {
         {status === "loading" && isWakingUp && (
           <div className="rounded-md border border-cyan/30 bg-cyan/10 p-4">
             <p className="font-mono text-sm text-cyan">
-              🚀 Warming up the analysis engine...
-           </p>
-
+              ⚡ Warming up the analysis engine…
+            </p>
             <p className="mt-2 text-xs text-textSecondary">
-              This is the first request, so the AI service may take 30–60 seconds to start.
-              Once it's awake, future analyses will be much faster.
-           </p>
-         </div>
-       )}
+              This is the first request in a while, so the server may take
+              30–60 seconds to start on the free tier. Keep this tab open —
+              future requests will be much faster once it's awake.
+            </p>
+          </div>
+        )}
 
         {status === "error" && <p className="text-sm text-redAccent">{errorMessage}</p>}
       </form>
