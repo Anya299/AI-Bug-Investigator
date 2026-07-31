@@ -108,6 +108,7 @@ app.add_middleware(
         "https://ai-bug-investigator-2qrybkov3-anya299s-projects.vercel.app",
         "https://ai-bug-investigator-npnhfh2dn-anya299s-projects.vercel.app",
         "https://ai-bug-investigator-2czsk6km3-anya299s-projects.vercel.app",
+        "https://ai-bug-investigator-91h8f3xaa-anya299s-projects.vercel.app",
     ],
     allow_credentials=True,
     allow_methods=["*"],
