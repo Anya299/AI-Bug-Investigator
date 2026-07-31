@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import TraceHero from "./components/TraceHero";
 import BugForm from "./components/BugForm";
 
@@ -5,17 +6,87 @@ const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL ||
   "https://ai-bug-investigator-9.onrender.com";
 
+/**
+ * Provisions an invisible guest account on first visit and stores the
+ * token, so "no signup required to try" is actually true for the visitor
+ * while the backend still has a real user + token to enforce rate limits
+ * per-browser. Nothing is shown to the user during this -- it just runs
+ * once in the background before they've even finished reading the page.
+ */
+function useGuestAuth(apiBaseUrl) {
+  const [token, setToken] = useState(() => localStorage.getItem("token"));
+  const [authError, setAuthError] = useState(null);
+
+  useEffect(() => {
+    if (token) return; // already have one from a previous visit
+
+    async function ensureAuth() {
+      let email = localStorage.getItem("guest_email");
+      let password = localStorage.getItem("guest_password");
+
+      if (!email) {
+        email = `guest-${crypto.randomUUID()}@trace.local`;
+        password = crypto.randomUUID();
+        localStorage.setItem("guest_email", email);
+        localStorage.setItem("guest_password", password);
+      }
+
+      try {
+        // First try to register -- this is the normal path for a brand
+        // new guest.
+        const registerRes = await fetch(`${apiBaseUrl}/auth/register`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password }),
+        });
+
+        if (registerRes.ok) {
+          const data = await registerRes.json();
+          localStorage.setItem("token", data.access_token);
+          setToken(data.access_token);
+          return;
+        }
+
+        // If registration failed because this guest account already
+        // exists (e.g. their previous token just expired), log in with
+        // the same saved credentials instead.
+        const loginRes = await fetch(`${apiBaseUrl}/auth/login`, {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: new URLSearchParams({ username: email, password }),
+        });
+
+        if (loginRes.ok) {
+          const data = await loginRes.json();
+          localStorage.setItem("token", data.access_token);
+          setToken(data.access_token);
+        } else {
+          setAuthError("Couldn't start a session. Please refresh the page.");
+        }
+      } catch {
+        setAuthError("Couldn't reach the server. Please refresh the page.");
+      }
+    }
+
+    ensureAuth();
+  }, [apiBaseUrl, token]);
+
+  return { token, authError };
+}
+
 function App() {
+  const { token, authError } = useGuestAuth(API_BASE_URL);
+
   return (
     <div className="min-h-screen bg-ink">
       <Header />
       <Hero />
 
       <section id="investigate" className="mx-auto max-w-5xl px-6 py-16 sm:py-20">
-        <BugForm
-          apiBaseUrl={API_BASE_URL}
-          authToken={localStorage.getItem("token")}
-        />
+        {authError && (
+          <p className="mb-4 font-mono text-sm text-redAccent">{authError}</p>
+        )}
+        <BugForm apiBaseUrl={API_BASE_URL} authToken={token} />
       </section>
 
       <Footer />
