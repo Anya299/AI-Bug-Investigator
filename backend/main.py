@@ -105,6 +105,7 @@ app.add_middleware(
         "http://localhost:5173",
         "http://localhost:5174",
         "https://ai-bug-investigator-jet.vercel.app",
+        "https://ai-bug-investigator-2qrybkov3-anya299s-projects.vercel.app",
     ],
     allow_credentials=True,
     allow_methods=["*"],
