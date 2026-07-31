@@ -101,20 +101,11 @@ app.include_router(auth_router)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:5173",
-        "http://localhost:5174",
-        "https://ai-bug-investigator-jet.vercel.app",
-        "https://ai-bug-investigator-2qrybkov3-anya299s-projects.vercel.app",
-        "https://ai-bug-investigator-npnhfh2dn-anya299s-projects.vercel.app",
-        "https://ai-bug-investigator-2czsk6km3-anya299s-projects.vercel.app",
-        "https://ai-bug-investigator-91h8f3xaa-anya299s-projects.vercel.app",
-    ],
-    allow_credentials=True,
+    allow_origins=settings.cors_origins,
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
 
 # ===== Schemas =====
 
