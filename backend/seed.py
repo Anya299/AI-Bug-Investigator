@@ -1,6 +1,6 @@
 import json
 from database import SessionLocal
-from models import BugKnowledgeBase
+from models import KnowledgeEntry
 
 
 db = SessionLocal()
@@ -10,15 +10,18 @@ try:
         bugs = json.load(file)
 
     for bug in bugs:
-        record = BugKnowledgeBase(
-            title=bug["title"],
-            language=bug["language"],
-            framework=bug["framework"],
-            error_pattern=bug["error_pattern"],
-            root_cause=bug["root_cause"],
-            solution=bug["solution"]
+        record = KnowledgeEntry(
+            type="bug_fix",
+            error_type=...,
+            error_message=...,
+            language=...,
+            framework=...,
+            root_cause=...,
+            common_fix=...,
+            tags=...,
+            success_rate=0.0,
+            is_verified=True
         )
-
         db.add(record)
 
     db.commit()

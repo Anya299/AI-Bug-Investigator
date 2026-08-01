@@ -24,7 +24,6 @@ from models import (
     BugReport,
     KnowledgeEntry,
     Analysis,
-    BugKnowledgeBase,
     KnowledgeEntry,
 )
 

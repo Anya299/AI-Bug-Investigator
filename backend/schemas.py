@@ -15,9 +15,10 @@ class ProjectResponse(BaseModel):
     owner_id: int
     created_at: datetime
 
-    class Config:
-        from_attributes = True
+from pydantic import ConfigDict
 
+class ProjectResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
 
 # =========================
 # Bug Report Request Schema
@@ -152,9 +153,10 @@ class UserResponse(BaseModel):
     id: int
     email: str
 
-    class Config:
-        from_attributes = True
+from pydantic import ConfigDict
 
+class ProjectResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
 
 class TokenResponse(BaseModel):
 
@@ -183,5 +185,7 @@ class ProjectResponse(BaseModel):
     owner_id: int
     created_at: datetime
 
-    class Config:
-        from_attributes = True    
+from pydantic import ConfigDict
+
+class ProjectResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)

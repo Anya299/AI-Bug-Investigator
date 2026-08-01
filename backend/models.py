@@ -167,9 +167,6 @@ class BugKnowledgeBase(Base):
     solution = Column(Text, nullable=False)
 
 
-    user = relationship("User")
-
-
 class BugReport(Base):
     __tablename__ = "bug_reports"
 

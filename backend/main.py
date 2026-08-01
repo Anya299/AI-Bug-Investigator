@@ -592,24 +592,37 @@ def save_bug_analysis(bug: BugReportRequest, result: BugAnalysisResponse):
         db.commit()
         db.refresh(bug_report)
 
+
         analysis = Analysis(
             bug_report_id=bug_report.id,
+
             root_cause=result.root_cause,
-            explanation=result.explanation,
-            reproduction_steps=result.reproduction_steps,
-            suggested_fix=result.suggested_fix,
-            draft_test_case=result.draft_test_case,
+
+            # map BugAnalysisResponse fields
+            explanation=result.bug_summary,
+
+            reproduction_steps="\n".join(
+                result.investigation_steps
+            ),
+
+            suggested_fix=result.fix_recommendation,
+
+            draft_test_case=None,
+
             confidence_score=result.confidence_score,
+
             prompt_version=result.prompt_version,
-            model_used=result.model_used,
-            response_time_ms=result.response_time_ms
+
+            model_used=settings.openrouter_model,
+
+            response_time_ms=None
         )
 
         db.add(analysis)
         db.commit()
         db.refresh(analysis)
 
-    except Exception as e:
+    except Exception:
         db.rollback()
         logger.exception("Failed to save bug analysis")
         raise
