@@ -25,8 +25,7 @@ from models import (
     KnowledgeEntry,
     Analysis,
     BugKnowledgeBase,
-    BugPattern,
-    UsageLog
+    KnowledgeEntry,
 )
 
 target_metadata = Base.metadata

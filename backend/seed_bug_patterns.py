@@ -1,6 +1,4 @@
 from database import SessionLocal
-from models import BugPattern
-
 
 db = SessionLocal()
 
