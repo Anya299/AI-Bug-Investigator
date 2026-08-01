@@ -19,7 +19,7 @@ from fastapi.responses import JSONResponse
 from openai import AsyncOpenAI, APITimeoutError
 from pydantic import BaseModel, Field
 
-from schemas import BugReportRequest
+from schemas import BugReportRequest, BugAnalysisResponse
 
 from config import get_settings
 from logger import get_logger
@@ -306,7 +306,7 @@ def parse_model_output(raw_text: str) -> BugAnalysisResponse:
         ) from exc
 
 
-def _response_from_pattern(pattern: BugPattern, bug: BugReportRequest) -> BugAnalysisResponse:
+def _response_from_pattern(pattern: KnowledgeEntry, bug: BugReportRequest)-> BugAnalysisResponse:
     """
     Builds an instant response straight from a verified BugPattern, no LLM
     call involved. This is what makes "Quick fix" genuinely fast (and
@@ -344,7 +344,7 @@ async def _call_model(
     bug: BugReportRequest,
     *,
     temperature: float,
-    pattern_hint: BugPattern | None = None,
+    pattern_hint: KnowledgeEntry | None = None,
 ) -> BugAnalysisResponse:
 
     if is_circuit_open():

@@ -167,60 +167,6 @@ class BugKnowledgeBase(Base):
     solution = Column(Text, nullable=False)
 
 
-class BugPattern(Base):
-    __tablename__ = "bug_patterns"
-
-    id = Column(Integer, primary_key=True, index=True)
-
-    error_type = Column(String(100), index=True)
-    error_message = Column(Text)
-
-    language = Column(String(100))
-    framework = Column(String(100))
-
-    root_cause = Column(Text)
-    common_fix = Column(Text)
-
-    tags = Column(String(255))
-
-    success_rate = Column(Float, default=0.0)
-
-    is_verified = Column(
-        Boolean,
-        default=False
-    )
-
-    usage_count = Column(
-        Integer,
-        default=0
-    )
-
-    created_at = Column(
-        DateTime,
-        default=datetime.utcnow
-    )
-
-
-class UsageLog(Base):
-    __tablename__ = "usage_logs"
-
-    id = Column(Integer, primary_key=True, index=True)
-
-    user_id = Column(
-        Integer,
-        ForeignKey("users.id"),
-        index=True
-    )
-
-    endpoint = Column(String(255))
-    tier_at_time = Column(String(20))
-
-    timestamp = Column(
-        DateTime,
-        default=datetime.utcnow,
-        index=True
-    )
-
     user = relationship("User")
 
 
