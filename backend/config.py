@@ -6,6 +6,7 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
     database_url: str = "sqlite:///./bug_investigator.db"
+    migrations_database_url: str = ""
 
     openrouter_api_key: str = ""
     openrouter_model: str = "meta-llama/llama-3.1-8b-instruct"
@@ -81,6 +82,10 @@ class Settings(BaseSettings):
     @property
     def has_insecure_secret_key(self) -> bool:
         return self.secret_key == "dev-only-insecure-default-change-me"
+
+    @property
+    def resolved_migrations_url(self) -> str:
+        return self.migrations_database_url or self.database_url
 
 
 @lru_cache

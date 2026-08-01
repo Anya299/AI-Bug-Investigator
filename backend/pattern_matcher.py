@@ -1,5 +1,5 @@
 """
-Matches an incoming bug report against verified BugPattern records.
+Matches an incoming bug report against verified KnowledgeEntry records.
 
 This is what makes "quick fix" actually fast: a bug that matches a known,
 previously-verified pattern can return instantly, with no LLM round trip.
@@ -9,10 +9,10 @@ rather than starting from zero every time.
 """
 
 from database import SessionLocal
-from models import BugPattern
+from models import KnowledgeEntry
 
 
-def _score_pattern(pattern: BugPattern, error_text: str, language: str | None, framework: str | None) -> float:
+def _score_pattern(pattern: KnowledgeEntry, error_text: str, language: str | None, framework: str | None) -> float:
     """
     Higher score = more confident this pattern actually matches. Plain
     substring containment on error_type is the strongest single signal;
@@ -55,9 +55,9 @@ def find_matching_pattern(
     language: str | None = None,
     framework: str | None = None,
     min_score: float = 50.0,
-) -> BugPattern | None:
+) -> KnowledgeEntry | None:
     """
-    Returns the single best-matching BugPattern, or None if nothing clears
+    Returns the single best-matching KnowledgeEntry, or None if nothing clears
     min_score. Only the error_type substring hit alone (50) clears the
     default threshold on its own -- everything else is supporting signal,
     which keeps this from confidently matching on a weak tag hit alone.
@@ -67,7 +67,7 @@ def find_matching_pattern(
 
     db = SessionLocal()
     try:
-        patterns = db.query(BugPattern).all()
+        patterns = db.query(KnowledgeEntry).filter(KnowledgeEntry.type == "bug_fix").all()
 
         scored = [
             (pattern, _score_pattern(pattern, error_text, language, framework))
@@ -93,7 +93,7 @@ def record_pattern_usage(pattern_id: int) -> None:
     """
     db = SessionLocal()
     try:
-        pattern = db.get(BugPattern, pattern_id)
+        pattern = db.get(KnowledgeEntry, pattern_id)
         if pattern:
             pattern.usage_count = (pattern.usage_count or 0) + 1
             db.commit()

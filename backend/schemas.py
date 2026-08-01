@@ -2,13 +2,29 @@ import re
 from typing import Optional, List
 from pydantic import BaseModel, Field, field_validator
 
+from datetime import datetime
+
+
+class ProjectCreate(BaseModel):
+    name: str
+
+
+class ProjectResponse(BaseModel):
+    id: int
+    name: str
+    owner_id: int
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
 
 # =========================
 # Bug Report Request Schema
 # =========================
 
 class BugReportRequest(BaseModel):
-
+    project_id: int
     language: Optional[str] = Field(
         default=None,
         description="Programming language used in the project"
@@ -156,3 +172,16 @@ class ErrorResponse(BaseModel):
     detail: str
     request_id: Optional[str] = None
     retryable: bool = False
+
+class ProjectCreate(BaseModel):
+    name: str
+
+
+class ProjectResponse(BaseModel):
+    id: int
+    name: str
+    owner_id: int
+    created_at: datetime
+
+    class Config:
+        from_attributes = True    

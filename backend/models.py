@@ -21,34 +21,30 @@ class User(Base):
         onupdate=datetime.utcnow
     )
 
-    bug_reports = relationship(
-        "BugReport",
-        back_populates="user"
+    projects = relationship(
+        "Project",
+        back_populates="owner"
     )
 
 
-class BugReport(Base):
-    __tablename__ = "bug_reports"
+class Project(Base):
+    __tablename__ = "projects"
 
-    id = Column(Integer, primary_key=True, index=True)
-
-    user_id = Column(
+    id = Column(
         Integer,
-        ForeignKey("users.id")
+        primary_key=True,
+        index=True
     )
 
-    title = Column(String(255))
-    language = Column(String(100))
-    framework = Column(String(100))
+    name = Column(
+        String(255),
+        nullable=False
+    )
 
-    description = Column(Text)
-    stack_trace = Column(Text)
-    logs = Column(Text)
-
-    severity = Column(String(50))
-    status = Column(
-        String(50),
-        default="open"
+    owner_id = Column(
+        Integer,
+        ForeignKey("users.id"),
+        nullable=False
     )
 
     created_at = Column(
@@ -56,15 +52,67 @@ class BugReport(Base):
         default=datetime.utcnow
     )
 
-    user = relationship(
+    owner = relationship(
         "User",
-        back_populates="bug_reports"
+        back_populates="projects"
     )
 
-    analysis = relationship(
-        "Analysis",
-        back_populates="bug_report",
-        uselist=False
+    bug_reports = relationship(
+        "BugReport",
+        back_populates="project"
+    )
+
+
+class KnowledgeEntry(Base):
+    __tablename__ = "knowledge_entries"
+
+    id = Column(
+        Integer,
+        primary_key=True,
+        index=True
+    )
+
+    type = Column(
+        String(50),
+        default="bug_fix",
+        nullable=False
+    )
+
+    error_type = Column(
+        String(100),
+        index=True
+    )
+
+    error_message = Column(Text)
+
+    language = Column(String(100))
+
+    framework = Column(String(100))
+
+    root_cause = Column(Text)
+
+    common_fix = Column(Text)
+
+    tags = Column(String(255))
+
+    success_rate = Column(
+        Float,
+        default=0.0
+    )
+
+    is_verified = Column(
+        Boolean,
+        default=False
+    )
+
+    usage_count = Column(
+        Integer,
+        default=0
+    )
+
+    created_at = Column(
+        DateTime,
+        default=datetime.utcnow
     )
 
 
@@ -76,6 +124,11 @@ class Analysis(Base):
     bug_report_id = Column(
         Integer,
         ForeignKey("bug_reports.id")
+    )
+
+    knowledge_entry_id = Column(
+        Integer,
+        ForeignKey("knowledge_entries.id")
     )
 
     root_cause = Column(Text)
@@ -98,11 +151,10 @@ class Analysis(Base):
         default=datetime.utcnow
     )
 
+    bug_report = relationship("BugReport", back_populates="analyses")
+    knowledge_entry = relationship("KnowledgeEntry")
 
-    bug_report = relationship(
-        "BugReport",
-        back_populates="analysis"
-    )
+
 class BugKnowledgeBase(Base):
     __tablename__ = "bug_knowledge_base"
 
@@ -113,6 +165,8 @@ class BugKnowledgeBase(Base):
     error_pattern = Column(String, nullable=False)
     root_cause = Column(Text, nullable=False)
     solution = Column(Text, nullable=False)
+
+
 class BugPattern(Base):
     __tablename__ = "bug_patterns"
 
@@ -168,3 +222,32 @@ class UsageLog(Base):
     )
 
     user = relationship("User")
+
+
+class BugReport(Base):
+    __tablename__ = "bug_reports"
+
+    id = Column(Integer, primary_key=True, index=True)
+
+    project_id = Column(
+        Integer,
+        ForeignKey("projects.id"),
+        nullable=False
+    )
+
+    title = Column(String(255))
+    description = Column(Text)
+    stack_trace = Column(Text)
+    logs = Column(Text)
+    language = Column(String(100))
+    framework = Column(String(100))
+    severity = Column(String(50))
+    status = Column(String(50))
+
+    created_at = Column(
+        DateTime,
+        default=datetime.utcnow
+    )
+
+    project = relationship("Project", back_populates="bug_reports")
+    analyses = relationship("Analysis", back_populates="bug_report")

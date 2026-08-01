@@ -6,7 +6,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 
 # ---------------------------------------------------------------------------
 # FREE, FAST, LOCAL grader using TF-IDF + cosine similarity.
-# No API calls, no large model downloads (scikit-learn is a small install
+# No API calls, no large model downloads (scikit-learn is a small installF
 # you likely already have). Runs in well under a second for 20 bugs.
 #
 # Trade-off vs. true embeddings: this matches based on shared words/roots,
@@ -18,7 +18,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 # more accuracy and have time to let the model download in the background.
 # ---------------------------------------------------------------------------
 
-SIMILARITY_THRESHOLD = 0.15  # TF-IDF similarities run lower than embedding
+SIMILARITY_THRESHOLD = 0.10  # TF-IDF similarities run lower than embedding
                               # similarities since it's pure word overlap.
                               # Tune this after eyeballing a few results.
 
@@ -27,7 +27,7 @@ API_URL = "https://ai-bug-investigator-9.onrender.com/analyze-bug"
 # Paste your JWT access token here. It expires (access_token_expire_minutes
 # in config.py) -- if every bug in a run comes back 401, this is stale,
 # get a fresh one from /auth/login before re-running.
-TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJyYXlhcmlkYXJlQHRlc3QuY29tIiwiZXhwIjoxNzg1NDY0NTMwfQ.a0rS_B0y13WxJw_21NmDygU8OfQMZY56rJHb4rvhiLQ"
+TOKEN =  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJyYXlhcmlkYXJlQHRlc3QuY29tIiwiZXhwIjoxNzg1NTAxNTIzfQ.cd95vCSui7HGTigqIQ2gIi1139KApTwd0QK6v3UIkro"
 HEADERS = {
     "Authorization": f"Bearer {TOKEN}",
     "Content-Type": "application/json"
@@ -169,13 +169,34 @@ def run_evaluation():
                 overall_earned += total_score
                 overall_possible += possible_score
 
+                root_score, root_matches = calculate_score_tfidf(
+                    ai_result,
+                    bug["expected_root_causes"]
+                )
+
+                fix_score, fix_matches = calculate_score_tfidf(
+                    ai_result,
+                    bug["expected_fix"]
+                )
+
+                total_score = root_score + fix_score
+                score_percent = (total_score / possible_score * 100) if possible_score > 0 else 0
+
                 bug_result[mode] = {
-                    "root_score": root_score,
-                    "fix_score": fix_score,
-                    "total_score": total_score,
-                    "possible_score": possible_score,
-                    "score_percent": round(score_percent, 2),  # <-- what evaluation_metrics.py reads
-                    "latency_ms": latency_ms,
+                   "root_score": root_score,
+                   "fix_score": fix_score,
+                   "total_score": total_score,
+                   "possible_score": possible_score,
+                   "score_percent": round(score_percent, 2),
+                   "latency_ms": latency_ms,
+
+                   "expected_root_causes": bug["expected_root_causes"],
+                   "expected_fix": bug["expected_fix"],
+
+                   "ai_response": ai_result,
+
+                   "root_matches": root_matches,
+                   "fix_matches": fix_matches
                 }
 
                 print(f"{bug['title']} | {mode} | {latency_ms} ms | {score_percent:.1f}%")

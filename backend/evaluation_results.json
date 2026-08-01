@@ -1,0 +1,3102 @@
+[
+    {
+        "id": 1,
+        "title": "Memory leak causing application crash after 48+ hours",
+        "quick": {
+            "root_score": 3,
+            "fix_score": 3,
+            "total_score": 6,
+            "possible_score": 6,
+            "score_percent": 100.0,
+            "latency_ms": 80908.87,
+            "expected_root_causes": [
+                "memory leak",
+                "unused resources",
+                "memory allocation issue"
+            ],
+            "expected_fix": [
+                "profile memory usage",
+                "release unused resources",
+                "add memory monitoring"
+            ],
+            "ai_response": {
+                "bug_summary": "Memory leak causing application crash after 48+ hours",
+                "root_cause": "Memory leak from unreleased resources causing gradual memory allocation growth over time.",
+                "investigation_steps": [
+                    "Review application logs for memory allocation patterns",
+                    "Profile memory usage to identify resource leaks",
+                    "Implement memory monitoring to detect future issues"
+                ],
+                "fix_recommendation": "Profile memory usage, release unused resources, and implement memory monitoring.",
+                "prevention": "Regularly review application logs, implement memory profiling, and use memory monitoring tools.",
+                "confidence_score": 10,
+                "evidence": [
+                    "Application crashes after 48+ hours",
+                    "Memory leak mentioned in bug description"
+                ],
+                "prompt_version": "2.6.0",
+                "source": "llm"
+            },
+            "root_matches": [
+                {
+                    "keyword": "memory leak",
+                    "matched": true,
+                    "similarity": 0.527,
+                    "best_matching_text": "Memory leak causing application crash after 48+ hours Memory leak from unreleased resources causing gradual memory allocation growth over time"
+                },
+                {
+                    "keyword": "unused resources",
+                    "matched": true,
+                    "similarity": 0.192,
+                    "best_matching_text": "Review application logs for memory allocation patterns Profile memory usage to identify resource leaks Implement memory monitoring to detect future issues Profile memory usage, release unused resources, and implement memory monitoring"
+                },
+                {
+                    "keyword": "memory allocation issue",
+                    "matched": true,
+                    "similarity": 0.242,
+                    "best_matching_text": "Review application logs for memory allocation patterns Profile memory usage to identify resource leaks Implement memory monitoring to detect future issues Profile memory usage, release unused resources, and implement memory monitoring"
+                }
+            ],
+            "fix_matches": [
+                {
+                    "keyword": "profile memory usage",
+                    "matched": true,
+                    "similarity": 0.598,
+                    "best_matching_text": "Review application logs for memory allocation patterns Profile memory usage to identify resource leaks Implement memory monitoring to detect future issues Profile memory usage, release unused resources, and implement memory monitoring"
+                },
+                {
+                    "keyword": "release unused resources",
+                    "matched": true,
+                    "similarity": 0.256,
+                    "best_matching_text": "Review application logs for memory allocation patterns Profile memory usage to identify resource leaks Implement memory monitoring to detect future issues Profile memory usage, release unused resources, and implement memory monitoring"
+                },
+                {
+                    "keyword": "add memory monitoring",
+                    "matched": true,
+                    "similarity": 0.326,
+                    "best_matching_text": "Review application logs for memory allocation patterns Profile memory usage to identify resource leaks Implement memory monitoring to detect future issues Profile memory usage, release unused resources, and implement memory monitoring"
+                }
+            ]
+        },
+        "full": {
+            "root_score": 3,
+            "fix_score": 3,
+            "total_score": 6,
+            "possible_score": 6,
+            "score_percent": 100.0,
+            "latency_ms": 9912.56,
+            "expected_root_causes": [
+                "memory leak",
+                "unused resources",
+                "memory allocation issue"
+            ],
+            "expected_fix": [
+                "profile memory usage",
+                "release unused resources",
+                "add memory monitoring"
+            ],
+            "ai_response": {
+                "bug_summary": "Memory leak causing application crash after 48+ hours",
+                "root_cause": "Unreleased resources causing gradual memory allocation growth over time, leading to application crash.",
+                "investigation_steps": [
+                    "Collect memory dumps to analyze memory usage patterns",
+                    "Inspect application code for resource leaks and memory allocation",
+                    "Verify garbage collection settings and configuration",
+                    "Analyze system logs for memory-related error messages"
+                ],
+                "fix_recommendation": "Implement memory monitoring, profile memory usage, and release unused resources to prevent memory leaks.",
+                "prevention": "Regularly review code for resource leaks, implement memory profiling, and establish a memory monitoring strategy.",
+                "confidence_score": 10,
+                "evidence": [
+                    "Application crashes after 48+ hours",
+                    "Memory leak mentioned in bug description"
+                ],
+                "prompt_version": "2.6.0",
+                "source": "llm"
+            },
+            "root_matches": [
+                {
+                    "keyword": "memory leak",
+                    "matched": true,
+                    "similarity": 0.285,
+                    "best_matching_text": "Collect memory dumps to analyze memory usage patterns Inspect application code for resource leaks and memory allocation Verify garbage collection settings and configuration Analyze system logs for memory-related error messages Implement memory monitoring, profile memory usage, and release unused resources to prevent memory leaks"
+                },
+                {
+                    "keyword": "unused resources",
+                    "matched": true,
+                    "similarity": 0.161,
+                    "best_matching_text": "Collect memory dumps to analyze memory usage patterns Inspect application code for resource leaks and memory allocation Verify garbage collection settings and configuration Analyze system logs for memory-related error messages Implement memory monitoring, profile memory usage, and release unused resources to prevent memory leaks"
+                },
+                {
+                    "keyword": "memory allocation issue",
+                    "matched": true,
+                    "similarity": 0.263,
+                    "best_matching_text": "Collect memory dumps to analyze memory usage patterns Inspect application code for resource leaks and memory allocation Verify garbage collection settings and configuration Analyze system logs for memory-related error messages Implement memory monitoring, profile memory usage, and release unused resources to prevent memory leaks"
+                }
+            ],
+            "fix_matches": [
+                {
+                    "keyword": "profile memory usage",
+                    "matched": true,
+                    "similarity": 0.466,
+                    "best_matching_text": "Collect memory dumps to analyze memory usage patterns Inspect application code for resource leaks and memory allocation Verify garbage collection settings and configuration Analyze system logs for memory-related error messages Implement memory monitoring, profile memory usage, and release unused resources to prevent memory leaks"
+                },
+                {
+                    "keyword": "release unused resources",
+                    "matched": true,
+                    "similarity": 0.207,
+                    "best_matching_text": "Collect memory dumps to analyze memory usage patterns Inspect application code for resource leaks and memory allocation Verify garbage collection settings and configuration Analyze system logs for memory-related error messages Implement memory monitoring, profile memory usage, and release unused resources to prevent memory leaks"
+                },
+                {
+                    "keyword": "add memory monitoring",
+                    "matched": true,
+                    "similarity": 0.269,
+                    "best_matching_text": "Collect memory dumps to analyze memory usage patterns Inspect application code for resource leaks and memory allocation Verify garbage collection settings and configuration Analyze system logs for memory-related error messages Implement memory monitoring, profile memory usage, and release unused resources to prevent memory leaks"
+                }
+            ]
+        }
+    },
+    {
+        "id": 2,
+        "title": "Race condition causing random failure",
+        "quick": {
+            "root_score": 2,
+            "fix_score": 2,
+            "total_score": 4,
+            "possible_score": 6,
+            "score_percent": 66.67,
+            "latency_ms": 13883.83,
+            "expected_root_causes": [
+                "concurrent access",
+                "thread synchronization",
+                "timing issue"
+            ],
+            "expected_fix": [
+                "add locks",
+                "synchronize threads",
+                "improve thread safety"
+            ],
+            "ai_response": {
+                "bug_summary": "Race condition causing random failure",
+                "root_cause": "Concurrent access leading to thread synchronization issues",
+                "investigation_steps": [
+                    "Analyze thread synchronization mechanisms",
+                    "Inspect concurrent access points",
+                    "Verify thread safety"
+                ],
+                "fix_recommendation": "Implement thread synchronization, add locks, and improve thread safety",
+                "prevention": "Use synchronization primitives, follow thread safety best practices",
+                "confidence_score": 10,
+                "evidence": [
+                    "Race condition mentioned in bug description"
+                ],
+                "prompt_version": "2.6.0",
+                "source": "llm"
+            },
+            "root_matches": [
+                {
+                    "keyword": "concurrent access",
+                    "matched": true,
+                    "similarity": 0.272,
+                    "best_matching_text": "Race condition causing random failure Concurrent access leading to thread synchronization issues Analyze thread synchronization mechanisms Inspect concurrent access points Verify thread safety Implement thread synchronization, add locks, and improve thread safety Use synchronization primitives, follow thread safety best practices"
+                },
+                {
+                    "keyword": "thread synchronization",
+                    "matched": true,
+                    "similarity": 0.68,
+                    "best_matching_text": "Race condition causing random failure Concurrent access leading to thread synchronization issues Analyze thread synchronization mechanisms Inspect concurrent access points Verify thread safety Implement thread synchronization, add locks, and improve thread safety Use synchronization primitives, follow thread safety best practices"
+                },
+                {
+                    "keyword": "timing issue",
+                    "matched": false,
+                    "similarity": 0.0,
+                    "best_matching_text": "Race condition causing random failure Concurrent access leading to thread synchronization issues Analyze thread synchronization mechanisms Inspect concurrent access points Verify thread safety Implement thread synchronization, add locks, and improve thread safety Use synchronization primitives, follow thread safety best practices"
+                }
+            ],
+            "fix_matches": [
+                {
+                    "keyword": "add locks",
+                    "matched": true,
+                    "similarity": 0.132,
+                    "best_matching_text": "Race condition causing random failure Concurrent access leading to thread synchronization issues Analyze thread synchronization mechanisms Inspect concurrent access points Verify thread safety Implement thread synchronization, add locks, and improve thread safety Use synchronization primitives, follow thread safety best practices"
+                },
+                {
+                    "keyword": "synchronize threads",
+                    "matched": false,
+                    "similarity": 0.0,
+                    "best_matching_text": "Race condition causing random failure Concurrent access leading to thread synchronization issues Analyze thread synchronization mechanisms Inspect concurrent access points Verify thread safety Implement thread synchronization, add locks, and improve thread safety Use synchronization primitives, follow thread safety best practices"
+                },
+                {
+                    "keyword": "improve thread safety",
+                    "matched": true,
+                    "similarity": 0.537,
+                    "best_matching_text": "Race condition causing random failure Concurrent access leading to thread synchronization issues Analyze thread synchronization mechanisms Inspect concurrent access points Verify thread safety Implement thread synchronization, add locks, and improve thread safety Use synchronization primitives, follow thread safety best practices"
+                }
+            ]
+        },
+        "full": {
+            "root_score": 3,
+            "fix_score": 3,
+            "total_score": 6,
+            "possible_score": 6,
+            "score_percent": 100.0,
+            "latency_ms": 7588.56,
+            "expected_root_causes": [
+                "concurrent access",
+                "thread synchronization",
+                "timing issue"
+            ],
+            "expected_fix": [
+                "add locks",
+                "synchronize threads",
+                "improve thread safety"
+            ],
+            "ai_response": {
+                "bug_summary": "Race condition causing random failure in production",
+                "root_cause": "Concurrent access issue due to missing thread synchronization, leading to inconsistent data updates.",
+                "investigation_steps": [
+                    "Review code for concurrent access points and identify potential synchronization bottlenecks.",
+                    "Analyze thread execution flow to pinpoint the exact timing of the race condition.",
+                    "Implement locks or other synchronization mechanisms to ensure thread safety."
+                ],
+                "fix_recommendation": "Use locks or semaphores to synchronize concurrent access, and improve thread safety through proper synchronization.",
+                "prevention": "Implement thorough code reviews for concurrency, use design patterns like double-checked locking, and consider using high-level concurrency libraries.",
+                "confidence_score": 10,
+                "evidence": [
+                    "Random failure reported in production",
+                    "Concurrent access mentioned in bug description"
+                ],
+                "prompt_version": "2.6.0",
+                "source": "llm"
+            },
+            "root_matches": [
+                {
+                    "keyword": "concurrent access",
+                    "matched": true,
+                    "similarity": 0.35,
+                    "best_matching_text": "Review code for concurrent access points and identify potential synchronization bottlenecks"
+                },
+                {
+                    "keyword": "thread synchronization",
+                    "matched": true,
+                    "similarity": 0.373,
+                    "best_matching_text": "Implement locks or other synchronization mechanisms to ensure thread safety"
+                },
+                {
+                    "keyword": "timing issue",
+                    "matched": true,
+                    "similarity": 0.218,
+                    "best_matching_text": "Analyze thread execution flow to pinpoint the exact timing of the race condition"
+                }
+            ],
+            "fix_matches": [
+                {
+                    "keyword": "add locks",
+                    "matched": true,
+                    "similarity": 0.204,
+                    "best_matching_text": "Implement locks or other synchronization mechanisms to ensure thread safety"
+                },
+                {
+                    "keyword": "synchronize threads",
+                    "matched": true,
+                    "similarity": 0.205,
+                    "best_matching_text": "Use locks or semaphores to synchronize concurrent access, and improve thread safety through proper synchronization"
+                },
+                {
+                    "keyword": "improve thread safety",
+                    "matched": true,
+                    "similarity": 0.474,
+                    "best_matching_text": "Use locks or semaphores to synchronize concurrent access, and improve thread safety through proper synchronization"
+                }
+            ]
+        }
+    },
+    {
+        "id": 3,
+        "title": "Hidden trailing whitespace causing code failure",
+        "quick": {
+            "root_score": 3,
+            "fix_score": 3,
+            "total_score": 6,
+            "possible_score": 6,
+            "score_percent": 100.0,
+            "latency_ms": 9504.35,
+            "expected_root_causes": [
+                "hidden characters",
+                "formatting issue",
+                "invisible characters"
+            ],
+            "expected_fix": [
+                "clean input",
+                "check formatting rules",
+                "use linting tools"
+            ],
+            "ai_response": {
+                "bug_summary": "Trailing whitespace breaking code",
+                "root_cause": "Hidden/formatting characters: Trailing whitespace causing syntax errors.",
+                "investigation_steps": [
+                    "Check for trailing whitespace in code files",
+                    "Use linting tools to detect formatting issues",
+                    "Remove whitespace and re-run code"
+                ],
+                "fix_recommendation": "Clean input, check formatting rules, and use linting tools to prevent whitespace-related issues.",
+                "prevention": "Regularly run code through linting tools and enforce strict formatting rules.",
+                "confidence_score": 0,
+                "evidence": [
+                    "Trailing whitespace mentioned in bug description"
+                ],
+                "prompt_version": "2.6.0",
+                "source": "llm"
+            },
+            "root_matches": [
+                {
+                    "keyword": "hidden characters",
+                    "matched": true,
+                    "similarity": 0.318,
+                    "best_matching_text": "Trailing whitespace breaking code Hidden/formatting characters: Trailing whitespace causing syntax errors"
+                },
+                {
+                    "keyword": "formatting issue",
+                    "matched": true,
+                    "similarity": 0.119,
+                    "best_matching_text": "Regularly run code through linting tools and enforce strict formatting rules"
+                },
+                {
+                    "keyword": "invisible characters",
+                    "matched": true,
+                    "similarity": 0.117,
+                    "best_matching_text": "Trailing whitespace breaking code Hidden/formatting characters: Trailing whitespace causing syntax errors"
+                }
+            ],
+            "fix_matches": [
+                {
+                    "keyword": "clean input",
+                    "matched": true,
+                    "similarity": 0.209,
+                    "best_matching_text": "Check for trailing whitespace in code files Use linting tools to detect formatting issues Remove whitespace and re-run code Clean input, check formatting rules, and use linting tools to prevent whitespace-related issues"
+                },
+                {
+                    "keyword": "check formatting rules",
+                    "matched": true,
+                    "similarity": 0.372,
+                    "best_matching_text": "Check for trailing whitespace in code files Use linting tools to detect formatting issues Remove whitespace and re-run code Clean input, check formatting rules, and use linting tools to prevent whitespace-related issues"
+                },
+                {
+                    "keyword": "use linting tools",
+                    "matched": true,
+                    "similarity": 0.461,
+                    "best_matching_text": "Check for trailing whitespace in code files Use linting tools to detect formatting issues Remove whitespace and re-run code Clean input, check formatting rules, and use linting tools to prevent whitespace-related issues"
+                }
+            ]
+        },
+        "full": {
+            "root_score": 3,
+            "fix_score": 3,
+            "total_score": 6,
+            "possible_score": 6,
+            "score_percent": 100.0,
+            "latency_ms": 7470.07,
+            "expected_root_causes": [
+                "hidden characters",
+                "formatting issue",
+                "invisible characters"
+            ],
+            "expected_fix": [
+                "clean input",
+                "check formatting rules",
+                "use linting tools"
+            ],
+            "ai_response": {
+                "bug_summary": "Trailing whitespace breaking code",
+                "root_cause": "Hidden/formatting characters: Trailing whitespace causing syntax errors in unknown language.",
+                "investigation_steps": [
+                    "Inspect code for trailing whitespace and remove it",
+                    "Verify code formatting rules and linting tools are used",
+                    "Review code editor settings to prevent whitespace addition"
+                ],
+                "fix_recommendation": "Clean input, check formatting rules, use linting tools to prevent whitespace issues",
+                "prevention": "Regularly review code formatting, use linting tools, and configure code editors to prevent whitespace issues",
+                "confidence_score": 0,
+                "evidence": [
+                    "Trailing whitespace mentioned as root cause"
+                ],
+                "prompt_version": "2.6.0",
+                "source": "llm"
+            },
+            "root_matches": [
+                {
+                    "keyword": "hidden characters",
+                    "matched": true,
+                    "similarity": 0.286,
+                    "best_matching_text": "Trailing whitespace breaking code Hidden/formatting characters: Trailing whitespace causing syntax errors in unknown language"
+                },
+                {
+                    "keyword": "formatting issue",
+                    "matched": true,
+                    "similarity": 0.12,
+                    "best_matching_text": "Inspect code for trailing whitespace and remove it Verify code formatting rules and linting tools are used Review code editor settings to prevent whitespace addition Clean input, check formatting rules, use linting tools to prevent whitespace issues Regularly review code formatting, use linting tools, and configure code editors to prevent whitespace issues"
+                },
+                {
+                    "keyword": "invisible characters",
+                    "matched": true,
+                    "similarity": 0.102,
+                    "best_matching_text": "Trailing whitespace breaking code Hidden/formatting characters: Trailing whitespace causing syntax errors in unknown language"
+                }
+            ],
+            "fix_matches": [
+                {
+                    "keyword": "clean input",
+                    "matched": true,
+                    "similarity": 0.13,
+                    "best_matching_text": "Inspect code for trailing whitespace and remove it Verify code formatting rules and linting tools are used Review code editor settings to prevent whitespace addition Clean input, check formatting rules, use linting tools to prevent whitespace issues Regularly review code formatting, use linting tools, and configure code editors to prevent whitespace issues"
+                },
+                {
+                    "keyword": "check formatting rules",
+                    "matched": true,
+                    "similarity": 0.284,
+                    "best_matching_text": "Inspect code for trailing whitespace and remove it Verify code formatting rules and linting tools are used Review code editor settings to prevent whitespace addition Clean input, check formatting rules, use linting tools to prevent whitespace issues Regularly review code formatting, use linting tools, and configure code editors to prevent whitespace issues"
+                },
+                {
+                    "keyword": "use linting tools",
+                    "matched": true,
+                    "similarity": 0.424,
+                    "best_matching_text": "Inspect code for trailing whitespace and remove it Verify code formatting rules and linting tools are used Review code editor settings to prevent whitespace addition Clean input, check formatting rules, use linting tools to prevent whitespace issues Regularly review code formatting, use linting tools, and configure code editors to prevent whitespace issues"
+                }
+            ]
+        }
+    },
+    {
+        "id": 4,
+        "title": "CSS overflow issue causing unexpected layout problem",
+        "quick": {
+            "root_score": 2,
+            "fix_score": 3,
+            "total_score": 5,
+            "possible_score": 6,
+            "score_percent": 83.33,
+            "latency_ms": 14758.05,
+            "expected_root_causes": [
+                "layout calculation",
+                "container size",
+                "responsive design problem"
+            ],
+            "expected_fix": [
+                "inspect element sizes",
+                "fix CSS properties",
+                "adjust layout rules"
+            ],
+            "ai_response": {
+                "bug_summary": "CSS overflow issue in production",
+                "root_cause": "CSS layout calculation error due to incorrect container size",
+                "investigation_steps": [
+                    "Inspect CSS properties for container size",
+                    "Verify layout rules",
+                    "Adjust CSS properties"
+                ],
+                "fix_recommendation": "Inspect element sizes, fix CSS properties, and adjust layout rules",
+                "prevention": "Regularly review and update CSS properties to prevent layout issues",
+                "confidence_score": 0,
+                "evidence": [
+                    "CSS overflow issue reported",
+                    "Container size mismatch in CSS"
+                ],
+                "prompt_version": "2.6.0",
+                "source": "llm"
+            },
+            "root_matches": [
+                {
+                    "keyword": "layout calculation",
+                    "matched": true,
+                    "similarity": 0.288,
+                    "best_matching_text": "CSS overflow issue in production CSS layout calculation error due to incorrect container size Inspect CSS properties for container size Verify layout rules Adjust CSS properties Inspect element sizes, fix CSS properties, and adjust layout rules Regularly review and update CSS properties to prevent layout issues"
+                },
+                {
+                    "keyword": "container size",
+                    "matched": true,
+                    "similarity": 0.231,
+                    "best_matching_text": "CSS overflow issue in production CSS layout calculation error due to incorrect container size Inspect CSS properties for container size Verify layout rules Adjust CSS properties Inspect element sizes, fix CSS properties, and adjust layout rules Regularly review and update CSS properties to prevent layout issues"
+                },
+                {
+                    "keyword": "responsive design problem",
+                    "matched": false,
+                    "similarity": 0.0,
+                    "best_matching_text": "CSS overflow issue in production CSS layout calculation error due to incorrect container size Inspect CSS properties for container size Verify layout rules Adjust CSS properties Inspect element sizes, fix CSS properties, and adjust layout rules Regularly review and update CSS properties to prevent layout issues"
+                }
+            ],
+            "fix_matches": [
+                {
+                    "keyword": "inspect element sizes",
+                    "matched": true,
+                    "similarity": 0.215,
+                    "best_matching_text": "CSS overflow issue in production CSS layout calculation error due to incorrect container size Inspect CSS properties for container size Verify layout rules Adjust CSS properties Inspect element sizes, fix CSS properties, and adjust layout rules Regularly review and update CSS properties to prevent layout issues"
+                },
+                {
+                    "keyword": "fix CSS properties",
+                    "matched": true,
+                    "similarity": 0.592,
+                    "best_matching_text": "CSS overflow issue in production CSS layout calculation error due to incorrect container size Inspect CSS properties for container size Verify layout rules Adjust CSS properties Inspect element sizes, fix CSS properties, and adjust layout rules Regularly review and update CSS properties to prevent layout issues"
+                },
+                {
+                    "keyword": "adjust layout rules",
+                    "matched": true,
+                    "similarity": 0.43,
+                    "best_matching_text": "CSS overflow issue in production CSS layout calculation error due to incorrect container size Inspect CSS properties for container size Verify layout rules Adjust CSS properties Inspect element sizes, fix CSS properties, and adjust layout rules Regularly review and update CSS properties to prevent layout issues"
+                }
+            ]
+        },
+        "full": {
+            "root_score": 3,
+            "fix_score": 3,
+            "total_score": 6,
+            "possible_score": 6,
+            "score_percent": 100.0,
+            "latency_ms": 10610.06,
+            "expected_root_causes": [
+                "layout calculation",
+                "container size",
+                "responsive design problem"
+            ],
+            "expected_fix": [
+                "inspect element sizes",
+                "fix CSS properties",
+                "adjust layout rules"
+            ],
+            "ai_response": {
+                "bug_summary": "CSS overflow issue causing layout disruption",
+                "root_cause": "Inconsistent CSS styles causing layout overflow due to incorrect container sizing.",
+                "investigation_steps": [
+                    "Inspect element sizes and styles using browser developer tools.",
+                    "Verify CSS properties and layout rules for affected containers.",
+                    "Review responsive design and media queries for potential conflicts."
+                ],
+                "fix_recommendation": "Adjust CSS properties, inspect element sizes, and fix layout rules to prevent overflow.",
+                "prevention": "Regularly review and test responsive design, use linting tools for CSS formatting, and implement automated testing for layout issues.",
+                "confidence_score": 0,
+                "evidence": [
+                    "CSS overflow issue reported in production",
+                    "Layout disruption observed in multiple browsers",
+                    "Inconsistent CSS styles suspected"
+                ],
+                "prompt_version": "2.6.0",
+                "source": "llm"
+            },
+            "root_matches": [
+                {
+                    "keyword": "layout calculation",
+                    "matched": true,
+                    "similarity": 0.144,
+                    "best_matching_text": "CSS overflow issue causing layout disruption Inconsistent CSS styles causing layout overflow due to incorrect container sizing"
+                },
+                {
+                    "keyword": "container size",
+                    "matched": true,
+                    "similarity": 0.135,
+                    "best_matching_text": "CSS overflow issue causing layout disruption Inconsistent CSS styles causing layout overflow due to incorrect container sizing"
+                },
+                {
+                    "keyword": "responsive design problem",
+                    "matched": true,
+                    "similarity": 0.311,
+                    "best_matching_text": "Review responsive design and media queries for potential conflicts"
+                }
+            ],
+            "fix_matches": [
+                {
+                    "keyword": "inspect element sizes",
+                    "matched": true,
+                    "similarity": 0.517,
+                    "best_matching_text": "Inspect element sizes and styles using browser developer tools"
+                },
+                {
+                    "keyword": "fix CSS properties",
+                    "matched": true,
+                    "similarity": 0.494,
+                    "best_matching_text": "Adjust CSS properties, inspect element sizes, and fix layout rules to prevent overflow"
+                },
+                {
+                    "keyword": "adjust layout rules",
+                    "matched": true,
+                    "similarity": 0.494,
+                    "best_matching_text": "Adjust CSS properties, inspect element sizes, and fix layout rules to prevent overflow"
+                }
+            ]
+        }
+    },
+    {
+        "id": 5,
+        "title": "Debugger showing different behavior from compiler",
+        "quick": {
+            "root_score": 1,
+            "fix_score": 1,
+            "total_score": 2,
+            "possible_score": 6,
+            "score_percent": 33.33,
+            "latency_ms": 12726.33,
+            "expected_root_causes": [
+                "compiler optimization",
+                "debug configuration",
+                "build mismatch"
+            ],
+            "expected_fix": [
+                "check compiler flags",
+                "disable optimization",
+                "rebuild project"
+            ],
+            "ai_response": {
+                "bug_summary": "Debugger shows different behavior from compiler",
+                "root_cause": "Misaligned compiler and debugger configurations",
+                "investigation_steps": [
+                    "Compare compiler and debugger settings for consistency",
+                    "Verify compiler flags and options",
+                    "Check debugger configuration files"
+                ],
+                "fix_recommendation": "Synchronize compiler and debugger configurations",
+                "prevention": "Regularly review and update compiler and debugger settings",
+                "confidence_score": 10,
+                "evidence": [
+                    "Debugger showing different behavior from compiler"
+                ],
+                "prompt_version": "2.6.0",
+                "source": "llm"
+            },
+            "root_matches": [
+                {
+                    "keyword": "compiler optimization",
+                    "matched": true,
+                    "similarity": 0.323,
+                    "best_matching_text": "Debugger shows different behavior from compiler Misaligned compiler and debugger configurations Compare compiler and debugger settings for consistency Verify compiler flags and options Check debugger configuration files Synchronize compiler and debugger configurations Regularly review and update compiler and debugger settings"
+                },
+                {
+                    "keyword": "debug configuration",
+                    "matched": false,
+                    "similarity": 0.054,
+                    "best_matching_text": "Debugger shows different behavior from compiler Misaligned compiler and debugger configurations Compare compiler and debugger settings for consistency Verify compiler flags and options Check debugger configuration files Synchronize compiler and debugger configurations Regularly review and update compiler and debugger settings"
+                },
+                {
+                    "keyword": "build mismatch",
+                    "matched": false,
+                    "similarity": 0.0,
+                    "best_matching_text": "Debugger shows different behavior from compiler Misaligned compiler and debugger configurations Compare compiler and debugger settings for consistency Verify compiler flags and options Check debugger configuration files Synchronize compiler and debugger configurations Regularly review and update compiler and debugger settings"
+                }
+            ],
+            "fix_matches": [
+                {
+                    "keyword": "check compiler flags",
+                    "matched": true,
+                    "similarity": 0.403,
+                    "best_matching_text": "Debugger shows different behavior from compiler Misaligned compiler and debugger configurations Compare compiler and debugger settings for consistency Verify compiler flags and options Check debugger configuration files Synchronize compiler and debugger configurations Regularly review and update compiler and debugger settings"
+                },
+                {
+                    "keyword": "disable optimization",
+                    "matched": false,
+                    "similarity": 0.0,
+                    "best_matching_text": "Debugger shows different behavior from compiler Misaligned compiler and debugger configurations Compare compiler and debugger settings for consistency Verify compiler flags and options Check debugger configuration files Synchronize compiler and debugger configurations Regularly review and update compiler and debugger settings"
+                },
+                {
+                    "keyword": "rebuild project",
+                    "matched": false,
+                    "similarity": 0.0,
+                    "best_matching_text": "Debugger shows different behavior from compiler Misaligned compiler and debugger configurations Compare compiler and debugger settings for consistency Verify compiler flags and options Check debugger configuration files Synchronize compiler and debugger configurations Regularly review and update compiler and debugger settings"
+                }
+            ]
+        },
+        "full": {
+            "root_score": 2,
+            "fix_score": 2,
+            "total_score": 4,
+            "possible_score": 6,
+            "score_percent": 66.67,
+            "latency_ms": 9314.34,
+            "expected_root_causes": [
+                "compiler optimization",
+                "debug configuration",
+                "build mismatch"
+            ],
+            "expected_fix": [
+                "check compiler flags",
+                "disable optimization",
+                "rebuild project"
+            ],
+            "ai_response": {
+                "bug_summary": "Debugger shows different behavior than compiler, impacting production",
+                "root_cause": "Inconsistent compiler and debugger settings leading to differing execution paths.",
+                "investigation_steps": [
+                    "Compare compiler and debugger settings to identify discrepancies.",
+                    "Verify that both tools are using the same optimization flags and compiler version.",
+                    "Analyze the code for any potential differences in execution flow or data handling."
+                ],
+                "fix_recommendation": "Standardize compiler and debugger settings, ensure consistent optimization flags, and review code for potential execution path differences.",
+                "prevention": "Regularly review and document compiler and debugger settings, ensure consistent configuration across development environments.",
+                "confidence_score": 10,
+                "evidence": [
+                    "Debugger showing different behavior from compiler",
+                    "Reported severity: high"
+                ],
+                "prompt_version": "2.6.0",
+                "source": "llm"
+            },
+            "root_matches": [
+                {
+                    "keyword": "compiler optimization",
+                    "matched": true,
+                    "similarity": 0.383,
+                    "best_matching_text": "Verify that both tools are using the same optimization flags and compiler version"
+                },
+                {
+                    "keyword": "debug configuration",
+                    "matched": true,
+                    "similarity": 0.193,
+                    "best_matching_text": "Regularly review and document compiler and debugger settings, ensure consistent configuration across development environments"
+                },
+                {
+                    "keyword": "build mismatch",
+                    "matched": false,
+                    "similarity": 0.0,
+                    "best_matching_text": "Debugger shows different behavior than compiler, impacting production Inconsistent compiler and debugger settings leading to differing execution paths"
+                }
+            ],
+            "fix_matches": [
+                {
+                    "keyword": "check compiler flags",
+                    "matched": true,
+                    "similarity": 0.26,
+                    "best_matching_text": "Verify that both tools are using the same optimization flags and compiler version"
+                },
+                {
+                    "keyword": "disable optimization",
+                    "matched": true,
+                    "similarity": 0.188,
+                    "best_matching_text": "Verify that both tools are using the same optimization flags and compiler version"
+                },
+                {
+                    "keyword": "rebuild project",
+                    "matched": false,
+                    "similarity": 0.0,
+                    "best_matching_text": "Debugger shows different behavior than compiler, impacting production Inconsistent compiler and debugger settings leading to differing execution paths"
+                }
+            ]
+        }
+    },
+    {
+        "id": 6,
+        "title": "Confusing stack trace pointing wrong direction",
+        "quick": {
+            "root_score": 3,
+            "fix_score": 0,
+            "total_score": 3,
+            "possible_score": 6,
+            "score_percent": 50.0,
+            "latency_ms": 12078.94,
+            "expected_root_causes": [
+                "misleading stack trace",
+                "incorrect error location",
+                "wrong execution path"
+            ],
+            "expected_fix": [
+                "trace execution flow",
+                "inspect related components",
+                "add logging"
+            ],
+            "ai_response": {
+                "bug_summary": "Stack trace points to wrong file",
+                "root_cause": "Incorrect file path or module import in code",
+                "investigation_steps": [
+                    "Review code for incorrect file path or module import",
+                    "Check if module imports are correct and up-to-date",
+                    "Verify if the stack trace is pointing to the correct location"
+                ],
+                "fix_recommendation": "Update file path or module import to match actual location",
+                "prevention": "Regularly review and update module imports to avoid incorrect file paths",
+                "confidence_score": 10,
+                "evidence": [
+                    "Stack trace points to wrong file"
+                ],
+                "prompt_version": "2.6.0",
+                "source": "llm"
+            },
+            "root_matches": [
+                {
+                    "keyword": "misleading stack trace",
+                    "matched": true,
+                    "similarity": 0.16,
+                    "best_matching_text": "Stack trace points to wrong file Incorrect file path or module import in code Review code for incorrect file path or module import Check if module imports are correct and up-to-date Verify if the stack trace is pointing to the correct location Update file path or module import to match actual location Regularly review and update module imports to avoid incorrect file paths"
+                },
+                {
+                    "keyword": "incorrect error location",
+                    "matched": true,
+                    "similarity": 0.199,
+                    "best_matching_text": "Stack trace points to wrong file Incorrect file path or module import in code Review code for incorrect file path or module import Check if module imports are correct and up-to-date Verify if the stack trace is pointing to the correct location Update file path or module import to match actual location Regularly review and update module imports to avoid incorrect file paths"
+                },
+                {
+                    "keyword": "wrong execution path",
+                    "matched": true,
+                    "similarity": 0.16,
+                    "best_matching_text": "Stack trace points to wrong file Incorrect file path or module import in code Review code for incorrect file path or module import Check if module imports are correct and up-to-date Verify if the stack trace is pointing to the correct location Update file path or module import to match actual location Regularly review and update module imports to avoid incorrect file paths"
+                }
+            ],
+            "fix_matches": [
+                {
+                    "keyword": "trace execution flow",
+                    "matched": false,
+                    "similarity": 0.071,
+                    "best_matching_text": "Stack trace points to wrong file Incorrect file path or module import in code Review code for incorrect file path or module import Check if module imports are correct and up-to-date Verify if the stack trace is pointing to the correct location Update file path or module import to match actual location Regularly review and update module imports to avoid incorrect file paths"
+                },
+                {
+                    "keyword": "inspect related components",
+                    "matched": false,
+                    "similarity": 0.0,
+                    "best_matching_text": "Stack trace points to wrong file Incorrect file path or module import in code Review code for incorrect file path or module import Check if module imports are correct and up-to-date Verify if the stack trace is pointing to the correct location Update file path or module import to match actual location Regularly review and update module imports to avoid incorrect file paths"
+                },
+                {
+                    "keyword": "add logging",
+                    "matched": false,
+                    "similarity": 0.0,
+                    "best_matching_text": "Stack trace points to wrong file Incorrect file path or module import in code Review code for incorrect file path or module import Check if module imports are correct and up-to-date Verify if the stack trace is pointing to the correct location Update file path or module import to match actual location Regularly review and update module imports to avoid incorrect file paths"
+                }
+            ]
+        },
+        "full": {
+            "root_score": 3,
+            "fix_score": 1,
+            "total_score": 4,
+            "possible_score": 6,
+            "score_percent": 66.67,
+            "latency_ms": 14791.7,
+            "expected_root_causes": [
+                "misleading stack trace",
+                "incorrect error location",
+                "wrong execution path"
+            ],
+            "expected_fix": [
+                "trace execution flow",
+                "inspect related components",
+                "add logging"
+            ],
+            "ai_response": {
+                "bug_summary": "Stack trace points to wrong file",
+                "root_cause": "Incorrect file path or module name in the stack trace, leading to a misdirected investigation.",
+                "investigation_steps": [
+                    "Verify the stack trace file path and module name against the actual code and project structure.",
+                    "Check for any typos or incorrect file extensions in the stack trace.",
+                    "Review the project's build configuration and settings to ensure correct file paths are being used."
+                ],
+                "fix_recommendation": "Update the stack trace file path and module name to match the actual code and project structure, ensuring accurate investigation and debugging.",
+                "prevention": "Implement automated checks for correct file paths and module names in the stack trace, using tools like linters or code analyzers.",
+                "confidence_score": 10,
+                "evidence": [
+                    "Stack trace points to wrong file",
+                    "Reported severity: high"
+                ],
+                "prompt_version": "2.6.0",
+                "source": "llm"
+            },
+            "root_matches": [
+                {
+                    "keyword": "misleading stack trace",
+                    "matched": true,
+                    "similarity": 0.29,
+                    "best_matching_text": "Stack trace points to wrong file Incorrect file path or module name in the stack trace, leading to a misdirected investigation"
+                },
+                {
+                    "keyword": "incorrect error location",
+                    "matched": true,
+                    "similarity": 0.162,
+                    "best_matching_text": "Check for any typos or incorrect file extensions in the stack trace"
+                },
+                {
+                    "keyword": "wrong execution path",
+                    "matched": true,
+                    "similarity": 0.258,
+                    "best_matching_text": "Stack trace points to wrong file Incorrect file path or module name in the stack trace, leading to a misdirected investigation"
+                }
+            ],
+            "fix_matches": [
+                {
+                    "keyword": "trace execution flow",
+                    "matched": true,
+                    "similarity": 0.114,
+                    "best_matching_text": "Stack trace points to wrong file Incorrect file path or module name in the stack trace, leading to a misdirected investigation"
+                },
+                {
+                    "keyword": "inspect related components",
+                    "matched": false,
+                    "similarity": 0.0,
+                    "best_matching_text": "Stack trace points to wrong file Incorrect file path or module name in the stack trace, leading to a misdirected investigation"
+                },
+                {
+                    "keyword": "add logging",
+                    "matched": false,
+                    "similarity": 0.0,
+                    "best_matching_text": "Stack trace points to wrong file Incorrect file path or module name in the stack trace, leading to a misdirected investigation"
+                }
+            ]
+        }
+    },
+    {
+        "id": 7,
+        "title": "Package version conflict breaking application",
+        "quick": {
+            "root_score": 3,
+            "fix_score": 3,
+            "total_score": 6,
+            "possible_score": 6,
+            "score_percent": 100.0,
+            "latency_ms": 11507.94,
+            "expected_root_causes": [
+                "dependency mismatch",
+                "incompatible versions",
+                "library conflict"
+            ],
+            "expected_fix": [
+                "update dependencies",
+                "check package compatibility",
+                "use version lock files"
+            ],
+            "ai_response": {
+                "bug_summary": "Package version conflict in production",
+                "root_cause": "Dependency mismatch due to incompatible package versions.",
+                "investigation_steps": [
+                    "Check package dependencies and versions",
+                    "Verify compatibility between packages",
+                    "Update packages to compatible versions"
+                ],
+                "fix_recommendation": "Update dependencies to compatible versions, use lock files for consistent dependency management.",
+                "prevention": "Regularly review and update dependencies, use dependency management tools.",
+                "confidence_score": 0,
+                "evidence": [
+                    "Package version conflict reported",
+                    "High severity incident"
+                ],
+                "prompt_version": "2.6.0",
+                "source": "llm"
+            },
+            "root_matches": [
+                {
+                    "keyword": "dependency mismatch",
+                    "matched": true,
+                    "similarity": 0.369,
+                    "best_matching_text": "Package version conflict in production Dependency mismatch due to incompatible package versions"
+                },
+                {
+                    "keyword": "incompatible versions",
+                    "matched": true,
+                    "similarity": 0.391,
+                    "best_matching_text": "Package version conflict in production Dependency mismatch due to incompatible package versions"
+                },
+                {
+                    "keyword": "library conflict",
+                    "matched": true,
+                    "similarity": 0.189,
+                    "best_matching_text": "Package version conflict in production Dependency mismatch due to incompatible package versions"
+                }
+            ],
+            "fix_matches": [
+                {
+                    "keyword": "update dependencies",
+                    "matched": true,
+                    "similarity": 0.414,
+                    "best_matching_text": "Regularly review and update dependencies, use dependency management tools"
+                },
+                {
+                    "keyword": "check package compatibility",
+                    "matched": true,
+                    "similarity": 0.272,
+                    "best_matching_text": "Check package dependencies and versions Verify compatibility between packages Update packages to compatible versions Update dependencies to compatible versions, use lock files for consistent dependency management"
+                },
+                {
+                    "keyword": "use version lock files",
+                    "matched": true,
+                    "similarity": 0.232,
+                    "best_matching_text": "Check package dependencies and versions Verify compatibility between packages Update packages to compatible versions Update dependencies to compatible versions, use lock files for consistent dependency management"
+                }
+            ]
+        },
+        "full": {
+            "root_score": 3,
+            "fix_score": 3,
+            "total_score": 6,
+            "possible_score": 6,
+            "score_percent": 100.0,
+            "latency_ms": 8222.22,
+            "expected_root_causes": [
+                "dependency mismatch",
+                "incompatible versions",
+                "library conflict"
+            ],
+            "expected_fix": [
+                "update dependencies",
+                "check package compatibility",
+                "use version lock files"
+            ],
+            "ai_response": {
+                "bug_summary": "Package version conflict in production environment",
+                "root_cause": "Incompatible package versions causing dependency resolution issues.",
+                "investigation_steps": [
+                    "Review project dependencies and package versions in production environment.",
+                    "Compare package versions with development environment to identify discrepancies.",
+                    "Verify compatibility of dependent packages and update as necessary."
+                ],
+                "fix_recommendation": "Update package versions to compatible versions, use lock files to ensure reproducibility, and review dependency tree for potential conflicts.",
+                "prevention": "Regularly review and update dependencies, use semantic versioning, and maintain a clear dependency tree.",
+                "confidence_score": 0,
+                "evidence": [
+                    "Package version conflict reported in production environment",
+                    "Discrepancies in package versions between production and development environments"
+                ],
+                "prompt_version": "2.6.0",
+                "source": "llm"
+            },
+            "root_matches": [
+                {
+                    "keyword": "dependency mismatch",
+                    "matched": true,
+                    "similarity": 0.12,
+                    "best_matching_text": "Regularly review and update dependencies, use semantic versioning, and maintain a clear dependency tree"
+                },
+                {
+                    "keyword": "incompatible versions",
+                    "matched": true,
+                    "similarity": 0.339,
+                    "best_matching_text": "Package version conflict in production environment Incompatible package versions causing dependency resolution issues"
+                },
+                {
+                    "keyword": "library conflict",
+                    "matched": true,
+                    "similarity": 0.18,
+                    "best_matching_text": "Package version conflict in production environment Incompatible package versions causing dependency resolution issues"
+                }
+            ],
+            "fix_matches": [
+                {
+                    "keyword": "update dependencies",
+                    "matched": true,
+                    "similarity": 0.34,
+                    "best_matching_text": "Regularly review and update dependencies, use semantic versioning, and maintain a clear dependency tree"
+                },
+                {
+                    "keyword": "check package compatibility",
+                    "matched": true,
+                    "similarity": 0.22,
+                    "best_matching_text": "Verify compatibility of dependent packages and update as necessary"
+                },
+                {
+                    "keyword": "use version lock files",
+                    "matched": true,
+                    "similarity": 0.359,
+                    "best_matching_text": "Update package versions to compatible versions, use lock files to ensure reproducibility, and review dependency tree for potential conflicts"
+                }
+            ]
+        }
+    },
+    {
+        "id": 8,
+        "title": "DLL mismatch causing application failure",
+        "quick": {
+            "root_score": 2,
+            "fix_score": 3,
+            "total_score": 5,
+            "possible_score": 6,
+            "score_percent": 83.33,
+            "latency_ms": 11052.67,
+            "expected_root_causes": [
+                "missing dependency",
+                "incompatible library version",
+                "runtime conflict"
+            ],
+            "expected_fix": [
+                "verify installed libraries",
+                "replace DLL",
+                "check compatibility"
+            ],
+            "ai_response": {
+                "bug_summary": "DLL mismatch causing application failure",
+                "root_cause": "Dependency/version conflict due to mismatched DLL versions.",
+                "investigation_steps": [
+                    "Verify DLL versions across all dependencies",
+                    "Check for updates and compatibility",
+                    "Review build process for correct DLL inclusion"
+                ],
+                "fix_recommendation": "Update dependencies to compatible DLL versions, use lock files to ensure version consistency.",
+                "prevention": "Regularly update dependencies, verify compatibility, and use lock files to prevent future conflicts.",
+                "confidence_score": 10,
+                "evidence": [
+                    "DLL mismatch causing application failure"
+                ],
+                "prompt_version": "2.6.0",
+                "source": "llm"
+            },
+            "root_matches": [
+                {
+                    "keyword": "missing dependency",
+                    "matched": true,
+                    "similarity": 0.163,
+                    "best_matching_text": "DLL mismatch causing application failure Dependency/version conflict due to mismatched DLL versions"
+                },
+                {
+                    "keyword": "incompatible library version",
+                    "matched": false,
+                    "similarity": 0.095,
+                    "best_matching_text": "DLL mismatch causing application failure Dependency/version conflict due to mismatched DLL versions"
+                },
+                {
+                    "keyword": "runtime conflict",
+                    "matched": true,
+                    "similarity": 0.163,
+                    "best_matching_text": "DLL mismatch causing application failure Dependency/version conflict due to mismatched DLL versions"
+                }
+            ],
+            "fix_matches": [
+                {
+                    "keyword": "verify installed libraries",
+                    "matched": true,
+                    "similarity": 0.106,
+                    "best_matching_text": "Regularly update dependencies, verify compatibility, and use lock files to prevent future conflicts"
+                },
+                {
+                    "keyword": "replace DLL",
+                    "matched": true,
+                    "similarity": 0.246,
+                    "best_matching_text": "DLL mismatch causing application failure Dependency/version conflict due to mismatched DLL versions"
+                },
+                {
+                    "keyword": "check compatibility",
+                    "matched": true,
+                    "similarity": 0.221,
+                    "best_matching_text": "Verify DLL versions across all dependencies Check for updates and compatibility Review build process for correct DLL inclusion Update dependencies to compatible DLL versions, use lock files to ensure version consistency"
+                }
+            ]
+        },
+        "full": {
+            "root_score": 1,
+            "fix_score": 1,
+            "total_score": 2,
+            "possible_score": 6,
+            "score_percent": 33.33,
+            "latency_ms": 46141.24,
+            "expected_root_causes": [
+                "missing dependency",
+                "incompatible library version",
+                "runtime conflict"
+            ],
+            "expected_fix": [
+                "verify installed libraries",
+                "replace DLL",
+                "check compatibility"
+            ],
+            "ai_response": {
+                "bug_summary": "DLL mismatch causing application failure",
+                "root_cause": "Dependency/version conflict due to mismatched DLL versions",
+                "investigation_steps": [
+                    "Review application dependencies and verify DLL versions",
+                    "Check for any recent updates or changes to the dependency chain",
+                    "Inspect the application's configuration files for any hardcoded DLL paths"
+                ],
+                "fix_recommendation": "Update dependencies to use compatible DLL versions, and consider implementing a dependency lock file to prevent future conflicts",
+                "prevention": "Regularly review and update dependencies, and consider using a package manager with version locking",
+                "confidence_score": 10,
+                "evidence": [
+                    "DLL mismatch mentioned in the bug description",
+                    "High severity reported, indicating a critical impact on application functionality"
+                ],
+                "prompt_version": "2.6.0",
+                "source": "llm"
+            },
+            "root_matches": [
+                {
+                    "keyword": "missing dependency",
+                    "matched": true,
+                    "similarity": 0.146,
+                    "best_matching_text": "DLL mismatch causing application failure Dependency/version conflict due to mismatched DLL versions Review application dependencies and verify DLL versions Check for any recent updates or changes to the dependency chain Inspect the application's configuration files for any hardcoded DLL paths Update dependencies to use compatible DLL versions, and consider implementing a dependency lock file to prevent future conflicts Regularly review and update dependencies, and consider using a package manager with version locking"
+                },
+                {
+                    "keyword": "incompatible library version",
+                    "matched": false,
+                    "similarity": 0.077,
+                    "best_matching_text": "DLL mismatch causing application failure Dependency/version conflict due to mismatched DLL versions Review application dependencies and verify DLL versions Check for any recent updates or changes to the dependency chain Inspect the application's configuration files for any hardcoded DLL paths Update dependencies to use compatible DLL versions, and consider implementing a dependency lock file to prevent future conflicts Regularly review and update dependencies, and consider using a package manager with version locking"
+                },
+                {
+                    "keyword": "runtime conflict",
+                    "matched": false,
+                    "similarity": 0.049,
+                    "best_matching_text": "DLL mismatch causing application failure Dependency/version conflict due to mismatched DLL versions Review application dependencies and verify DLL versions Check for any recent updates or changes to the dependency chain Inspect the application's configuration files for any hardcoded DLL paths Update dependencies to use compatible DLL versions, and consider implementing a dependency lock file to prevent future conflicts Regularly review and update dependencies, and consider using a package manager with version locking"
+                }
+            ],
+            "fix_matches": [
+                {
+                    "keyword": "verify installed libraries",
+                    "matched": false,
+                    "similarity": 0.039,
+                    "best_matching_text": "DLL mismatch causing application failure Dependency/version conflict due to mismatched DLL versions Review application dependencies and verify DLL versions Check for any recent updates or changes to the dependency chain Inspect the application's configuration files for any hardcoded DLL paths Update dependencies to use compatible DLL versions, and consider implementing a dependency lock file to prevent future conflicts Regularly review and update dependencies, and consider using a package manager with version locking"
+                },
+                {
+                    "keyword": "replace DLL",
+                    "matched": true,
+                    "similarity": 0.249,
+                    "best_matching_text": "DLL mismatch causing application failure Dependency/version conflict due to mismatched DLL versions Review application dependencies and verify DLL versions Check for any recent updates or changes to the dependency chain Inspect the application's configuration files for any hardcoded DLL paths Update dependencies to use compatible DLL versions, and consider implementing a dependency lock file to prevent future conflicts Regularly review and update dependencies, and consider using a package manager with version locking"
+                },
+                {
+                    "keyword": "check compatibility",
+                    "matched": false,
+                    "similarity": 0.05,
+                    "best_matching_text": "DLL mismatch causing application failure Dependency/version conflict due to mismatched DLL versions Review application dependencies and verify DLL versions Check for any recent updates or changes to the dependency chain Inspect the application's configuration files for any hardcoded DLL paths Update dependencies to use compatible DLL versions, and consider implementing a dependency lock file to prevent future conflicts Regularly review and update dependencies, and consider using a package manager with version locking"
+                }
+            ]
+        }
+    },
+    {
+        "id": 9,
+        "title": "Old undocumented code causing issue",
+        "quick": {
+            "root_score": 3,
+            "fix_score": 3,
+            "total_score": 6,
+            "possible_score": 6,
+            "score_percent": 100.0,
+            "latency_ms": 5625.37,
+            "expected_root_causes": [
+                "legacy code",
+                "unknown architecture",
+                "technical debt"
+            ],
+            "expected_fix": [
+                "document code",
+                "understand architecture",
+                "refactor carefully"
+            ],
+            "ai_response": {
+                "bug_summary": "Legacy code bug causing high severity production incident",
+                "root_cause": "Legacy code with unknown architecture causing production issues.",
+                "investigation_steps": [
+                    "Review legacy code documentation",
+                    "Consult with original developers",
+                    "Refactor or replace legacy code"
+                ],
+                "fix_recommendation": "Document legacy code, understand architecture, refactor or replace as necessary.",
+                "prevention": "Regularly review and refactor legacy code to prevent technical debt.",
+                "confidence_score": 10,
+                "evidence": [
+                    "Legacy code bug nobody understood"
+                ],
+                "prompt_version": "2.6.0",
+                "source": "llm"
+            },
+            "root_matches": [
+                {
+                    "keyword": "legacy code",
+                    "matched": true,
+                    "similarity": 0.547,
+                    "best_matching_text": "Review legacy code documentation Consult with original developers Refactor or replace legacy code Document legacy code, understand architecture, refactor or replace as necessary"
+                },
+                {
+                    "keyword": "unknown architecture",
+                    "matched": true,
+                    "similarity": 0.261,
+                    "best_matching_text": "Legacy code bug causing high severity production incident Legacy code with unknown architecture causing production issues"
+                },
+                {
+                    "keyword": "technical debt",
+                    "matched": true,
+                    "similarity": 0.499,
+                    "best_matching_text": "Regularly review and refactor legacy code to prevent technical debt"
+                }
+            ],
+            "fix_matches": [
+                {
+                    "keyword": "document code",
+                    "matched": true,
+                    "similarity": 0.374,
+                    "best_matching_text": "Review legacy code documentation Consult with original developers Refactor or replace legacy code Document legacy code, understand architecture, refactor or replace as necessary"
+                },
+                {
+                    "keyword": "understand architecture",
+                    "matched": true,
+                    "similarity": 0.235,
+                    "best_matching_text": "Review legacy code documentation Consult with original developers Refactor or replace legacy code Document legacy code, understand architecture, refactor or replace as necessary"
+                },
+                {
+                    "keyword": "refactor carefully",
+                    "matched": true,
+                    "similarity": 0.172,
+                    "best_matching_text": "Review legacy code documentation Consult with original developers Refactor or replace legacy code Document legacy code, understand architecture, refactor or replace as necessary"
+                }
+            ]
+        },
+        "full": {
+            "root_score": 3,
+            "fix_score": 3,
+            "total_score": 6,
+            "possible_score": 6,
+            "score_percent": 100.0,
+            "latency_ms": 5303.29,
+            "expected_root_causes": [
+                "legacy code",
+                "unknown architecture",
+                "technical debt"
+            ],
+            "expected_fix": [
+                "document code",
+                "understand architecture",
+                "refactor carefully"
+            ],
+            "ai_response": {
+                "bug_summary": "Legacy code bug causing unknown production incident",
+                "root_cause": "Legacy code with unknown architecture and technical debt causing high severity production incident.",
+                "investigation_steps": [
+                    "Review legacy code architecture and documentation",
+                    "Conduct code reviews to identify potential issues",
+                    "Consult with senior engineers familiar with legacy code"
+                ],
+                "fix_recommendation": "Document legacy code, understand architecture, refactor carefully to improve maintainability and reduce technical debt.",
+                "prevention": "Regularly review and refactor legacy code to prevent accumulation of technical debt.",
+                "confidence_score": 10,
+                "evidence": [
+                    "Legacy code bug nobody understood"
+                ],
+                "prompt_version": "2.6.0",
+                "source": "llm"
+            },
+            "root_matches": [
+                {
+                    "keyword": "legacy code",
+                    "matched": true,
+                    "similarity": 0.548,
+                    "best_matching_text": "Review legacy code architecture and documentation Conduct code reviews to identify potential issues Consult with senior engineers familiar with legacy code Document legacy code, understand architecture, refactor carefully to improve maintainability and reduce technical debt"
+                },
+                {
+                    "keyword": "unknown architecture",
+                    "matched": true,
+                    "similarity": 0.365,
+                    "best_matching_text": "Legacy code bug causing unknown production incident Legacy code with unknown architecture and technical debt causing high severity production incident"
+                },
+                {
+                    "keyword": "technical debt",
+                    "matched": true,
+                    "similarity": 0.35,
+                    "best_matching_text": "Regularly review and refactor legacy code to prevent accumulation of technical debt"
+                }
+            ],
+            "fix_matches": [
+                {
+                    "keyword": "document code",
+                    "matched": true,
+                    "similarity": 0.382,
+                    "best_matching_text": "Review legacy code architecture and documentation Conduct code reviews to identify potential issues Consult with senior engineers familiar with legacy code Document legacy code, understand architecture, refactor carefully to improve maintainability and reduce technical debt"
+                },
+                {
+                    "keyword": "understand architecture",
+                    "matched": true,
+                    "similarity": 0.282,
+                    "best_matching_text": "Review legacy code architecture and documentation Conduct code reviews to identify potential issues Consult with senior engineers familiar with legacy code Document legacy code, understand architecture, refactor carefully to improve maintainability and reduce technical debt"
+                },
+                {
+                    "keyword": "refactor carefully",
+                    "matched": true,
+                    "similarity": 0.199,
+                    "best_matching_text": "Review legacy code architecture and documentation Conduct code reviews to identify potential issues Consult with senior engineers familiar with legacy code Document legacy code, understand architecture, refactor carefully to improve maintainability and reduce technical debt"
+                }
+            ]
+        }
+    },
+    {
+        "id": 10,
+        "title": "20-year-old software bug",
+        "quick": {
+            "root_score": 0,
+            "fix_score": 0,
+            "total_score": 0,
+            "possible_score": 6,
+            "score_percent": 0.0,
+            "latency_ms": 18955.89,
+            "expected_root_causes": [
+                "legacy system",
+                "hidden assumption",
+                "outdated design"
+            ],
+            "expected_fix": [
+                "analyse historical code",
+                "reproduce issue",
+                "patch carefully"
+            ],
+            "ai_response": {
+                "bug_summary": "Old software bug with unknown language",
+                "root_cause": "Insufficient debugging information available to determine exact technical cause",
+                "investigation_steps": [
+                    "Gather more information about the software and its environment",
+                    "Check for any known security vulnerabilities",
+                    "Review the software's maintenance history"
+                ],
+                "fix_recommendation": "Update the software to a supported version, or refactor the code to a modern language",
+                "prevention": "Regularly update software dependencies, and consider refactoring legacy code",
+                "confidence_score": 0,
+                "evidence": [
+                    "The bug is described as 'old'"
+                ],
+                "prompt_version": "2.6.0",
+                "source": "llm"
+            },
+            "root_matches": [
+                {
+                    "keyword": "legacy system",
+                    "matched": false,
+                    "similarity": 0.095,
+                    "best_matching_text": "Old software bug with unknown language Insufficient debugging information available to determine exact technical cause Gather more information about the software and its environment Check for any known security vulnerabilities Review the software's maintenance history Update the software to a supported version, or refactor the code to a modern language Regularly update software dependencies, and consider refactoring legacy code"
+                },
+                {
+                    "keyword": "hidden assumption",
+                    "matched": false,
+                    "similarity": 0.0,
+                    "best_matching_text": "Old software bug with unknown language Insufficient debugging information available to determine exact technical cause Gather more information about the software and its environment Check for any known security vulnerabilities Review the software's maintenance history Update the software to a supported version, or refactor the code to a modern language Regularly update software dependencies, and consider refactoring legacy code"
+                },
+                {
+                    "keyword": "outdated design",
+                    "matched": false,
+                    "similarity": 0.0,
+                    "best_matching_text": "Old software bug with unknown language Insufficient debugging information available to determine exact technical cause Gather more information about the software and its environment Check for any known security vulnerabilities Review the software's maintenance history Update the software to a supported version, or refactor the code to a modern language Regularly update software dependencies, and consider refactoring legacy code"
+                }
+            ],
+            "fix_matches": [
+                {
+                    "keyword": "analyse historical code",
+                    "matched": false,
+                    "similarity": 0.093,
+                    "best_matching_text": "Old software bug with unknown language Insufficient debugging information available to determine exact technical cause Gather more information about the software and its environment Check for any known security vulnerabilities Review the software's maintenance history Update the software to a supported version, or refactor the code to a modern language Regularly update software dependencies, and consider refactoring legacy code"
+                },
+                {
+                    "keyword": "reproduce issue",
+                    "matched": false,
+                    "similarity": 0.0,
+                    "best_matching_text": "Old software bug with unknown language Insufficient debugging information available to determine exact technical cause Gather more information about the software and its environment Check for any known security vulnerabilities Review the software's maintenance history Update the software to a supported version, or refactor the code to a modern language Regularly update software dependencies, and consider refactoring legacy code"
+                },
+                {
+                    "keyword": "patch carefully",
+                    "matched": false,
+                    "similarity": 0.0,
+                    "best_matching_text": "Old software bug with unknown language Insufficient debugging information available to determine exact technical cause Gather more information about the software and its environment Check for any known security vulnerabilities Review the software's maintenance history Update the software to a supported version, or refactor the code to a modern language Regularly update software dependencies, and consider refactoring legacy code"
+                }
+            ]
+        },
+        "full": {
+            "root_score": 0,
+            "fix_score": 1,
+            "total_score": 1,
+            "possible_score": 6,
+            "score_percent": 16.67,
+            "latency_ms": 6292.5,
+            "expected_root_causes": [
+                "legacy system",
+                "hidden assumption",
+                "outdated design"
+            ],
+            "expected_fix": [
+                "analyse historical code",
+                "reproduce issue",
+                "patch carefully"
+            ],
+            "ai_response": {
+                "bug_summary": "Old software bug with unknown language and high severity",
+                "root_cause": "Insufficient debugging information available to determine exact technical cause",
+                "investigation_steps": [
+                    "Gather more information about the software, including language, version, and environment",
+                    "Review historical logs and incident reports for similar issues",
+                    "Consult with subject matter experts in the relevant domain"
+                ],
+                "fix_recommendation": "Implement a comprehensive code review process to identify and address potential issues",
+                "prevention": "Regularly update dependencies, use static analysis tools, and conduct unit testing",
+                "confidence_score": 0,
+                "evidence": [
+                    "Lack of technical details in the bug description"
+                ],
+                "prompt_version": "2.6.0",
+                "source": "llm"
+            },
+            "root_matches": [
+                {
+                    "keyword": "legacy system",
+                    "matched": false,
+                    "similarity": 0.0,
+                    "best_matching_text": "Old software bug with unknown language and high severity Insufficient debugging information available to determine exact technical cause Gather more information about the software, including language, version, and environment Review historical logs and incident reports for similar issues Consult with subject matter experts in the relevant domain Implement a comprehensive code review process to identify and address potential issues Regularly update dependencies, use static analysis tools, and conduct unit testing"
+                },
+                {
+                    "keyword": "hidden assumption",
+                    "matched": false,
+                    "similarity": 0.0,
+                    "best_matching_text": "Old software bug with unknown language and high severity Insufficient debugging information available to determine exact technical cause Gather more information about the software, including language, version, and environment Review historical logs and incident reports for similar issues Consult with subject matter experts in the relevant domain Implement a comprehensive code review process to identify and address potential issues Regularly update dependencies, use static analysis tools, and conduct unit testing"
+                },
+                {
+                    "keyword": "outdated design",
+                    "matched": false,
+                    "similarity": 0.0,
+                    "best_matching_text": "Old software bug with unknown language and high severity Insufficient debugging information available to determine exact technical cause Gather more information about the software, including language, version, and environment Review historical logs and incident reports for similar issues Consult with subject matter experts in the relevant domain Implement a comprehensive code review process to identify and address potential issues Regularly update dependencies, use static analysis tools, and conduct unit testing"
+                }
+            ],
+            "fix_matches": [
+                {
+                    "keyword": "analyse historical code",
+                    "matched": true,
+                    "similarity": 0.104,
+                    "best_matching_text": "Old software bug with unknown language and high severity Insufficient debugging information available to determine exact technical cause Gather more information about the software, including language, version, and environment Review historical logs and incident reports for similar issues Consult with subject matter experts in the relevant domain Implement a comprehensive code review process to identify and address potential issues Regularly update dependencies, use static analysis tools, and conduct unit testing"
+                },
+                {
+                    "keyword": "reproduce issue",
+                    "matched": false,
+                    "similarity": 0.0,
+                    "best_matching_text": "Old software bug with unknown language and high severity Insufficient debugging information available to determine exact technical cause Gather more information about the software, including language, version, and environment Review historical logs and incident reports for similar issues Consult with subject matter experts in the relevant domain Implement a comprehensive code review process to identify and address potential issues Regularly update dependencies, use static analysis tools, and conduct unit testing"
+                },
+                {
+                    "keyword": "patch carefully",
+                    "matched": false,
+                    "similarity": 0.0,
+                    "best_matching_text": "Old software bug with unknown language and high severity Insufficient debugging information available to determine exact technical cause Gather more information about the software, including language, version, and environment Review historical logs and incident reports for similar issues Consult with subject matter experts in the relevant domain Implement a comprehensive code review process to identify and address potential issues Regularly update dependencies, use static analysis tools, and conduct unit testing"
+                }
+            ]
+        }
+    },
+    {
+        "id": 11,
+        "title": "Database connection failure",
+        "quick": {
+            "root_score": 3,
+            "fix_score": 3,
+            "total_score": 6,
+            "possible_score": 6,
+            "score_percent": 100.0,
+            "latency_ms": 4754.17,
+            "expected_root_causes": [
+                "database server unavailable",
+                "incorrect connection string",
+                "invalid database credentials"
+            ],
+            "expected_fix": [
+                "verify database URL",
+                "check database credentials",
+                "ensure database server is running"
+            ],
+            "ai_response": {
+                "bug_summary": "Database connection refused",
+                "root_cause": "Database connection configuration issue or credentials mismatch",
+                "investigation_steps": [
+                    "Verify database connection string",
+                    "Check database credentials",
+                    "Test connection with a tool like SQL Client"
+                ],
+                "fix_recommendation": "Verify and update database connection configuration, validate credentials, and test the connection",
+                "prevention": "Regularly review and update database connection configuration, ensure credentials are secure and up-to-date",
+                "confidence_score": 0,
+                "evidence": [
+                    "Database connection refused"
+                ],
+                "prompt_version": "2.6.0",
+                "source": "llm"
+            },
+            "root_matches": [
+                {
+                    "keyword": "database server unavailable",
+                    "matched": true,
+                    "similarity": 0.165,
+                    "best_matching_text": "Database connection refused Database connection configuration issue or credentials mismatch Verify database connection string Check database credentials Test connection with a tool like SQL Client Verify and update database connection configuration, validate credentials, and test the connection Regularly review and update database connection configuration, ensure credentials are secure and up-to-date"
+                },
+                {
+                    "keyword": "incorrect connection string",
+                    "matched": true,
+                    "similarity": 0.349,
+                    "best_matching_text": "Database connection refused Database connection configuration issue or credentials mismatch Verify database connection string Check database credentials Test connection with a tool like SQL Client Verify and update database connection configuration, validate credentials, and test the connection Regularly review and update database connection configuration, ensure credentials are secure and up-to-date"
+                },
+                {
+                    "keyword": "invalid database credentials",
+                    "matched": true,
+                    "similarity": 0.363,
+                    "best_matching_text": "Database connection refused Database connection configuration issue or credentials mismatch Verify database connection string Check database credentials Test connection with a tool like SQL Client Verify and update database connection configuration, validate credentials, and test the connection Regularly review and update database connection configuration, ensure credentials are secure and up-to-date"
+                }
+            ],
+            "fix_matches": [
+                {
+                    "keyword": "verify database URL",
+                    "matched": true,
+                    "similarity": 0.207,
+                    "best_matching_text": "Database connection refused Database connection configuration issue or credentials mismatch Verify database connection string Check database credentials Test connection with a tool like SQL Client Verify and update database connection configuration, validate credentials, and test the connection Regularly review and update database connection configuration, ensure credentials are secure and up-to-date"
+                },
+                {
+                    "keyword": "check database credentials",
+                    "matched": true,
+                    "similarity": 0.381,
+                    "best_matching_text": "Database connection refused Database connection configuration issue or credentials mismatch Verify database connection string Check database credentials Test connection with a tool like SQL Client Verify and update database connection configuration, validate credentials, and test the connection Regularly review and update database connection configuration, ensure credentials are secure and up-to-date"
+                },
+                {
+                    "keyword": "ensure database server is running",
+                    "matched": true,
+                    "similarity": 0.131,
+                    "best_matching_text": "Database connection refused Database connection configuration issue or credentials mismatch Verify database connection string Check database credentials Test connection with a tool like SQL Client Verify and update database connection configuration, validate credentials, and test the connection Regularly review and update database connection configuration, ensure credentials are secure and up-to-date"
+                }
+            ]
+        },
+        "full": {
+            "root_score": 3,
+            "fix_score": 3,
+            "total_score": 6,
+            "possible_score": 6,
+            "score_percent": 100.0,
+            "latency_ms": 10261.94,
+            "expected_root_causes": [
+                "database server unavailable",
+                "incorrect connection string",
+                "invalid database credentials"
+            ],
+            "expected_fix": [
+                "verify database URL",
+                "check database credentials",
+                "ensure database server is running"
+            ],
+            "ai_response": {
+                "bug_summary": "Database connection refused in production",
+                "root_cause": "Invalid database connection string or missing credentials",
+                "investigation_steps": [
+                    "Verify database connection string in configuration files",
+                    "Check database credentials and network availability",
+                    "Review database connection logs for error messages"
+                ],
+                "fix_recommendation": "Update database connection string, verify credentials, and validate network connectivity",
+                "prevention": "Regularly review and update database connection configurations to prevent similar issues",
+                "confidence_score": 0,
+                "evidence": [
+                    "Database connection refused error message",
+                    "Missing credentials in configuration files"
+                ],
+                "prompt_version": "2.6.0",
+                "source": "llm"
+            },
+            "root_matches": [
+                {
+                    "keyword": "database server unavailable",
+                    "matched": true,
+                    "similarity": 0.197,
+                    "best_matching_text": "Database connection refused in production Invalid database connection string or missing credentials Verify database connection string in configuration files Check database credentials and network availability Review database connection logs for error messages Update database connection string, verify credentials, and validate network connectivity Regularly review and update database connection configurations to prevent similar issues"
+                },
+                {
+                    "keyword": "incorrect connection string",
+                    "matched": true,
+                    "similarity": 0.4,
+                    "best_matching_text": "Database connection refused in production Invalid database connection string or missing credentials Verify database connection string in configuration files Check database credentials and network availability Review database connection logs for error messages Update database connection string, verify credentials, and validate network connectivity Regularly review and update database connection configurations to prevent similar issues"
+                },
+                {
+                    "keyword": "invalid database credentials",
+                    "matched": true,
+                    "similarity": 0.445,
+                    "best_matching_text": "Database connection refused in production Invalid database connection string or missing credentials Verify database connection string in configuration files Check database credentials and network availability Review database connection logs for error messages Update database connection string, verify credentials, and validate network connectivity Regularly review and update database connection configurations to prevent similar issues"
+                }
+            ],
+            "fix_matches": [
+                {
+                    "keyword": "verify database URL",
+                    "matched": true,
+                    "similarity": 0.234,
+                    "best_matching_text": "Database connection refused in production Invalid database connection string or missing credentials Verify database connection string in configuration files Check database credentials and network availability Review database connection logs for error messages Update database connection string, verify credentials, and validate network connectivity Regularly review and update database connection configurations to prevent similar issues"
+                },
+                {
+                    "keyword": "check database credentials",
+                    "matched": true,
+                    "similarity": 0.364,
+                    "best_matching_text": "Database connection refused in production Invalid database connection string or missing credentials Verify database connection string in configuration files Check database credentials and network availability Review database connection logs for error messages Update database connection string, verify credentials, and validate network connectivity Regularly review and update database connection configurations to prevent similar issues"
+                },
+                {
+                    "keyword": "ensure database server is running",
+                    "matched": true,
+                    "similarity": 0.108,
+                    "best_matching_text": "Database connection refused in production Invalid database connection string or missing credentials Verify database connection string in configuration files Check database credentials and network availability Review database connection logs for error messages Update database connection string, verify credentials, and validate network connectivity Regularly review and update database connection configurations to prevent similar issues"
+                }
+            ]
+        }
+    },
+    {
+        "id": 12,
+        "title": "JWT authentication failure",
+        "quick": {
+            "root_score": 3,
+            "fix_score": 3,
+            "total_score": 6,
+            "possible_score": 6,
+            "score_percent": 100.0,
+            "latency_ms": 3907.6,
+            "expected_root_causes": [
+                "expired token",
+                "invalid secret key",
+                "incorrect JWT configuration"
+            ],
+            "expected_fix": [
+                "generate a new token",
+                "verify JWT secret",
+                "check token expiration settings"
+            ],
+            "ai_response": {
+                "bug_summary": "Matches known pattern: JWT Authentication Error",
+                "root_cause": "Expired token or incorrect JWT secret configuration.",
+                "investigation_steps": [
+                    "Confirm the symptom matches: JWT Authentication Error",
+                    "Apply the fix below and check the reported behavior clears",
+                    "Add a regression test so this doesn't silently return"
+                ],
+                "fix_recommendation": "Generate a new token and verify JWT settings.",
+                "prevention": "Add a regression test covering this pattern; monitor for recurrence.",
+                "confidence_score": 20,
+                "evidence": [
+                    "Matched verified pattern: JWT Authentication Error"
+                ],
+                "prompt_version": "pattern-match:4",
+                "source": "pattern_match"
+            },
+            "root_matches": [
+                {
+                    "keyword": "expired token",
+                    "matched": true,
+                    "similarity": 0.363,
+                    "best_matching_text": "Matches known pattern: JWT Authentication Error Expired token or incorrect JWT secret configuration"
+                },
+                {
+                    "keyword": "invalid secret key",
+                    "matched": true,
+                    "similarity": 0.14,
+                    "best_matching_text": "Matches known pattern: JWT Authentication Error Expired token or incorrect JWT secret configuration"
+                },
+                {
+                    "keyword": "incorrect JWT configuration",
+                    "matched": true,
+                    "similarity": 0.579,
+                    "best_matching_text": "Matches known pattern: JWT Authentication Error Expired token or incorrect JWT secret configuration"
+                }
+            ],
+            "fix_matches": [
+                {
+                    "keyword": "generate a new token",
+                    "matched": true,
+                    "similarity": 0.297,
+                    "best_matching_text": "Confirm the symptom matches: JWT Authentication Error Apply the fix below and check the reported behavior clears Add a regression test so this doesn't silently return Generate a new token and verify JWT settings"
+                },
+                {
+                    "keyword": "verify JWT secret",
+                    "matched": true,
+                    "similarity": 0.394,
+                    "best_matching_text": "Matches known pattern: JWT Authentication Error Expired token or incorrect JWT secret configuration"
+                },
+                {
+                    "keyword": "check token expiration settings",
+                    "matched": true,
+                    "similarity": 0.237,
+                    "best_matching_text": "Confirm the symptom matches: JWT Authentication Error Apply the fix below and check the reported behavior clears Add a regression test so this doesn't silently return Generate a new token and verify JWT settings"
+                }
+            ]
+        },
+        "full": {
+            "root_score": 3,
+            "fix_score": 3,
+            "total_score": 6,
+            "possible_score": 6,
+            "score_percent": 100.0,
+            "latency_ms": 13941.61,
+            "expected_root_causes": [
+                "expired token",
+                "invalid secret key",
+                "incorrect JWT configuration"
+            ],
+            "expected_fix": [
+                "generate a new token",
+                "verify JWT secret",
+                "check token expiration settings"
+            ],
+            "ai_response": {
+                "bug_summary": "JWT authentication failed with invalid token",
+                "root_cause": "Expired token or incorrect JWT secret configuration.",
+                "investigation_steps": [
+                    "Verify JWT settings and secret configuration",
+                    "Check token expiration and revocation",
+                    "Inspect authentication flow and error handling"
+                ],
+                "fix_recommendation": "Generate a new token and verify JWT settings, update secret configuration if necessary",
+                "prevention": "Regularly review and update JWT settings, implement token revocation and secret rotation",
+                "confidence_score": 20,
+                "evidence": [
+                    "Invalid token error during authentication",
+                    "JWT authentication failed with high severity"
+                ],
+                "prompt_version": "2.6.0",
+                "source": "llm"
+            },
+            "root_matches": [
+                {
+                    "keyword": "expired token",
+                    "matched": true,
+                    "similarity": 0.519,
+                    "best_matching_text": "JWT authentication failed with invalid token Expired token or incorrect JWT secret configuration"
+                },
+                {
+                    "keyword": "invalid secret key",
+                    "matched": true,
+                    "similarity": 0.267,
+                    "best_matching_text": "JWT authentication failed with invalid token Expired token or incorrect JWT secret configuration"
+                },
+                {
+                    "keyword": "incorrect JWT configuration",
+                    "matched": true,
+                    "similarity": 0.564,
+                    "best_matching_text": "JWT authentication failed with invalid token Expired token or incorrect JWT secret configuration"
+                }
+            ],
+            "fix_matches": [
+                {
+                    "keyword": "generate a new token",
+                    "matched": true,
+                    "similarity": 0.273,
+                    "best_matching_text": "Verify JWT settings and secret configuration Check token expiration and revocation Inspect authentication flow and error handling Generate a new token and verify JWT settings, update secret configuration if necessary Regularly review and update JWT settings, implement token revocation and secret rotation"
+                },
+                {
+                    "keyword": "verify JWT secret",
+                    "matched": true,
+                    "similarity": 0.494,
+                    "best_matching_text": "Verify JWT settings and secret configuration Check token expiration and revocation Inspect authentication flow and error handling Generate a new token and verify JWT settings, update secret configuration if necessary Regularly review and update JWT settings, implement token revocation and secret rotation"
+                },
+                {
+                    "keyword": "check token expiration settings",
+                    "matched": true,
+                    "similarity": 0.43,
+                    "best_matching_text": "Verify JWT settings and secret configuration Check token expiration and revocation Inspect authentication flow and error handling Generate a new token and verify JWT settings, update secret configuration if necessary Regularly review and update JWT settings, implement token revocation and secret rotation"
+                }
+            ]
+        }
+    },
+    {
+        "id": 13,
+        "title": "API timeout error",
+        "quick": {
+            "root_score": 2,
+            "fix_score": 2,
+            "total_score": 4,
+            "possible_score": 6,
+            "score_percent": 66.67,
+            "latency_ms": 19093.79,
+            "expected_root_causes": [
+                "request timeout exceeded",
+                "slow API response",
+                "network latency"
+            ],
+            "expected_fix": [
+                "optimize API performance",
+                "increase timeout limit",
+                "investigate network issues"
+            ],
+            "ai_response": {
+                "bug_summary": "REST API request timed out",
+                "root_cause": "API timeout due to slow operation or server response time",
+                "investigation_steps": [
+                    "Verify server response time and latency",
+                    "Inspect slow operations and optimize them",
+                    "Adjust API timeout configuration"
+                ],
+                "fix_recommendation": "Optimize slow operations, inspect server performance, and adjust timeout configuration",
+                "prevention": "Implement load testing, monitor server performance, and adjust timeout configuration based on performance data",
+                "confidence_score": 10,
+                "evidence": [
+                    "REST API request timed out"
+                ],
+                "prompt_version": "2.6.0",
+                "source": "llm"
+            },
+            "root_matches": [
+                {
+                    "keyword": "request timeout exceeded",
+                    "matched": true,
+                    "similarity": 0.214,
+                    "best_matching_text": "REST API request timed out API timeout due to slow operation or server response time Verify server response time and latency Inspect slow operations and optimize them Adjust API timeout configuration Optimize slow operations, inspect server performance, and adjust timeout configuration Implement load testing, monitor server performance, and adjust timeout configuration based on performance data"
+                },
+                {
+                    "keyword": "slow API response",
+                    "matched": true,
+                    "similarity": 0.376,
+                    "best_matching_text": "REST API request timed out API timeout due to slow operation or server response time Verify server response time and latency Inspect slow operations and optimize them Adjust API timeout configuration Optimize slow operations, inspect server performance, and adjust timeout configuration Implement load testing, monitor server performance, and adjust timeout configuration based on performance data"
+                },
+                {
+                    "keyword": "network latency",
+                    "matched": false,
+                    "similarity": 0.05,
+                    "best_matching_text": "REST API request timed out API timeout due to slow operation or server response time Verify server response time and latency Inspect slow operations and optimize them Adjust API timeout configuration Optimize slow operations, inspect server performance, and adjust timeout configuration Implement load testing, monitor server performance, and adjust timeout configuration based on performance data"
+                }
+            ],
+            "fix_matches": [
+                {
+                    "keyword": "optimize API performance",
+                    "matched": true,
+                    "similarity": 0.374,
+                    "best_matching_text": "REST API request timed out API timeout due to slow operation or server response time Verify server response time and latency Inspect slow operations and optimize them Adjust API timeout configuration Optimize slow operations, inspect server performance, and adjust timeout configuration Implement load testing, monitor server performance, and adjust timeout configuration based on performance data"
+                },
+                {
+                    "keyword": "increase timeout limit",
+                    "matched": true,
+                    "similarity": 0.158,
+                    "best_matching_text": "REST API request timed out API timeout due to slow operation or server response time Verify server response time and latency Inspect slow operations and optimize them Adjust API timeout configuration Optimize slow operations, inspect server performance, and adjust timeout configuration Implement load testing, monitor server performance, and adjust timeout configuration based on performance data"
+                },
+                {
+                    "keyword": "investigate network issues",
+                    "matched": false,
+                    "similarity": 0.0,
+                    "best_matching_text": "REST API request timed out API timeout due to slow operation or server response time Verify server response time and latency Inspect slow operations and optimize them Adjust API timeout configuration Optimize slow operations, inspect server performance, and adjust timeout configuration Implement load testing, monitor server performance, and adjust timeout configuration based on performance data"
+                }
+            ]
+        },
+        "full": {
+            "root_score": 3,
+            "fix_score": 2,
+            "total_score": 5,
+            "possible_score": 6,
+            "score_percent": 83.33,
+            "latency_ms": 12786.44,
+            "expected_root_causes": [
+                "request timeout exceeded",
+                "slow API response",
+                "network latency"
+            ],
+            "expected_fix": [
+                "optimize API performance",
+                "increase timeout limit",
+                "investigate network issues"
+            ],
+            "ai_response": {
+                "bug_summary": "REST API request timed out",
+                "root_cause": "Server-side timeout configuration issue or slow operation causing prolonged request processing time.",
+                "investigation_steps": [
+                    "Review server-side timeout settings and adjust if necessary",
+                    "Inspect API request latency and optimize slow operations",
+                    "Verify server load and adjust capacity if necessary"
+                ],
+                "fix_recommendation": "Increase server-side timeout or optimize slow operations to meet API request response times",
+                "prevention": "Implement load testing, monitor API request latency, and adjust server capacity proactively",
+                "confidence_score": 10,
+                "evidence": [
+                    "API request timed out",
+                    "High reported severity"
+                ],
+                "prompt_version": "2.6.0",
+                "source": "llm"
+            },
+            "root_matches": [
+                {
+                    "keyword": "request timeout exceeded",
+                    "matched": true,
+                    "similarity": 0.273,
+                    "best_matching_text": "REST API request timed out Server-side timeout configuration issue or slow operation causing prolonged request processing time"
+                },
+                {
+                    "keyword": "slow API response",
+                    "matched": true,
+                    "similarity": 0.288,
+                    "best_matching_text": "Review server-side timeout settings and adjust if necessary Inspect API request latency and optimize slow operations Verify server load and adjust capacity if necessary Increase server-side timeout or optimize slow operations to meet API request response times Implement load testing, monitor API request latency, and adjust server capacity proactively"
+                },
+                {
+                    "keyword": "network latency",
+                    "matched": true,
+                    "similarity": 0.125,
+                    "best_matching_text": "Review server-side timeout settings and adjust if necessary Inspect API request latency and optimize slow operations Verify server load and adjust capacity if necessary Increase server-side timeout or optimize slow operations to meet API request response times Implement load testing, monitor API request latency, and adjust server capacity proactively"
+                }
+            ],
+            "fix_matches": [
+                {
+                    "keyword": "optimize API performance",
+                    "matched": true,
+                    "similarity": 0.222,
+                    "best_matching_text": "Review server-side timeout settings and adjust if necessary Inspect API request latency and optimize slow operations Verify server load and adjust capacity if necessary Increase server-side timeout or optimize slow operations to meet API request response times Implement load testing, monitor API request latency, and adjust server capacity proactively"
+                },
+                {
+                    "keyword": "increase timeout limit",
+                    "matched": true,
+                    "similarity": 0.13,
+                    "best_matching_text": "Review server-side timeout settings and adjust if necessary Inspect API request latency and optimize slow operations Verify server load and adjust capacity if necessary Increase server-side timeout or optimize slow operations to meet API request response times Implement load testing, monitor API request latency, and adjust server capacity proactively"
+                },
+                {
+                    "keyword": "investigate network issues",
+                    "matched": false,
+                    "similarity": 0.0,
+                    "best_matching_text": "REST API request timed out Server-side timeout configuration issue or slow operation causing prolonged request processing time"
+                }
+            ]
+        }
+    },
+    {
+        "id": 14,
+        "title": "Environment variable missing",
+        "quick": {
+            "root_score": 2,
+            "fix_score": 2,
+            "total_score": 4,
+            "possible_score": 6,
+            "score_percent": 66.67,
+            "latency_ms": 16139.73,
+            "expected_root_causes": [
+                "missing environment variable",
+                "configuration error",
+                "invalid .env configuration"
+            ],
+            "expected_fix": [
+                "update .env file",
+                "validate environment variables",
+                "restart the application"
+            ],
+            "ai_response": {
+                "bug_summary": "Missing environment variable causes high severity production incident",
+                "root_cause": "Unset environment variable prevents application from starting correctly",
+                "investigation_steps": [
+                    "Verify application configuration for missing environment variable",
+                    "Check environment variable is set in deployment scripts",
+                    "Review application startup logs for error messages"
+                ],
+                "fix_recommendation": "Set environment variable in deployment scripts and application configuration",
+                "prevention": "Regularly review and update environment variables in deployment scripts and application configuration",
+                "confidence_score": 0,
+                "evidence": [
+                    "Missing environment variable reported as high severity production incident"
+                ],
+                "prompt_version": "2.6.0",
+                "source": "llm"
+            },
+            "root_matches": [
+                {
+                    "keyword": "missing environment variable",
+                    "matched": true,
+                    "similarity": 0.557,
+                    "best_matching_text": "Missing environment variable causes high severity production incident Unset environment variable prevents application from starting correctly Verify application configuration for missing environment variable Check environment variable is set in deployment scripts Review application startup logs for error messages Set environment variable in deployment scripts and application configuration Regularly review and update environment variables in deployment scripts and application configuration"
+                },
+                {
+                    "keyword": "configuration error",
+                    "matched": true,
+                    "similarity": 0.171,
+                    "best_matching_text": "Missing environment variable causes high severity production incident Unset environment variable prevents application from starting correctly Verify application configuration for missing environment variable Check environment variable is set in deployment scripts Review application startup logs for error messages Set environment variable in deployment scripts and application configuration Regularly review and update environment variables in deployment scripts and application configuration"
+                },
+                {
+                    "keyword": "invalid .env configuration",
+                    "matched": false,
+                    "similarity": 0.074,
+                    "best_matching_text": "Missing environment variable causes high severity production incident Unset environment variable prevents application from starting correctly Verify application configuration for missing environment variable Check environment variable is set in deployment scripts Review application startup logs for error messages Set environment variable in deployment scripts and application configuration Regularly review and update environment variables in deployment scripts and application configuration"
+                }
+            ],
+            "fix_matches": [
+                {
+                    "keyword": "update .env file",
+                    "matched": false,
+                    "similarity": 0.035,
+                    "best_matching_text": "Missing environment variable causes high severity production incident Unset environment variable prevents application from starting correctly Verify application configuration for missing environment variable Check environment variable is set in deployment scripts Review application startup logs for error messages Set environment variable in deployment scripts and application configuration Regularly review and update environment variables in deployment scripts and application configuration"
+                },
+                {
+                    "keyword": "validate environment variables",
+                    "matched": true,
+                    "similarity": 0.266,
+                    "best_matching_text": "Missing environment variable causes high severity production incident Unset environment variable prevents application from starting correctly Verify application configuration for missing environment variable Check environment variable is set in deployment scripts Review application startup logs for error messages Set environment variable in deployment scripts and application configuration Regularly review and update environment variables in deployment scripts and application configuration"
+                },
+                {
+                    "keyword": "restart the application",
+                    "matched": true,
+                    "similarity": 0.224,
+                    "best_matching_text": "Missing environment variable causes high severity production incident Unset environment variable prevents application from starting correctly Verify application configuration for missing environment variable Check environment variable is set in deployment scripts Review application startup logs for error messages Set environment variable in deployment scripts and application configuration Regularly review and update environment variables in deployment scripts and application configuration"
+                }
+            ]
+        },
+        "full": {
+            "root_score": 2,
+            "fix_score": 2,
+            "total_score": 4,
+            "possible_score": 6,
+            "score_percent": 66.67,
+            "latency_ms": 11576.19,
+            "expected_root_causes": [
+                "missing environment variable",
+                "configuration error",
+                "invalid .env configuration"
+            ],
+            "expected_fix": [
+                "update .env file",
+                "validate environment variables",
+                "restart the application"
+            ],
+            "ai_response": {
+                "bug_summary": "Missing environment variable detected in production",
+                "root_cause": "Environment variable not set or defined in application configuration",
+                "investigation_steps": [
+                    "Review application configuration files for missing environment variable definition",
+                    "Verify environment variable is set in containerization or deployment scripts",
+                    "Check logs for error messages related to missing environment variable"
+                ],
+                "fix_recommendation": "Define and set environment variable in application configuration files and deployment scripts",
+                "prevention": "Regularly review and update application configuration files and deployment scripts to ensure all required environment variables are defined",
+                "confidence_score": 0,
+                "evidence": [
+                    "Missing environment variable reported as high severity production incident"
+                ],
+                "prompt_version": "2.6.0",
+                "source": "llm"
+            },
+            "root_matches": [
+                {
+                    "keyword": "missing environment variable",
+                    "matched": true,
+                    "similarity": 0.614,
+                    "best_matching_text": "Missing environment variable detected in production Environment variable not set or defined in application configuration Review application configuration files for missing environment variable definition Verify environment variable is set in containerization or deployment scripts Check logs for error messages related to missing environment variable Define and set environment variable in application configuration files and deployment scripts Regularly review and update application configuration files and deployment scripts to ensure all required environment variables are defined"
+                },
+                {
+                    "keyword": "configuration error",
+                    "matched": true,
+                    "similarity": 0.187,
+                    "best_matching_text": "Missing environment variable detected in production Environment variable not set or defined in application configuration Review application configuration files for missing environment variable definition Verify environment variable is set in containerization or deployment scripts Check logs for error messages related to missing environment variable Define and set environment variable in application configuration files and deployment scripts Regularly review and update application configuration files and deployment scripts to ensure all required environment variables are defined"
+                },
+                {
+                    "keyword": "invalid .env configuration",
+                    "matched": false,
+                    "similarity": 0.089,
+                    "best_matching_text": "Missing environment variable detected in production Environment variable not set or defined in application configuration Review application configuration files for missing environment variable definition Verify environment variable is set in containerization or deployment scripts Check logs for error messages related to missing environment variable Define and set environment variable in application configuration files and deployment scripts Regularly review and update application configuration files and deployment scripts to ensure all required environment variables are defined"
+                }
+            ],
+            "fix_matches": [
+                {
+                    "keyword": "update .env file",
+                    "matched": false,
+                    "similarity": 0.03,
+                    "best_matching_text": "Missing environment variable detected in production Environment variable not set or defined in application configuration Review application configuration files for missing environment variable definition Verify environment variable is set in containerization or deployment scripts Check logs for error messages related to missing environment variable Define and set environment variable in application configuration files and deployment scripts Regularly review and update application configuration files and deployment scripts to ensure all required environment variables are defined"
+                },
+                {
+                    "keyword": "validate environment variables",
+                    "matched": true,
+                    "similarity": 0.262,
+                    "best_matching_text": "Missing environment variable detected in production Environment variable not set or defined in application configuration Review application configuration files for missing environment variable definition Verify environment variable is set in containerization or deployment scripts Check logs for error messages related to missing environment variable Define and set environment variable in application configuration files and deployment scripts Regularly review and update application configuration files and deployment scripts to ensure all required environment variables are defined"
+                },
+                {
+                    "keyword": "restart the application",
+                    "matched": true,
+                    "similarity": 0.154,
+                    "best_matching_text": "Missing environment variable detected in production Environment variable not set or defined in application configuration Review application configuration files for missing environment variable definition Verify environment variable is set in containerization or deployment scripts Check logs for error messages related to missing environment variable Define and set environment variable in application configuration files and deployment scripts Regularly review and update application configuration files and deployment scripts to ensure all required environment variables are defined"
+                }
+            ]
+        }
+    },
+    {
+        "id": 15,
+        "title": "Async await error",
+        "quick": {
+            "root_score": 3,
+            "fix_score": 3,
+            "total_score": 6,
+            "possible_score": 6,
+            "score_percent": 100.0,
+            "latency_ms": 11088.18,
+            "expected_root_causes": [
+                "missing await keyword",
+                "incorrect async usage",
+                "coroutine not executed"
+            ],
+            "expected_fix": [
+                "use await correctly",
+                "verify async function calls",
+                "review asynchronous code"
+            ],
+            "ai_response": {
+                "bug_summary": "Coroutine never awaited, high severity",
+                "root_cause": "Missing await on coroutine, causing execution to hang indefinitely",
+                "investigation_steps": [
+                    "Review code for missing await statements",
+                    "Check if coroutine is properly handled in the async flow",
+                    "Verify correct usage of async/await syntax"
+                ],
+                "fix_recommendation": "Properly await coroutines and review async flow to prevent execution hangs",
+                "prevention": "Use async/await syntax correctly and ensure proper handling of coroutines",
+                "confidence_score": 0,
+                "evidence": [
+                    "Coroutine was never awaited"
+                ],
+                "prompt_version": "2.6.0",
+                "source": "llm"
+            },
+            "root_matches": [
+                {
+                    "keyword": "missing await keyword",
+                    "matched": true,
+                    "similarity": 0.331,
+                    "best_matching_text": "Coroutine never awaited, high severity Missing await on coroutine, causing execution to hang indefinitely Review code for missing await statements Check if coroutine is properly handled in the async flow Verify correct usage of async/await syntax Properly await coroutines and review async flow to prevent execution hangs Use async/await syntax correctly and ensure proper handling of coroutines"
+                },
+                {
+                    "keyword": "incorrect async usage",
+                    "matched": true,
+                    "similarity": 0.236,
+                    "best_matching_text": "Coroutine never awaited, high severity Missing await on coroutine, causing execution to hang indefinitely Review code for missing await statements Check if coroutine is properly handled in the async flow Verify correct usage of async/await syntax Properly await coroutines and review async flow to prevent execution hangs Use async/await syntax correctly and ensure proper handling of coroutines"
+                },
+                {
+                    "keyword": "coroutine not executed",
+                    "matched": true,
+                    "similarity": 0.167,
+                    "best_matching_text": "Coroutine never awaited, high severity Missing await on coroutine, causing execution to hang indefinitely Review code for missing await statements Check if coroutine is properly handled in the async flow Verify correct usage of async/await syntax Properly await coroutines and review async flow to prevent execution hangs Use async/await syntax correctly and ensure proper handling of coroutines"
+                }
+            ],
+            "fix_matches": [
+                {
+                    "keyword": "use await correctly",
+                    "matched": true,
+                    "similarity": 0.357,
+                    "best_matching_text": "Coroutine never awaited, high severity Missing await on coroutine, causing execution to hang indefinitely Review code for missing await statements Check if coroutine is properly handled in the async flow Verify correct usage of async/await syntax Properly await coroutines and review async flow to prevent execution hangs Use async/await syntax correctly and ensure proper handling of coroutines"
+                },
+                {
+                    "keyword": "verify async function calls",
+                    "matched": true,
+                    "similarity": 0.194,
+                    "best_matching_text": "Coroutine never awaited, high severity Missing await on coroutine, causing execution to hang indefinitely Review code for missing await statements Check if coroutine is properly handled in the async flow Verify correct usage of async/await syntax Properly await coroutines and review async flow to prevent execution hangs Use async/await syntax correctly and ensure proper handling of coroutines"
+                },
+                {
+                    "keyword": "review asynchronous code",
+                    "matched": true,
+                    "similarity": 0.14,
+                    "best_matching_text": "Coroutine never awaited, high severity Missing await on coroutine, causing execution to hang indefinitely Review code for missing await statements Check if coroutine is properly handled in the async flow Verify correct usage of async/await syntax Properly await coroutines and review async flow to prevent execution hangs Use async/await syntax correctly and ensure proper handling of coroutines"
+                }
+            ]
+        },
+        "full": {
+            "root_score": 3,
+            "fix_score": 3,
+            "total_score": 6,
+            "possible_score": 6,
+            "score_percent": 100.0,
+            "latency_ms": 11706.68,
+            "expected_root_causes": [
+                "missing await keyword",
+                "incorrect async usage",
+                "coroutine not executed"
+            ],
+            "expected_fix": [
+                "use await correctly",
+                "verify async function calls",
+                "review asynchronous code"
+            ],
+            "ai_response": {
+                "bug_summary": "Coroutine never awaited, causing production incident",
+                "root_cause": "Missing await in coroutine, leading to unhandled promise rejection",
+                "investigation_steps": [
+                    "Review code for missing await statements",
+                    "Inspect coroutine implementation for proper handling",
+                    "Verify correct usage of async/await syntax"
+                ],
+                "fix_recommendation": "Properly await coroutines, review async flow, and add error handling",
+                "prevention": "Implement robust error handling, use try-catch blocks, and monitor for unhandled promises",
+                "confidence_score": 0,
+                "evidence": [
+                    "Coroutine was never awaited (directly from bug description)"
+                ],
+                "prompt_version": "2.6.0",
+                "source": "llm"
+            },
+            "root_matches": [
+                {
+                    "keyword": "missing await keyword",
+                    "matched": true,
+                    "similarity": 0.299,
+                    "best_matching_text": "Coroutine never awaited, causing production incident Missing await in coroutine, leading to unhandled promise rejection Review code for missing await statements Inspect coroutine implementation for proper handling Verify correct usage of async/await syntax Properly await coroutines, review async flow, and add error handling Implement robust error handling, use try-catch blocks, and monitor for unhandled promises"
+                },
+                {
+                    "keyword": "incorrect async usage",
+                    "matched": true,
+                    "similarity": 0.15,
+                    "best_matching_text": "Coroutine never awaited, causing production incident Missing await in coroutine, leading to unhandled promise rejection Review code for missing await statements Inspect coroutine implementation for proper handling Verify correct usage of async/await syntax Properly await coroutines, review async flow, and add error handling Implement robust error handling, use try-catch blocks, and monitor for unhandled promises"
+                },
+                {
+                    "keyword": "coroutine not executed",
+                    "matched": true,
+                    "similarity": 0.176,
+                    "best_matching_text": "Coroutine never awaited, causing production incident Missing await in coroutine, leading to unhandled promise rejection Review code for missing await statements Inspect coroutine implementation for proper handling Verify correct usage of async/await syntax Properly await coroutines, review async flow, and add error handling Implement robust error handling, use try-catch blocks, and monitor for unhandled promises"
+                }
+            ],
+            "fix_matches": [
+                {
+                    "keyword": "use await correctly",
+                    "matched": true,
+                    "similarity": 0.245,
+                    "best_matching_text": "Coroutine never awaited, causing production incident Missing await in coroutine, leading to unhandled promise rejection Review code for missing await statements Inspect coroutine implementation for proper handling Verify correct usage of async/await syntax Properly await coroutines, review async flow, and add error handling Implement robust error handling, use try-catch blocks, and monitor for unhandled promises"
+                },
+                {
+                    "keyword": "verify async function calls",
+                    "matched": true,
+                    "similarity": 0.122,
+                    "best_matching_text": "Coroutine never awaited, causing production incident Missing await in coroutine, leading to unhandled promise rejection Review code for missing await statements Inspect coroutine implementation for proper handling Verify correct usage of async/await syntax Properly await coroutines, review async flow, and add error handling Implement robust error handling, use try-catch blocks, and monitor for unhandled promises"
+                },
+                {
+                    "keyword": "review asynchronous code",
+                    "matched": true,
+                    "similarity": 0.147,
+                    "best_matching_text": "Coroutine never awaited, causing production incident Missing await in coroutine, leading to unhandled promise rejection Review code for missing await statements Inspect coroutine implementation for proper handling Verify correct usage of async/await syntax Properly await coroutines, review async flow, and add error handling Implement robust error handling, use try-catch blocks, and monitor for unhandled promises"
+                }
+            ]
+        }
+    },
+    {
+        "id": 16,
+        "title": "Pydantic validation failure",
+        "quick": {
+            "root_score": 2,
+            "fix_score": 1,
+            "total_score": 3,
+            "possible_score": 6,
+            "score_percent": 50.0,
+            "latency_ms": 15816.66,
+            "expected_root_causes": [
+                "schema mismatch",
+                "invalid request data",
+                "missing required fields"
+            ],
+            "expected_fix": [
+                "validate request payload",
+                "update schema definitions",
+                "provide required fields"
+            ],
+            "ai_response": {
+                "bug_summary": "ValidationError raised by Pydantic",
+                "root_cause": "Invalid data type or schema mismatch in Pydantic model",
+                "investigation_steps": [
+                    "Review Pydantic model definition",
+                    "Check data input format",
+                    "Verify schema validation"
+                ],
+                "fix_recommendation": "Validate data types, update schema, and ensure model consistency",
+                "prevention": "Implement robust data validation and schema checks",
+                "confidence_score": 0,
+                "evidence": [
+                    "ValidationError raised by Pydantic"
+                ],
+                "prompt_version": "2.6.0",
+                "source": "llm"
+            },
+            "root_matches": [
+                {
+                    "keyword": "schema mismatch",
+                    "matched": true,
+                    "similarity": 0.359,
+                    "best_matching_text": "ValidationError raised by Pydantic Invalid data type or schema mismatch in Pydantic model Review Pydantic model definition Check data input format Verify schema validation Validate data types, update schema, and ensure model consistency Implement robust data validation and schema checks"
+                },
+                {
+                    "keyword": "invalid request data",
+                    "matched": true,
+                    "similarity": 0.268,
+                    "best_matching_text": "ValidationError raised by Pydantic Invalid data type or schema mismatch in Pydantic model Review Pydantic model definition Check data input format Verify schema validation Validate data types, update schema, and ensure model consistency Implement robust data validation and schema checks"
+                },
+                {
+                    "keyword": "missing required fields",
+                    "matched": false,
+                    "similarity": 0.0,
+                    "best_matching_text": "ValidationError raised by Pydantic Invalid data type or schema mismatch in Pydantic model Review Pydantic model definition Check data input format Verify schema validation Validate data types, update schema, and ensure model consistency Implement robust data validation and schema checks"
+                }
+            ],
+            "fix_matches": [
+                {
+                    "keyword": "validate request payload",
+                    "matched": false,
+                    "similarity": 0.047,
+                    "best_matching_text": "ValidationError raised by Pydantic Invalid data type or schema mismatch in Pydantic model Review Pydantic model definition Check data input format Verify schema validation Validate data types, update schema, and ensure model consistency Implement robust data validation and schema checks"
+                },
+                {
+                    "keyword": "update schema definitions",
+                    "matched": true,
+                    "similarity": 0.255,
+                    "best_matching_text": "ValidationError raised by Pydantic Invalid data type or schema mismatch in Pydantic model Review Pydantic model definition Check data input format Verify schema validation Validate data types, update schema, and ensure model consistency Implement robust data validation and schema checks"
+                },
+                {
+                    "keyword": "provide required fields",
+                    "matched": false,
+                    "similarity": 0.0,
+                    "best_matching_text": "ValidationError raised by Pydantic Invalid data type or schema mismatch in Pydantic model Review Pydantic model definition Check data input format Verify schema validation Validate data types, update schema, and ensure model consistency Implement robust data validation and schema checks"
+                }
+            ]
+        },
+        "full": {
+            "root_score": 1,
+            "fix_score": 0,
+            "total_score": 1,
+            "possible_score": 6,
+            "score_percent": 16.67,
+            "latency_ms": 11302.61,
+            "expected_root_causes": [
+                "schema mismatch",
+                "invalid request data",
+                "missing required fields"
+            ],
+            "expected_fix": [
+                "validate request payload",
+                "update schema definitions",
+                "provide required fields"
+            ],
+            "ai_response": {
+                "bug_summary": "ValidationError raised by Pydantic",
+                "root_cause": "Invalid input data causing Pydantic validation to fail",
+                "investigation_steps": [
+                    "Review input data for invalid characters or formatting issues",
+                    "Verify Pydantic model configuration and validation rules",
+                    "Inspect data validation flow and error handling"
+                ],
+                "fix_recommendation": "Clean input data, validate against Pydantic model, and implement robust error handling",
+                "prevention": "Implement data validation and sanitization, use Pydantic models for robust validation",
+                "confidence_score": 0,
+                "evidence": [
+                    "ValidationError raised by Pydantic"
+                ],
+                "prompt_version": "2.6.0",
+                "source": "llm"
+            },
+            "root_matches": [
+                {
+                    "keyword": "schema mismatch",
+                    "matched": false,
+                    "similarity": 0.0,
+                    "best_matching_text": "ValidationError raised by Pydantic Invalid input data causing Pydantic validation to fail Review input data for invalid characters or formatting issues Verify Pydantic model configuration and validation rules Inspect data validation flow and error handling Clean input data, validate against Pydantic model, and implement robust error handling Implement data validation and sanitization, use Pydantic models for robust validation"
+                },
+                {
+                    "keyword": "invalid request data",
+                    "matched": true,
+                    "similarity": 0.271,
+                    "best_matching_text": "ValidationError raised by Pydantic Invalid input data causing Pydantic validation to fail Review input data for invalid characters or formatting issues Verify Pydantic model configuration and validation rules Inspect data validation flow and error handling Clean input data, validate against Pydantic model, and implement robust error handling Implement data validation and sanitization, use Pydantic models for robust validation"
+                },
+                {
+                    "keyword": "missing required fields",
+                    "matched": false,
+                    "similarity": 0.0,
+                    "best_matching_text": "ValidationError raised by Pydantic Invalid input data causing Pydantic validation to fail Review input data for invalid characters or formatting issues Verify Pydantic model configuration and validation rules Inspect data validation flow and error handling Clean input data, validate against Pydantic model, and implement robust error handling Implement data validation and sanitization, use Pydantic models for robust validation"
+                }
+            ],
+            "fix_matches": [
+                {
+                    "keyword": "validate request payload",
+                    "matched": false,
+                    "similarity": 0.034,
+                    "best_matching_text": "ValidationError raised by Pydantic Invalid input data causing Pydantic validation to fail Review input data for invalid characters or formatting issues Verify Pydantic model configuration and validation rules Inspect data validation flow and error handling Clean input data, validate against Pydantic model, and implement robust error handling Implement data validation and sanitization, use Pydantic models for robust validation"
+                },
+                {
+                    "keyword": "update schema definitions",
+                    "matched": false,
+                    "similarity": 0.0,
+                    "best_matching_text": "ValidationError raised by Pydantic Invalid input data causing Pydantic validation to fail Review input data for invalid characters or formatting issues Verify Pydantic model configuration and validation rules Inspect data validation flow and error handling Clean input data, validate against Pydantic model, and implement robust error handling Implement data validation and sanitization, use Pydantic models for robust validation"
+                },
+                {
+                    "keyword": "provide required fields",
+                    "matched": false,
+                    "similarity": 0.0,
+                    "best_matching_text": "ValidationError raised by Pydantic Invalid input data causing Pydantic validation to fail Review input data for invalid characters or formatting issues Verify Pydantic model configuration and validation rules Inspect data validation flow and error handling Clean input data, validate against Pydantic model, and implement robust error handling Implement data validation and sanitization, use Pydantic models for robust validation"
+                }
+            ]
+        }
+    },
+    {
+        "id": 17,
+        "title": "Docker build failure",
+        "quick": {
+            "root_score": 3,
+            "fix_score": 3,
+            "total_score": 6,
+            "possible_score": 6,
+            "score_percent": 100.0,
+            "latency_ms": 10191.42,
+            "expected_root_causes": [
+                "Dockerfile error",
+                "missing dependencies",
+                "incorrect build configuration"
+            ],
+            "expected_fix": [
+                "review Dockerfile",
+                "install required dependencies",
+                "rebuild the Docker image"
+            ],
+            "ai_response": {
+                "bug_summary": "Docker build failed",
+                "root_cause": "Dockerfile syntax error or missing dependency",
+                "investigation_steps": [
+                    "Review Dockerfile syntax and dependencies",
+                    "Check for outdated dependencies in package.json",
+                    "Verify build logs for error messages"
+                ],
+                "fix_recommendation": "Inspect Dockerfile, check dependencies, review build logs",
+                "prevention": "Regularly update dependencies, use lock files, and validate build logs",
+                "confidence_score": 0,
+                "evidence": [
+                    "Docker build failed"
+                ],
+                "prompt_version": "2.6.0",
+                "source": "llm"
+            },
+            "root_matches": [
+                {
+                    "keyword": "Dockerfile error",
+                    "matched": true,
+                    "similarity": 0.362,
+                    "best_matching_text": "Docker build failed Dockerfile syntax error or missing dependency Review Dockerfile syntax and dependencies Check for outdated dependencies in package"
+                },
+                {
+                    "keyword": "missing dependencies",
+                    "matched": true,
+                    "similarity": 0.376,
+                    "best_matching_text": "Docker build failed Dockerfile syntax error or missing dependency Review Dockerfile syntax and dependencies Check for outdated dependencies in package"
+                },
+                {
+                    "keyword": "incorrect build configuration",
+                    "matched": true,
+                    "similarity": 0.165,
+                    "best_matching_text": "json Verify build logs for error messages Inspect Dockerfile, check dependencies, review build logs Regularly update dependencies, use lock files, and validate build logs"
+                }
+            ],
+            "fix_matches": [
+                {
+                    "keyword": "review Dockerfile",
+                    "matched": true,
+                    "similarity": 0.359,
+                    "best_matching_text": "Docker build failed Dockerfile syntax error or missing dependency Review Dockerfile syntax and dependencies Check for outdated dependencies in package"
+                },
+                {
+                    "keyword": "install required dependencies",
+                    "matched": true,
+                    "similarity": 0.145,
+                    "best_matching_text": "Docker build failed Dockerfile syntax error or missing dependency Review Dockerfile syntax and dependencies Check for outdated dependencies in package"
+                },
+                {
+                    "keyword": "rebuild the Docker image",
+                    "matched": true,
+                    "similarity": 0.101,
+                    "best_matching_text": "Docker build failed Dockerfile syntax error or missing dependency Review Dockerfile syntax and dependencies Check for outdated dependencies in package"
+                }
+            ]
+        },
+        "full": {
+            "root_score": 3,
+            "fix_score": 3,
+            "total_score": 6,
+            "possible_score": 6,
+            "score_percent": 100.0,
+            "latency_ms": 17371.69,
+            "expected_root_causes": [
+                "Dockerfile error",
+                "missing dependencies",
+                "incorrect build configuration"
+            ],
+            "expected_fix": [
+                "review Dockerfile",
+                "install required dependencies",
+                "rebuild the Docker image"
+            ],
+            "ai_response": {
+                "bug_summary": "Docker build failed, high severity",
+                "root_cause": "Inconsistent Dockerfile syntax or missing dependency causing build failure.",
+                "investigation_steps": [
+                    "Inspect Dockerfile for syntax errors and inconsistencies",
+                    "Verify all dependencies are correctly installed and configured",
+                    "Review build logs for error messages and clues"
+                ],
+                "fix_recommendation": "Update Dockerfile to conform to standard syntax, check dependencies, and review build logs for errors.",
+                "prevention": "Regularly update dependencies, use lock files, and validate build configurations to prevent inconsistencies.",
+                "confidence_score": 0,
+                "evidence": [
+                    "Docker build failed",
+                    "Reported severity: high"
+                ],
+                "prompt_version": "2.6.0",
+                "source": "llm"
+            },
+            "root_matches": [
+                {
+                    "keyword": "Dockerfile error",
+                    "matched": true,
+                    "similarity": 0.269,
+                    "best_matching_text": "Inspect Dockerfile for syntax errors and inconsistencies Verify all dependencies are correctly installed and configured Review build logs for error messages and clues Update Dockerfile to conform to standard syntax, check dependencies, and review build logs for errors"
+                },
+                {
+                    "keyword": "missing dependencies",
+                    "matched": true,
+                    "similarity": 0.187,
+                    "best_matching_text": "Docker build failed, high severity Inconsistent Dockerfile syntax or missing dependency causing build failure"
+                },
+                {
+                    "keyword": "incorrect build configuration",
+                    "matched": true,
+                    "similarity": 0.137,
+                    "best_matching_text": "Docker build failed, high severity Inconsistent Dockerfile syntax or missing dependency causing build failure"
+                }
+            ],
+            "fix_matches": [
+                {
+                    "keyword": "review Dockerfile",
+                    "matched": true,
+                    "similarity": 0.383,
+                    "best_matching_text": "Inspect Dockerfile for syntax errors and inconsistencies Verify all dependencies are correctly installed and configured Review build logs for error messages and clues Update Dockerfile to conform to standard syntax, check dependencies, and review build logs for errors"
+                },
+                {
+                    "keyword": "install required dependencies",
+                    "matched": true,
+                    "similarity": 0.109,
+                    "best_matching_text": "Inspect Dockerfile for syntax errors and inconsistencies Verify all dependencies are correctly installed and configured Review build logs for error messages and clues Update Dockerfile to conform to standard syntax, check dependencies, and review build logs for errors"
+                },
+                {
+                    "keyword": "rebuild the Docker image",
+                    "matched": true,
+                    "similarity": 0.12,
+                    "best_matching_text": "Docker build failed, high severity Inconsistent Dockerfile syntax or missing dependency causing build failure"
+                }
+            ]
+        }
+    },
+    {
+        "id": 18,
+        "title": "React state not updating",
+        "quick": {
+            "root_score": 3,
+            "fix_score": 3,
+            "total_score": 6,
+            "possible_score": 6,
+            "score_percent": 100.0,
+            "latency_ms": 14493.97,
+            "expected_root_causes": [
+                "state mutation",
+                "incorrect state update",
+                "component re-render issue"
+            ],
+            "expected_fix": [
+                "use state setter functions",
+                "avoid direct state mutation",
+                "verify component rendering"
+            ],
+            "ai_response": {
+                "bug_summary": "React state not updating",
+                "root_cause": "Missing state update logic in React component lifecycle",
+                "investigation_steps": [
+                    "Inspect React component lifecycle methods for correct state updates",
+                    "Verify correct usage of React hooks for state management",
+                    "Review component rendering and re-renders"
+                ],
+                "fix_recommendation": "Implement proper state updates and re-renders in React components",
+                "prevention": "Regularly review and refactor React components for optimal state management",
+                "confidence_score": 0,
+                "evidence": [
+                    "Component lifecycle methods not updated correctly"
+                ],
+                "prompt_version": "2.6.0",
+                "source": "llm"
+            },
+            "root_matches": [
+                {
+                    "keyword": "state mutation",
+                    "matched": true,
+                    "similarity": 0.207,
+                    "best_matching_text": "React state not updating Missing state update logic in React component lifecycle Inspect React component lifecycle methods for correct state updates Verify correct usage of React hooks for state management Review component rendering and re-renders Implement proper state updates and re-renders in React components Regularly review and refactor React components for optimal state management"
+                },
+                {
+                    "keyword": "incorrect state update",
+                    "matched": true,
+                    "similarity": 0.216,
+                    "best_matching_text": "React state not updating Missing state update logic in React component lifecycle Inspect React component lifecycle methods for correct state updates Verify correct usage of React hooks for state management Review component rendering and re-renders Implement proper state updates and re-renders in React components Regularly review and refactor React components for optimal state management"
+                },
+                {
+                    "keyword": "component re-render issue",
+                    "matched": true,
+                    "similarity": 0.116,
+                    "best_matching_text": "React state not updating Missing state update logic in React component lifecycle Inspect React component lifecycle methods for correct state updates Verify correct usage of React hooks for state management Review component rendering and re-renders Implement proper state updates and re-renders in React components Regularly review and refactor React components for optimal state management"
+                }
+            ],
+            "fix_matches": [
+                {
+                    "keyword": "use state setter functions",
+                    "matched": true,
+                    "similarity": 0.133,
+                    "best_matching_text": "React state not updating Missing state update logic in React component lifecycle Inspect React component lifecycle methods for correct state updates Verify correct usage of React hooks for state management Review component rendering and re-renders Implement proper state updates and re-renders in React components Regularly review and refactor React components for optimal state management"
+                },
+                {
+                    "keyword": "avoid direct state mutation",
+                    "matched": true,
+                    "similarity": 0.133,
+                    "best_matching_text": "React state not updating Missing state update logic in React component lifecycle Inspect React component lifecycle methods for correct state updates Verify correct usage of React hooks for state management Review component rendering and re-renders Implement proper state updates and re-renders in React components Regularly review and refactor React components for optimal state management"
+                },
+                {
+                    "keyword": "verify component rendering",
+                    "matched": true,
+                    "similarity": 0.229,
+                    "best_matching_text": "React state not updating Missing state update logic in React component lifecycle Inspect React component lifecycle methods for correct state updates Verify correct usage of React hooks for state management Review component rendering and re-renders Implement proper state updates and re-renders in React components Regularly review and refactor React components for optimal state management"
+                }
+            ]
+        },
+        "full": {
+            "root_score": 3,
+            "fix_score": 2,
+            "total_score": 5,
+            "possible_score": 6,
+            "score_percent": 83.33,
+            "latency_ms": 15715.91,
+            "expected_root_causes": [
+                "state mutation",
+                "incorrect state update",
+                "component re-render issue"
+            ],
+            "expected_fix": [
+                "use state setter functions",
+                "avoid direct state mutation",
+                "verify component rendering"
+            ],
+            "ai_response": {
+                "bug_summary": "React state not updating",
+                "root_cause": "Incorrect state update logic or component lifecycle issue",
+                "investigation_steps": [
+                    "Review React component lifecycle methods (e.g., `componentDidUpdate`, `getDerivedStateFromProps`)",
+                    "Inspect state updates and verify correct usage of React hooks (e.g., `useState`, `useEffect`)",
+                    "Check for missing or incorrect `setState` calls"
+                ],
+                "fix_recommendation": "Implement a state update validation mechanism, ensure correct hook usage, and review component lifecycle methods.",
+                "prevention": "Regularly review and refactor code to prevent complex state updates, use a consistent coding style, and ensure thorough testing.",
+                "confidence_score": 0,
+                "evidence": [
+                    "Application crashes after running for 48 hours",
+                    "State not updating as expected"
+                ],
+                "prompt_version": "2.6.0",
+                "source": "llm"
+            },
+            "root_matches": [
+                {
+                    "keyword": "state mutation",
+                    "matched": true,
+                    "similarity": 0.128,
+                    "best_matching_text": "React state not updating Incorrect state update logic or component lifecycle issue Review React component lifecycle methods (e"
+                },
+                {
+                    "keyword": "incorrect state update",
+                    "matched": true,
+                    "similarity": 0.373,
+                    "best_matching_text": "React state not updating Incorrect state update logic or component lifecycle issue Review React component lifecycle methods (e"
+                },
+                {
+                    "keyword": "component re-render issue",
+                    "matched": true,
+                    "similarity": 0.319,
+                    "best_matching_text": "React state not updating Incorrect state update logic or component lifecycle issue Review React component lifecycle methods (e"
+                }
+            ],
+            "fix_matches": [
+                {
+                    "keyword": "use state setter functions",
+                    "matched": true,
+                    "similarity": 0.158,
+                    "best_matching_text": "Regularly review and refactor code to prevent complex state updates, use a consistent coding style, and ensure thorough testing"
+                },
+                {
+                    "keyword": "avoid direct state mutation",
+                    "matched": false,
+                    "similarity": 0.078,
+                    "best_matching_text": "React state not updating Incorrect state update logic or component lifecycle issue Review React component lifecycle methods (e"
+                },
+                {
+                    "keyword": "verify component rendering",
+                    "matched": true,
+                    "similarity": 0.188,
+                    "best_matching_text": "React state not updating Incorrect state update logic or component lifecycle issue Review React component lifecycle methods (e"
+                }
+            ]
+        }
+    },
+    {
+        "id": 19,
+        "title": "OpenAI API authentication failure",
+        "quick": {
+            "root_score": 3,
+            "fix_score": 2,
+            "total_score": 5,
+            "possible_score": 6,
+            "score_percent": 83.33,
+            "latency_ms": 14748.62,
+            "expected_root_causes": [
+                "invalid API key",
+                "authentication failure",
+                "incorrect API configuration"
+            ],
+            "expected_fix": [
+                "update API credentials",
+                "verify API key",
+                "check environment variables"
+            ],
+            "ai_response": {
+                "bug_summary": "AuthenticationError while calling OpenAI API",
+                "root_cause": "Invalid authentication credentials or configuration",
+                "investigation_steps": [
+                    "Verify OpenAI API credentials and configuration",
+                    "Check authentication flow and token regeneration",
+                    "Review API key or OAuth setup"
+                ],
+                "fix_recommendation": "Verify and update authentication credentials, regenerate tokens as needed, validate auth flow",
+                "prevention": "Regularly review and update API keys, implement token rotation, and monitor authentication logs",
+                "confidence_score": 10,
+                "evidence": [
+                    "AuthenticationError while calling OpenAI API"
+                ],
+                "prompt_version": "2.6.0",
+                "source": "llm"
+            },
+            "root_matches": [
+                {
+                    "keyword": "invalid API key",
+                    "matched": true,
+                    "similarity": 0.267,
+                    "best_matching_text": "AuthenticationError while calling OpenAI API Invalid authentication credentials or configuration Verify OpenAI API credentials and configuration Check authentication flow and token regeneration Review API key or OAuth setup Verify and update authentication credentials, regenerate tokens as needed, validate auth flow Regularly review and update API keys, implement token rotation, and monitor authentication logs"
+                },
+                {
+                    "keyword": "authentication failure",
+                    "matched": true,
+                    "similarity": 0.233,
+                    "best_matching_text": "AuthenticationError while calling OpenAI API Invalid authentication credentials or configuration Verify OpenAI API credentials and configuration Check authentication flow and token regeneration Review API key or OAuth setup Verify and update authentication credentials, regenerate tokens as needed, validate auth flow Regularly review and update API keys, implement token rotation, and monitor authentication logs"
+                },
+                {
+                    "keyword": "incorrect API configuration",
+                    "matched": true,
+                    "similarity": 0.241,
+                    "best_matching_text": "AuthenticationError while calling OpenAI API Invalid authentication credentials or configuration Verify OpenAI API credentials and configuration Check authentication flow and token regeneration Review API key or OAuth setup Verify and update authentication credentials, regenerate tokens as needed, validate auth flow Regularly review and update API keys, implement token rotation, and monitor authentication logs"
+                }
+            ],
+            "fix_matches": [
+                {
+                    "keyword": "update API credentials",
+                    "matched": true,
+                    "similarity": 0.437,
+                    "best_matching_text": "AuthenticationError while calling OpenAI API Invalid authentication credentials or configuration Verify OpenAI API credentials and configuration Check authentication flow and token regeneration Review API key or OAuth setup Verify and update authentication credentials, regenerate tokens as needed, validate auth flow Regularly review and update API keys, implement token rotation, and monitor authentication logs"
+                },
+                {
+                    "keyword": "verify API key",
+                    "matched": true,
+                    "similarity": 0.322,
+                    "best_matching_text": "AuthenticationError while calling OpenAI API Invalid authentication credentials or configuration Verify OpenAI API credentials and configuration Check authentication flow and token regeneration Review API key or OAuth setup Verify and update authentication credentials, regenerate tokens as needed, validate auth flow Regularly review and update API keys, implement token rotation, and monitor authentication logs"
+                },
+                {
+                    "keyword": "check environment variables",
+                    "matched": false,
+                    "similarity": 0.045,
+                    "best_matching_text": "AuthenticationError while calling OpenAI API Invalid authentication credentials or configuration Verify OpenAI API credentials and configuration Check authentication flow and token regeneration Review API key or OAuth setup Verify and update authentication credentials, regenerate tokens as needed, validate auth flow Regularly review and update API keys, implement token rotation, and monitor authentication logs"
+                }
+            ]
+        },
+        "full": {
+            "root_score": 3,
+            "fix_score": 3,
+            "total_score": 6,
+            "possible_score": 6,
+            "score_percent": 100.0,
+            "latency_ms": 5363.44,
+            "expected_root_causes": [
+                "invalid API key",
+                "authentication failure",
+                "incorrect API configuration"
+            ],
+            "expected_fix": [
+                "update API credentials",
+                "verify API key",
+                "check environment variables"
+            ],
+            "ai_response": {
+                "bug_summary": "AuthenticationError while calling OpenAI API",
+                "root_cause": "Invalid or expired API credentials causing AuthenticationError.",
+                "investigation_steps": [
+                    "Verify OpenAI API credentials in the application configuration.",
+                    "Check if API credentials have expired or been revoked.",
+                    "Inspect API request and response headers for authentication-related errors."
+                ],
+                "fix_recommendation": "Regenerate API credentials, update application configuration, and validate authentication flow.",
+                "prevention": "Implement credential rotation, monitor API key validity, and enforce strict authentication checks.",
+                "confidence_score": 10,
+                "evidence": [
+                    "AuthenticationError while calling OpenAI API",
+                    "Reported severity: high"
+                ],
+                "prompt_version": "2.6.0",
+                "source": "llm"
+            },
+            "root_matches": [
+                {
+                    "keyword": "invalid API key",
+                    "matched": true,
+                    "similarity": 0.278,
+                    "best_matching_text": "AuthenticationError while calling OpenAI API Invalid or expired API credentials causing AuthenticationError"
+                },
+                {
+                    "keyword": "authentication failure",
+                    "matched": true,
+                    "similarity": 0.141,
+                    "best_matching_text": "Regenerate API credentials, update application configuration, and validate authentication flow"
+                },
+                {
+                    "keyword": "incorrect API configuration",
+                    "matched": true,
+                    "similarity": 0.29,
+                    "best_matching_text": "Verify OpenAI API credentials in the application configuration"
+                }
+            ],
+            "fix_matches": [
+                {
+                    "keyword": "update API credentials",
+                    "matched": true,
+                    "similarity": 0.445,
+                    "best_matching_text": "Regenerate API credentials, update application configuration, and validate authentication flow"
+                },
+                {
+                    "keyword": "verify API key",
+                    "matched": true,
+                    "similarity": 0.384,
+                    "best_matching_text": "Verify OpenAI API credentials in the application configuration"
+                },
+                {
+                    "keyword": "check environment variables",
+                    "matched": true,
+                    "similarity": 0.253,
+                    "best_matching_text": "Check if API credentials have expired or been revoked"
+                }
+            ]
+        }
+    },
+    {
+        "id": 20,
+        "title": "Unknown bug pattern not found in knowledge base",
+        "quick": {
+            "root_score": 1,
+            "fix_score": 1,
+            "total_score": 2,
+            "possible_score": 6,
+            "score_percent": 33.33,
+            "latency_ms": 9948.99,
+            "expected_root_causes": [
+                "missing knowledge base entry",
+                "pattern matching limitation",
+                "unknown bug type"
+            ],
+            "expected_fix": [
+                "add a new bug pattern",
+                "expand the knowledge base",
+                "improve semantic matching"
+            ],
+            "ai_response": {
+                "bug_summary": "Unknown bug pattern in production",
+                "root_cause": "Insufficient debugging information available to determine exact technical cause",
+                "investigation_steps": [
+                    "Gather system logs",
+                    "Review application configuration",
+                    "Analyze performance metrics"
+                ],
+                "fix_recommendation": "Implement logging and monitoring to detect similar issues in the future",
+                "prevention": "Regularly review and update application dependencies, and perform code reviews for new features",
+                "confidence_score": 0,
+                "evidence": [
+                    "Unknown bug pattern",
+                    "High reported severity"
+                ],
+                "prompt_version": "2.6.0",
+                "source": "llm"
+            },
+            "root_matches": [
+                {
+                    "keyword": "missing knowledge base entry",
+                    "matched": false,
+                    "similarity": 0.0,
+                    "best_matching_text": "Unknown bug pattern in production Insufficient debugging information available to determine exact technical cause Gather system logs Review application configuration Analyze performance metrics Implement logging and monitoring to detect similar issues in the future Regularly review and update application dependencies, and perform code reviews for new features"
+                },
+                {
+                    "keyword": "pattern matching limitation",
+                    "matched": false,
+                    "similarity": 0.061,
+                    "best_matching_text": "Unknown bug pattern in production Insufficient debugging information available to determine exact technical cause Gather system logs Review application configuration Analyze performance metrics Implement logging and monitoring to detect similar issues in the future Regularly review and update application dependencies, and perform code reviews for new features"
+                },
+                {
+                    "keyword": "unknown bug type",
+                    "matched": true,
+                    "similarity": 0.131,
+                    "best_matching_text": "Unknown bug pattern in production Insufficient debugging information available to determine exact technical cause Gather system logs Review application configuration Analyze performance metrics Implement logging and monitoring to detect similar issues in the future Regularly review and update application dependencies, and perform code reviews for new features"
+                }
+            ],
+            "fix_matches": [
+                {
+                    "keyword": "add a new bug pattern",
+                    "matched": true,
+                    "similarity": 0.174,
+                    "best_matching_text": "Unknown bug pattern in production Insufficient debugging information available to determine exact technical cause Gather system logs Review application configuration Analyze performance metrics Implement logging and monitoring to detect similar issues in the future Regularly review and update application dependencies, and perform code reviews for new features"
+                },
+                {
+                    "keyword": "expand the knowledge base",
+                    "matched": false,
+                    "similarity": 0.0,
+                    "best_matching_text": "Unknown bug pattern in production Insufficient debugging information available to determine exact technical cause Gather system logs Review application configuration Analyze performance metrics Implement logging and monitoring to detect similar issues in the future Regularly review and update application dependencies, and perform code reviews for new features"
+                },
+                {
+                    "keyword": "improve semantic matching",
+                    "matched": false,
+                    "similarity": 0.0,
+                    "best_matching_text": "Unknown bug pattern in production Insufficient debugging information available to determine exact technical cause Gather system logs Review application configuration Analyze performance metrics Implement logging and monitoring to detect similar issues in the future Regularly review and update application dependencies, and perform code reviews for new features"
+                }
+            ]
+        },
+        "full": {
+            "root_score": 0,
+            "fix_score": 0,
+            "total_score": 0,
+            "possible_score": 6,
+            "score_percent": 0.0,
+            "latency_ms": 9584.83,
+            "expected_root_causes": [
+                "missing knowledge base entry",
+                "pattern matching limitation",
+                "unknown bug type"
+            ],
+            "expected_fix": [
+                "add a new bug pattern",
+                "expand the knowledge base",
+                "improve semantic matching"
+            ],
+            "ai_response": {
+                "bug_summary": "Unknown bug pattern in production incident with high severity",
+                "root_cause": "Insufficient debugging information available to determine exact technical cause",
+                "investigation_steps": [
+                    "Gather detailed logs from production environment",
+                    "Review system configuration and setup",
+                    "Analyze performance metrics and resource utilization"
+                ],
+                "fix_recommendation": "Implement robust logging and monitoring, conduct thorough system audits, and review configuration for potential issues",
+                "prevention": "Regularly review system configuration, implement logging and monitoring, and conduct thorough system audits to prevent similar incidents",
+                "confidence_score": 0,
+                "evidence": [
+                    "Unknown bug pattern",
+                    "High severity reported"
+                ],
+                "prompt_version": "2.6.0",
+                "source": "llm"
+            },
+            "root_matches": [
+                {
+                    "keyword": "missing knowledge base entry",
+                    "matched": false,
+                    "similarity": 0.0,
+                    "best_matching_text": "Unknown bug pattern in production incident with high severity Insufficient debugging information available to determine exact technical cause Gather detailed logs from production environment Review system configuration and setup Analyze performance metrics and resource utilization Implement robust logging and monitoring, conduct thorough system audits, and review configuration for potential issues Regularly review system configuration, implement logging and monitoring, and conduct thorough system audits to prevent similar incidents"
+                },
+                {
+                    "keyword": "pattern matching limitation",
+                    "matched": false,
+                    "similarity": 0.044,
+                    "best_matching_text": "Unknown bug pattern in production incident with high severity Insufficient debugging information available to determine exact technical cause Gather detailed logs from production environment Review system configuration and setup Analyze performance metrics and resource utilization Implement robust logging and monitoring, conduct thorough system audits, and review configuration for potential issues Regularly review system configuration, implement logging and monitoring, and conduct thorough system audits to prevent similar incidents"
+                },
+                {
+                    "keyword": "unknown bug type",
+                    "matched": false,
+                    "similarity": 0.095,
+                    "best_matching_text": "Unknown bug pattern in production incident with high severity Insufficient debugging information available to determine exact technical cause Gather detailed logs from production environment Review system configuration and setup Analyze performance metrics and resource utilization Implement robust logging and monitoring, conduct thorough system audits, and review configuration for potential issues Regularly review system configuration, implement logging and monitoring, and conduct thorough system audits to prevent similar incidents"
+                }
+            ],
+            "fix_matches": [
+                {
+                    "keyword": "add a new bug pattern",
+                    "matched": false,
+                    "similarity": 0.079,
+                    "best_matching_text": "Unknown bug pattern in production incident with high severity Insufficient debugging information available to determine exact technical cause Gather detailed logs from production environment Review system configuration and setup Analyze performance metrics and resource utilization Implement robust logging and monitoring, conduct thorough system audits, and review configuration for potential issues Regularly review system configuration, implement logging and monitoring, and conduct thorough system audits to prevent similar incidents"
+                },
+                {
+                    "keyword": "expand the knowledge base",
+                    "matched": false,
+                    "similarity": 0.0,
+                    "best_matching_text": "Unknown bug pattern in production incident with high severity Insufficient debugging information available to determine exact technical cause Gather detailed logs from production environment Review system configuration and setup Analyze performance metrics and resource utilization Implement robust logging and monitoring, conduct thorough system audits, and review configuration for potential issues Regularly review system configuration, implement logging and monitoring, and conduct thorough system audits to prevent similar incidents"
+                },
+                {
+                    "keyword": "improve semantic matching",
+                    "matched": false,
+                    "similarity": 0.0,
+                    "best_matching_text": "Unknown bug pattern in production incident with high severity Insufficient debugging information available to determine exact technical cause Gather detailed logs from production environment Review system configuration and setup Analyze performance metrics and resource utilization Implement robust logging and monitoring, conduct thorough system audits, and review configuration for potential issues Regularly review system configuration, implement logging and monitoring, and conduct thorough system audits to prevent similar incidents"
+                }
+            ]
+        }
+    }
+]

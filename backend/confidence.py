@@ -12,7 +12,7 @@ def calculate_confidence(
 
     score = 0
 
-    # Error evidence
+    # Direct error evidence
     if stack_trace:
         error_keywords = [
             "error",
@@ -21,13 +21,21 @@ def calculate_confidence(
             "failed",
             "failure",
             "timeout",
-            "refused"
+            "refused",
+            "modulenotfounderror",
+            "keyerror",
+            "typeerror",
+            "valueerror",
         ]
 
         if any(k in stack_trace.lower() for k in error_keywords):
-            score += 30
+            score += 40
 
-    # Description quality
+    # Exact traceback lines
+    if stack_trace and ("File \"" in stack_trace or "line " in stack_trace):
+        score += 15
+
+    # Good description
     if description:
         words = description.split()
 
@@ -37,20 +45,24 @@ def calculate_confidence(
         if len(words) >= 15:
             score += 10
 
-    # Reproduction information
+    # Context
+    if framework:
+        score += 10
+
+    if environment:
+        score += 5
+
+    # Reproduction
     if reproduction_steps:
-        score += 15
+        score += 10
 
-    # Expected vs actual behavior
+    # Expected vs actual
     if expected_behavior and actual_behavior:
+        score += 10
+
+    # Verified pattern
+    if pattern_match:
         score += 15
 
-    # Environment context
-    if framework or environment:
-        score += 10
-
-    # Known pattern
-    if pattern_match:
-        score += 10
 
     return min(score, 100)

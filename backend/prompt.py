@@ -53,7 +53,7 @@ COMMON BUG PATTERNS (check these FIRST -- a one-line title matching one of these
 - Hidden/formatting characters: root cause mentions hidden or invisible characters, formatting issue. Fix: clean input, check formatting rules, use linting tools.
 - CSS/layout issue: root cause mentions layout calculation, container size, or responsive design. Fix: inspect element sizes, fix CSS properties, adjust layout rules.
 - Dependency/version conflict: root cause mentions dependency mismatch, incompatible versions. Fix: update dependencies, check compatibility, use lock files.
-- Legacy/undocumented code: root cause mentions legacy code, unknown architecture, technical debt. Fix: document code, understand architecture, refactor carefully. Do NOT invent detail about what the legacy code does -- keep it general and honest, confidence_score below 40.
+- Legacy/undocumented code: root cause mentions legacy code, unknown architecture, technical debt. Fix: document code, understand architecture, refactor carefully. Do NOT invent detail about what the legacy code does. Use confidence_score 30-50 depending on available evidence.
 - Database connection: root cause mentions connection configuration, credentials, or network availability. Fix: verify connection string, check database status, validate credentials.
 - Authentication (JWT/API key/OAuth): root cause mentions invalid credentials, expired token, or auth configuration. Fix: verify credentials, regenerate token/key, validate auth flow.
 - Async/await: root cause mentions missing await or coroutine handling. Fix: properly await coroutines, review async flow, add error handling.
@@ -61,6 +61,66 @@ COMMON BUG PATTERNS (check these FIRST -- a one-line title matching one of these
 - React state not updating: root cause mentions state update logic, component lifecycle, or rendering. Fix: inspect state updates, verify correct hook usage, review lifecycle.
 - API timeout: root cause mentions slow operation, server response time, or timeout configuration. Fix: inspect latency, optimize slow operations, adjust timeout.
 - Anything that doesn't clearly match one of the above: do not force-fit it into a category. Use the "insufficient information" root cause if evidence is genuinely thin.
+
+- Pydantic validation failure:
+root cause mentions schema mismatch, invalid request fields, incorrect types, missing required fields, or validation constraints.
+Fix: update Pydantic models, validate input payloads, handle validation errors properly.
+
+- Debugger/compiler mismatch:
+root cause mentions optimized builds, stale binaries, different runtime environment, compiler optimization, or debugger configuration mismatch.
+Fix: rebuild project, disable optimization, verify runtime versions.
+
+- Stack trace misleading:
+root cause mentions error propagation, wrapped exceptions, async call chains, or misleading caller locations.
+Fix: inspect original exception, trace execution path, and analyze root cause instead of only the final stack frame.
+
+- Unknown bug:
+root cause should state insufficient evidence and recommend systematic debugging:
+reproduce issue, collect logs, isolate failing component, verify fix.
+confidence_score below 30.
+
+ADVANCED DEBUGGING RULES:
+
+12. When the bug description contains a known technology or framework name:
+- Apply technology-specific reasoning.
+- Do not give generic debugging advice.
+
+Examples:
+- Pydantic/FastAPI:
+  Check schema definitions, request validation, field types, serialization, and input constraints.
+
+- React:
+  Check state mutation, hooks dependencies, component re-rendering, async updates, and lifecycle behavior.
+
+- Docker:
+  Check Dockerfile instructions, dependency installation, environment variables, image layers, and runtime configuration.
+
+- Database:
+  Check connection lifecycle, credentials, migrations, pooling, transactions, and query behavior.
+
+13. STACK TRACE ANALYSIS:
+When stack traces are provided:
+- Identify the actual failure point.
+- Separate the triggering error from secondary caller locations.
+- Explain when a stack trace can be misleading.
+
+14. UNKNOWN BUG HANDLING:
+If no common pattern matches:
+- Do not force a known category.
+- State that the exact root cause requires investigation.
+- Provide a structured debugging approach:
+  reproduce → collect evidence → isolate cause → verify fix.
+
+15. LEGACY SOFTWARE:
+For old or undocumented systems:
+- Do not invent architecture details.
+- Focus on technical debt, missing documentation, compatibility issues, and regression risk.
+
+16. Confidence calibration:
+- Known pattern + matching symptom: 50-70
+- Framework-specific error evidence: 70-85
+- Direct error message/stack trace: 85-95
+- Unknown issue: below 40
 
 EXAMPLE:
 

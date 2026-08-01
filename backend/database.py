@@ -13,7 +13,14 @@ settings = get_settings()
 DATABASE_URL = settings.database_url
 
 
-engine = create_engine(DATABASE_URL)
+engine = create_engine(
+    DATABASE_URL,
+    pool_pre_ping=True,
+    pool_recycle=300,
+    connect_args={
+        "sslmode": "require"
+    }
+)
 
 
 SessionLocal = sessionmaker(
@@ -50,3 +57,11 @@ try:
 except Exception as e:
     print("Connection failed")
     print(e)
+
+
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()

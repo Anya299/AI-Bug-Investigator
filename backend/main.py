@@ -1,6 +1,8 @@
 import time
 import uuid
 
+from routes import projects
+
 from metrics import get_metrics, record_request
 
 from pattern_matcher import find_matching_pattern, record_pattern_usage
@@ -24,7 +26,7 @@ from logger import get_logger
 from prompt import PROMPT_VERSION, SYSTEM_PROMPT, build_user_message
 
 from database import SessionLocal, check_database
-from models import BugReport, Analysis, User, BugPattern
+from models import BugReport, Analysis, User, KnowledgeEntry
 
 from schemas import UserCreate, UserResponse
 
@@ -97,6 +99,7 @@ async def request_logging_middleware(request: Request, call_next):
 
 
 app.include_router(auth_router)
+app.include_router(projects.router)
 
 
 app.add_middleware(
@@ -115,19 +118,55 @@ class Severity(str, Enum):
     high = "high"
     critical = "critical"
 
+def save_bug_analysis(bug: BugReportRequest, result: BugAnalysisResponse):
+    try:
+        db = SessionLocal()
+    except Exception as e:
+        logger.exception("Database connection failed")
+        raise DatabaseUnavailableError(
+            "Database is currently unavailable"
+        ) from e
 
-class BugAnalysisResponse(BaseModel):
-    bug_summary: str
-    root_cause: str
-    investigation_steps: list[str]
-    fix_recommendation: str
-    prevention: str
-    confidence_score: int = Field(default=0, ge=0, le=100)
-    evidence: list[str] = Field(default_factory=list)
-    prompt_version: str = PROMPT_VERSION
-    source: str = "llm"  # "llm" | "pattern_match" | "cache" -- lets the
-                          # frontend show *how* an answer was produced
+    try:
+        bug_report = BugReport(
+            project_id=bug.project_id,
+            title="Bug Report",
+            description=bug.description,
+            stack_trace=bug.stack_trace,
+            language=bug.language,
+            framework=bug.framework,
+            severity=bug.severity,
+            status="open"
+        )
 
+        db.add(bug_report)
+        db.commit()
+        db.refresh(bug_report)
+
+        analysis = Analysis(
+            bug_report_id=bug_report.id,
+            root_cause=result.root_cause,
+            explanation=result.bug_summary,
+            reproduction_steps="\n".join(result.investigation_steps),
+            suggested_fix=result.fix_recommendation,
+            draft_test_case=None,
+            confidence_score=result.confidence_score,
+            prompt_version=result.prompt_version,
+            model_used=settings.openrouter_model,
+            response_time_ms=None
+        )
+
+        db.add(analysis)
+        db.commit()
+        db.refresh(analysis)
+
+    except Exception as e:
+        db.rollback()
+        logger.exception("Failed to save bug analysis")
+        raise
+
+    finally:
+        db.close()
 
 class ErrorResponse(BaseModel):
     error: str
@@ -528,20 +567,24 @@ async def circuit_open_handler(request: Request, exc: CircuitOpenError):
         ).model_dump(),
     )
 
-
 def save_bug_analysis(bug: BugReportRequest, result: BugAnalysisResponse):
     try:
         db = SessionLocal()
     except Exception as e:
         logger.exception("Database connection failed")
-        raise DatabaseUnavailableError("Database is currently unavailable") from e
+        raise DatabaseUnavailableError(
+            "Database is currently unavailable"
+        ) from e
 
     try:
         bug_report = BugReport(
+            project_id=bug.project_id,
+            title="Bug Report",
             description=bug.description,
             stack_trace=bug.stack_trace,
             language=bug.language,
-            severity=bug.severity if bug.severity else None,
+            framework=bug.framework,
+            severity=bug.severity,
             status="open"
         )
 
@@ -552,20 +595,24 @@ def save_bug_analysis(bug: BugReportRequest, result: BugAnalysisResponse):
         analysis = Analysis(
             bug_report_id=bug_report.id,
             root_cause=result.root_cause,
-            explanation=result.bug_summary,
-            reproduction_steps="\n".join(result.investigation_steps),
-            suggested_fix=result.fix_recommendation,
+            explanation=result.explanation,
+            reproduction_steps=result.reproduction_steps,
+            suggested_fix=result.suggested_fix,
+            draft_test_case=result.draft_test_case,
+            confidence_score=result.confidence_score,
             prompt_version=result.prompt_version,
-            model_used=settings.openrouter_model if result.source == "llm" else "pattern_match"
+            model_used=result.model_used,
+            response_time_ms=result.response_time_ms
         )
 
         db.add(analysis)
         db.commit()
+        db.refresh(analysis)
 
     except Exception as e:
         db.rollback()
-        logger.exception("Database operation failed")
-        raise DatabaseUnavailableError("Database operation failed") from e
+        logger.exception("Failed to save bug analysis")
+        raise
 
     finally:
         db.close()

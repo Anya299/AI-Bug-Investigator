@@ -74,11 +74,11 @@ export default function BugForm({ apiBaseUrl = "", authToken = "" }) {
   const [mode, setMode] = useState("quick"); // "quick" | "full"
   const [showDetails, setShowDetails] = useState(false);
   const [status, setStatus] = useState("idle"); // idle | loading | success | error
+  const [isWakingUp, setIsWakingUp] = useState(false);
   const [result, setResult] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
   const [elapsedMs, setElapsedMs] = useState(null);
   const [copied, setCopied] = useState(false);
-  const [isWakingUp, setIsWakingUp] = useState(false);
   const startTimeRef = useRef(null);
 
   const update = (field) => (e) =>
@@ -182,6 +182,8 @@ export default function BugForm({ apiBaseUrl = "", authToken = "" }) {
 
         <Field label="Error / terminal output">
           <textarea
+            id="stack_trace"
+            name="stack_trace"
             className={`${inputClasses} font-mono text-xs`}
             rows={7}
             placeholder={`Paste anything, e.g.:\n\nTraceback (most recent call last):\n  File "main.py", line 5\nModuleNotFoundError: No module named 'fastapi'`}
@@ -210,13 +212,25 @@ export default function BugForm({ apiBaseUrl = "", authToken = "" }) {
           <div className="space-y-4 border-t border-line pt-4">
             <div className="grid grid-cols-2 gap-4">
               <Field label="Language">
-                <select className={inputClasses} value={form.language} onChange={update("language")}>
+                <select
+                  id="language"
+                  name="language"
+                  className={inputClasses}
+                  value={form.language}
+                  onChange={update("language")}
+                >
                   <option value="">Auto-detect</option>
                   {LANGUAGES.map((l) => <option key={l} value={l}>{l}</option>)}
                 </select>
               </Field>
               <Field label="Framework">
-                <select className={inputClasses} value={form.framework} onChange={update("framework")}>
+                <select
+                  id="framework"
+                  name="framework"
+                  className={inputClasses}
+                  value={form.framework}
+                  onChange={update("framework")}
+                >
                   <option value="">Auto-detect</option>
                   {FRAMEWORKS.map((f) => <option key={f} value={f}>{f}</option>)}
                 </select>
@@ -224,6 +238,8 @@ export default function BugForm({ apiBaseUrl = "", authToken = "" }) {
             </div>
             <Field label="Environment" hint="OS, version, key dependencies">
               <input
+                id="environment"
+                name="environment"
                 className={inputClasses}
                 placeholder="e.g. Ubuntu 22.04, Python 3.11"
                 value={form.environment}
@@ -232,17 +248,42 @@ export default function BugForm({ apiBaseUrl = "", authToken = "" }) {
             </Field>
             <div className="grid grid-cols-2 gap-4">
               <Field label="Expected behavior">
-                <input className={inputClasses} value={form.expected_behavior} onChange={update("expected_behavior")} />
+                <input
+                  id="expected_behavior"
+                  name="expected_behavior"
+                  className={inputClasses}
+                  value={form.expected_behavior}
+                  onChange={update("expected_behavior")}
+                />
               </Field>
               <Field label="Actual behavior">
-                <input className={inputClasses} value={form.actual_behavior} onChange={update("actual_behavior")} />
+                <input
+                  id="actual_behavior"
+                  name="actual_behavior"
+                  className={inputClasses}
+                  value={form.actual_behavior}
+                  onChange={update("actual_behavior")}
+                />
               </Field>
             </div>
             <Field label="Reproduction steps">
-              <textarea className={inputClasses} rows={2} value={form.reproduction_steps} onChange={update("reproduction_steps")} />
+              <textarea
+                id="reproduction_steps"
+                name="reproduction_steps"
+                className={inputClasses}
+                rows={2}
+                value={form.reproduction_steps}
+                onChange={update("reproduction_steps")}
+              />
             </Field>
             <Field label="Severity">
-              <select className={inputClasses} value={form.severity} onChange={update("severity")}>
+              <select
+                id="severity"
+                name="severity"
+                className={inputClasses}
+                value={form.severity}
+                onChange={update("severity")}
+              >
                 {SEVERITIES.map((s) => <option key={s.value} value={s.value}>{s.label}</option>)}
               </select>
             </Field>
