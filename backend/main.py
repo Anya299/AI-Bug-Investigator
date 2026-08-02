@@ -700,7 +700,7 @@ async def stats():
     },
     tags=["analysis"],
 )
-@limiter.limit("10/minute")
+@limiter.limit("2/minute")
 async def analyze_bug_endpoint(
     payload: BugReportRequest,
     current_user: str = Depends(verify_token)
