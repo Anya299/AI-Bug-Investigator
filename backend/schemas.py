@@ -8,6 +8,7 @@ from datetime import datetime
 class ProjectCreate(BaseModel):
     name: str
 
+from pydantic import ConfigDict
 
 class ProjectResponse(BaseModel):
     id: int
@@ -15,9 +16,6 @@ class ProjectResponse(BaseModel):
     owner_id: int
     created_at: datetime
 
-from pydantic import ConfigDict
-
-class ProjectResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
 # =========================
@@ -155,9 +153,6 @@ class UserResponse(BaseModel):
 
 from pydantic import ConfigDict
 
-class ProjectResponse(BaseModel):
-    model_config = ConfigDict(from_attributes=True)
-
 class TokenResponse(BaseModel):
 
     access_token: str
@@ -179,13 +174,3 @@ class ProjectCreate(BaseModel):
     name: str
 
 
-class ProjectResponse(BaseModel):
-    id: int
-    name: str
-    owner_id: int
-    created_at: datetime
-
-from pydantic import ConfigDict
-
-class ProjectResponse(BaseModel):
-    model_config = ConfigDict(from_attributes=True)

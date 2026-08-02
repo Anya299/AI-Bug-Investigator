@@ -21,7 +21,7 @@ from fastapi.responses import JSONResponse
 from slowapi import Limiter
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
-from slowapi import _rate_limit_exceeded_handler
+from slowapi.middleware import SlowAPIMiddleware
 
 from openai import AsyncOpenAI, APITimeoutError
 from pydantic import BaseModel, Field
@@ -42,7 +42,7 @@ from routes.auth import verify_token, hash_password
 from routes.auth import router as auth_router
 
 from redis_client import get_redis_status
-from cache import (get_cached_analysis, set_cached_analysis, check_rate_limit)
+from cache import get_cached_analysis, set_cached_analysis
 
 
 from circuit_breaker import (
@@ -78,13 +78,72 @@ app = FastAPI(
     version="0.1.0",
 )
 
-limiter = Limiter(key_func=get_remote_address)
+def get_real_client_ip(request: Request) -> str:
+    """
+    Render (and most PaaS platforms) terminate TLS at a reverse proxy, so
+    request.client.host is the proxy's internal IP -- identical for every
+    user. Read X-Forwarded-For instead, which the proxy sets to the real
+    client IP. Used only as a fallback key for requests that never reach
+    an authenticated identity (see get_user_identifier below).
+    """
+    forwarded_for = request.headers.get("x-forwarded-for")
+    if forwarded_for:
+        return forwarded_for.split(",")[0].strip()
+    return get_remote_address(request)
 
+
+def get_user_identifier(request: Request) -> str:
+    """
+    SlowAPI's key_func only ever receives `request`, so it cannot call
+    Depends(verify_token) itself. Instead, require_user_and_tag_request
+    (used as the auth Depends on protected routes) runs first as part of
+    FastAPI's normal dependency resolution and stashes the authenticated
+    user id on request.state.user_id. By the time the limiter wrapper
+    runs, that value is already present -- so authenticated calls are
+    rate-limited per user, not per IP, and a shared office/NAT IP or a
+    frontend dev testing repeatedly won't collide with other users.
+    """
+    user_id = getattr(request.state, "user_id", None)
+    if user_id:
+        return f"user:{user_id}"
+    # No authenticated identity on the request (e.g. auth dependency
+    # hasn't run yet for this route, or route is intentionally public).
+    # Fall back to IP so the endpoint still has *some* protection.
+    return f"ip:{get_real_client_ip(request)}"
+
+
+limiter = Limiter(key_func=get_user_identifier)
 app.state.limiter = limiter
-app.add_exception_handler(
-    RateLimitExceeded,
-    _rate_limit_exceeded_handler
-)
+
+
+async def rate_limit_exceeded_handler(request: Request, exc: RateLimitExceeded) -> JSONResponse:
+    """
+    Single source of truth for 429s (SlowAPI is now the only rate limiter --
+    the old Redis check_rate_limit() has been removed to stop double
+    rate-limiting the same request). Returns the app's standard ErrorResponse
+    shape and injects Retry-After / X-RateLimit-* headers using SlowAPI's own
+    header helper, so clients know exactly when they can retry.
+    """
+    response = JSONResponse(
+        status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+        content=ErrorResponse(
+            error="rate_limit_exceeded",
+            detail="Too many requests. Please wait a moment and try again.",
+            request_id=getattr(request.state, "request_id", None),
+            retryable=True,
+        ).model_dump(),
+    )
+    # Adds Retry-After, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset
+    return request.app.state.limiter._inject_headers(response, request.state.view_rate_limit)
+
+
+app.add_exception_handler(RateLimitExceeded, rate_limit_exceeded_handler)
+
+# Required so SlowAPI's Limiter actually tracks/enforces request counts
+# and attaches rate-limit headers. Without this, @limiter.limit(...)
+# decorators are effectively inert.
+app.add_middleware(SlowAPIMiddleware)
+
 
 @app.middleware("http")
 async def request_logging_middleware(request: Request, call_next):
@@ -132,55 +191,6 @@ class Severity(str, Enum):
     high = "high"
     critical = "critical"
 
-def save_bug_analysis(bug: BugReportRequest, result: BugAnalysisResponse):
-    try:
-        db = SessionLocal()
-    except Exception as e:
-        logger.exception("Database connection failed")
-        raise DatabaseUnavailableError(
-            "Database is currently unavailable"
-        ) from e
-
-    try:
-        bug_report = BugReport(
-            project_id=bug.project_id,
-            title="Bug Report",
-            description=bug.description,
-            stack_trace=bug.stack_trace,
-            language=bug.language,
-            framework=bug.framework,
-            severity=bug.severity,
-            status="open"
-        )
-
-        db.add(bug_report)
-        db.commit()
-        db.refresh(bug_report)
-
-        analysis = Analysis(
-            bug_report_id=bug_report.id,
-            root_cause=result.root_cause,
-            explanation=result.bug_summary,
-            reproduction_steps="\n".join(result.investigation_steps),
-            suggested_fix=result.fix_recommendation,
-            draft_test_case=None,
-            confidence_score=result.confidence_score,
-            prompt_version=result.prompt_version,
-            model_used=settings.openrouter_model,
-            response_time_ms=None
-        )
-
-        db.add(analysis)
-        db.commit()
-        db.refresh(analysis)
-
-    except Exception as e:
-        db.rollback()
-        logger.exception("Failed to save bug analysis")
-        raise
-
-    finally:
-        db.close()
 
 class ErrorResponse(BaseModel):
     error: str
@@ -320,7 +330,7 @@ def parse_model_output(raw_text: str) -> BugAnalysisResponse:
         ) from exc
 
 
-def _response_from_pattern(pattern: KnowledgeEntry, bug: BugReportRequest)-> BugAnalysisResponse:
+def _response_from_pattern(pattern: KnowledgeEntry, bug: BugReportRequest) -> BugAnalysisResponse:
     """
     Builds an instant response straight from a verified BugPattern, no LLM
     call involved. This is what makes "Quick fix" genuinely fast (and
@@ -446,7 +456,7 @@ async def _call_model(
 
 async def analyze_bug(
     bug: BugReportRequest,
-    pattern_hint: BugPattern | None = None,
+    pattern_hint: KnowledgeEntry | None = None,
 ) -> BugAnalysisResponse:
     """
     Calls the model, with a quality guard: if the response passes JSON/schema
@@ -582,6 +592,7 @@ async def circuit_open_handler(request: Request, exc: CircuitOpenError):
         ).model_dump(),
     )
 
+
 def save_bug_analysis(bug: BugReportRequest, result: BugAnalysisResponse):
     try:
         db = SessionLocal()
@@ -646,6 +657,91 @@ def save_bug_analysis(bug: BugReportRequest, result: BugAnalysisResponse):
         db.close()
 
 
+# ===== Auth dependency wrapper (feeds the per-user rate limiter) =====
+
+def extract_user_identifier(user_data) -> str | None:
+    """
+    Normalizes whatever an auth dependency returns into a single stable
+    string identifier, without assuming a fixed shape. verify_token()
+    implementations tend to drift over a project's life -- plain string,
+    JWT payload dict, ORM User object -- and bracket-indexing a shape
+    that doesn't match (e.g. dict['user_id'] when the dict only has
+    'sub', or indexing a plain string) is exactly what produces crashes
+    like "KeyError: user_id". Every branch below reads with .get()/
+    getattr() so a missing key/attribute returns None instead of raising.
+    Returns None if no usable identifier could be found.
+    """
+    if user_data is None:
+        return None
+
+    # Plain string identifier -- current verify_token() returns the
+    # user's email extracted from the JWT "sub" claim.
+    if isinstance(user_data, str):
+        return user_data
+
+    # SQLAlchemy ORM User instance.
+    if isinstance(user_data, User):
+        if getattr(user_data, "id", None) is not None:
+            return str(user_data.id)
+        return getattr(user_data, "email", None)
+
+    # Dict-shaped payload (e.g. a raw decoded JWT, or {"user_id": ...},
+    # or {"id": ...}). Check every key we might reasonably find an
+    # identifier under, in priority order -- .get() never raises.
+    if isinstance(user_data, dict):
+        for key in ("user_id", "id", "sub", "email"):
+            value = user_data.get(key)
+            if value:
+                return str(value)
+        return None
+
+    # Fallback for any other object shape (e.g. a Pydantic user model).
+    user_id = getattr(user_data, "id", None)
+    if user_id is not None:
+        return str(user_id)
+
+    email = getattr(user_data, "email", None)
+    if email is not None:
+        return str(email)
+
+    return None
+
+
+async def require_user_and_tag_request(
+    request: Request,
+    current_user = Depends(verify_token),
+) -> str:
+    """
+    Thin wrapper around verify_token. FastAPI resolves this (and its
+    nested verify_token dependency) before calling the route handler,
+    so request.state.user_id is guaranteed to be set before SlowAPI's
+    get_user_identifier key_func runs. Use this in place of
+    Depends(verify_token) on any route that should be rate-limited
+    per-user instead of per-IP.
+
+    current_user is normalized through extract_user_identifier() before
+    being stored, so this never crashes regardless of what verify_token()
+    returns -- str, dict, or a User ORM object -- and stays safe even if
+    verify_token()'s return shape changes later.
+    """
+    identifier = extract_user_identifier(current_user)
+
+    if identifier is None:
+        # Auth succeeded (verify_token didn't raise) but we couldn't pull
+        # a usable identifier out of whatever it returned. Don't crash the
+        # request over a rate-limiting concern -- just fall back to IP-based
+        # limiting for this call and log it so the shape mismatch gets fixed.
+        logger.warning(
+            "require_user_and_tag_request: could not extract a user "
+            "identifier from verify_token() output (type=%s); falling "
+            "back to IP-based rate limiting for this request.",
+            type(current_user).__name__,
+        )
+    else:
+       request.state.user_id = identifier
+
+    return current_user
+
 # ===== Routes =====
 
 @app.get("/health", tags=["meta"])
@@ -689,7 +785,11 @@ async def stats():
     return get_metrics()
 
 
-@limiter.limit("2/minute")
+# NOTE: @app.post(...) MUST be the outer decorator and @limiter.limit(...)
+# must be the inner one (closest to the function). SlowAPI wraps the
+# function it decorates; if @limiter.limit sits above @app.post, FastAPI
+# registers the raw unlimited function as the actual route handler and
+# the limiter never runs, which is why requests were always returning 200.
 @app.post(
     "/analyze-bug",
     response_model=BugAnalysisResponse,
@@ -701,17 +801,13 @@ async def stats():
     },
     tags=["analysis"],
 )
+@limiter.limit("20/minute")
 async def analyze_bug_endpoint(
     request: Request,
     payload: BugReportRequest,
-    current_user: str = Depends(verify_token)
+    current_user: str = Depends(require_user_and_tag_request),
 ) -> BugAnalysisResponse:
     try:
-        # ---- Rate limit check ----
-        allowed = await check_rate_limit(current_user)
-        if not allowed:
-            raise HTTPException(status_code=429, detail="Rate limit exceeded. Try again later.")
-
         # ---- Cache check ----
         cached_result = get_cached_analysis(
             payload.description,

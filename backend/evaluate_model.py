@@ -27,7 +27,7 @@ API_URL = "https://ai-bug-investigator-9.onrender.com/analyze-bug"
 # Paste your JWT access token here. It expires (access_token_expire_minutes
 # in config.py) -- if every bug in a run comes back 401, this is stale,
 # get a fresh one from /auth/login before re-running.
-TOKEN =  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJyYXlhcmlkYXJlQHRlc3QuY29tIiwiZXhwIjoxNzg1NTAxNTIzfQ.cd95vCSui7HGTigqIQ2gIi1139KApTwd0QK6v3UIkro"
+TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0QGV4YW1wbGUuY29tIiwiZXhwIjoxNzg1NzI4MTcyfQ.Cc57A6C15HIuNuTPIeL_arpdNUoVtnOiERg_ZMgoNIQ"
 HEADERS = {
     "Authorization": f"Bearer {TOKEN}",
     "Content-Type": "application/json"
