@@ -3,6 +3,8 @@ import uuid
 
 from routes import projects
 
+from fastapi.encoders import jsonable_encoder
+
 from metrics import get_metrics, record_request
 
 from pattern_matcher import find_matching_pattern, record_pattern_usage
@@ -15,6 +17,11 @@ from fastapi import FastAPI, Request, status, Depends, HTTPException
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+
+from slowapi import Limiter
+from slowapi.util import get_remote_address
+from slowapi.errors import RateLimitExceeded
+from slowapi import _rate_limit_exceeded_handler
 
 from openai import AsyncOpenAI, APITimeoutError
 from pydantic import BaseModel, Field
@@ -71,6 +78,13 @@ app = FastAPI(
     version="0.1.0",
 )
 
+limiter = Limiter(key_func=get_remote_address)
+
+app.state.limiter = limiter
+app.add_exception_handler(
+    RateLimitExceeded,
+    _rate_limit_exceeded_handler
+)
 
 @app.middleware("http")
 async def request_logging_middleware(request: Request, call_next):
@@ -492,14 +506,15 @@ async def analyzer_parsing_handler(request: Request, exc: AnalyzerParsingError):
 @app.exception_handler(RequestValidationError)
 async def validation_error_handler(request: Request, exc: RequestValidationError):
     logger.warning("Validation error on %s: %s", request.url.path, exc.errors())
+
     return JSONResponse(
-        status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-        content=ErrorResponse(
-            error="validation_error",
-            detail="Your request did not pass validation. Check 'description' length and types.",
-            request_id=request.state.request_id,
-        ).model_dump(),
+        status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+        content={
+           "error": "validation_error",
+           "detail": jsonable_encoder(exc.errors())
+        }
     )
+    
 
 
 @app.exception_handler(AnalyzerUpstreamError)
@@ -685,6 +700,7 @@ async def stats():
     },
     tags=["analysis"],
 )
+@limiter.limit("10/minute")
 async def analyze_bug_endpoint(
     payload: BugReportRequest,
     current_user: str = Depends(verify_token)
