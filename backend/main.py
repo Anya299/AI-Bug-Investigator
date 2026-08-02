@@ -689,6 +689,7 @@ async def stats():
     return get_metrics()
 
 
+@limiter.limit("2/minute")
 @app.post(
     "/analyze-bug",
     response_model=BugAnalysisResponse,
@@ -700,12 +701,11 @@ async def stats():
     },
     tags=["analysis"],
 )
-@limiter.limit("2/minute")
 async def analyze_bug_endpoint(
+    request: Request,
     payload: BugReportRequest,
     current_user: str = Depends(verify_token)
 ) -> BugAnalysisResponse:
-
     try:
         # ---- Rate limit check ----
         allowed = await check_rate_limit(current_user)
