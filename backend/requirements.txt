@@ -14,6 +14,9 @@ sqlalchemy>=2.0.0
 psycopg2-binary>=2.9.0
 redis>=5.0.0
 
+slowapi==0.1.9
+limits>=3.13.0
+
 python-jose[cryptography]>=3.3.0
 passlib[bcrypt]>=1.7.4
 bcrypt==4.1.3
@@ -21,7 +24,5 @@ python-multipart>=0.0.9
 
 pytest>=8.2.0
 
-# --- Not needed by the deployed app itself (main.py never imports these) ---
-# --- Only used by evaluate_model.py if you run evaluations from Render's Shell tab ---
 scikit-learn>=1.4.0
 requests>=2.31.0
