@@ -117,19 +117,22 @@ export default function BugForm({ apiBaseUrl = "", authToken = "" }) {
           ...(authToken ? { Authorization: `Bearer ${authToken}` } : {}),
         },
         body: JSON.stringify({
+          project_id: 1,
           description:
-            form.description ||
-            form.stack_trace.split("\n").filter(Boolean).join(" ").slice(0, 500),
-          stack_trace: form.stack_trace,
+            form.description?.trim() ||
+            form.stack_trace?.trim().split("\n").filter(Boolean).join(" ").slice(0, 500) ||
+            "Unknown bug report",
+
+          stack_trace: form.stack_trace || null,
           language: form.language || null,
-          severity: form.severity,
-          mode, // "quick" lets the backend try a pattern-match shortcut first
+          severity: form.severity || "medium",
+          mode: mode === "full" ? "full" : "quick",
           framework: form.framework || null,
           environment: form.environment || null,
           reproduction_steps: form.reproduction_steps || null,
           expected_behavior: form.expected_behavior || null,
           actual_behavior: form.actual_behavior || null,
-        }),
+       }),
       });
 
       if (!res.ok) {
