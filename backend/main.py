@@ -112,7 +112,10 @@ def get_user_identifier(request: Request) -> str:
     return f"ip:{get_real_client_ip(request)}"
 
 
-limiter = Limiter(key_func=get_user_identifier)
+limiter = Limiter(
+    key_func=get_user_identifier,
+    storage_uri=settings.redis_url
+)
 app.state.limiter = limiter
 
 

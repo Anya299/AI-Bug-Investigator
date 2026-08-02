@@ -53,6 +53,8 @@ class Settings(BaseSettings):
     allowed_origins: str = "*"
     log_level: str = "INFO"
 
+    redis_url: str | None = None
+
     @property
     def is_production(self) -> bool:
         return self.environment.lower() == "production"
