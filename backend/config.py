@@ -53,7 +53,7 @@ class Settings(BaseSettings):
     allowed_origins: str = "*"
     log_level: str = "INFO"
 
-    redis_url: str | None = None
+    redis_url: str = "memory://"
 
     @property
     def is_production(self) -> bool:
