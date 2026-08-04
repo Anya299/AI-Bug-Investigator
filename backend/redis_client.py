@@ -35,9 +35,6 @@ def check_redis():
 
 def get_redis_status():
 
-    print("REDIS_ENABLED:", REDIS_ENABLED)
-    print("REDIS_CLIENT:", redis_client)
-
     if not REDIS_ENABLED or redis_client is None:
         return {
             "redis": False,
