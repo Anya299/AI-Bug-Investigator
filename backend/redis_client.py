@@ -33,8 +33,11 @@ def check_redis():
         print("Redis Error:", e)  # <-- temporarily add this
         return False
 
-
 def get_redis_status():
+
+    print("REDIS_ENABLED:", REDIS_ENABLED)
+    print("REDIS_CLIENT:", redis_client)
+
     if not REDIS_ENABLED or redis_client is None:
         return {
             "redis": False,
@@ -49,8 +52,10 @@ def get_redis_status():
             "cache_status": "active"
         }
 
-    except Exception:
+    except Exception as e:
+        print("Redis Error:", e)
+
         return {
             "redis": False,
-            "cache_status": "inactive"
+            "cache_status": "down"
         }
