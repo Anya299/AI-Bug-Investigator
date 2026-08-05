@@ -1,6 +1,13 @@
+import CursorGlow from "./components/CursorGlow";
 import { useEffect, useState } from "react";
 import TraceHero from "./components/TraceHero";
 import BugForm from "./components/BugForm";
+import Reveal from "./components/Reveal";
+
+import GlassCard from "./components/ui/GlassCard";
+import AIStatus from "./components/ui/AIStatus";
+import GlowOrb from "./components/ui/GlowOrb";
+import PrimaryButton from "./components/ui/PrimaryButton";
 
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL ||
@@ -78,39 +85,182 @@ function App() {
   const { token, authError } = useGuestAuth(API_BASE_URL);
 
   return (
-    <div className="min-h-screen bg-ink">
+  <div
+    className="
+    relative
+    min-h-screen
+    overflow-hidden
+    bg-traceBg
+    text-textPrimary
+    "
+  >
+
+    {/* Cursor ambient glow */}
+    <CursorGlow />
+
+    {/* AI ambient background */}
+    <div className="pointer-events-none absolute inset-0 trace-grid opacity-40" />
+
+    <GlowOrb
+      className="
+      -top-40
+      left-1/3
+      h-96
+      w-96
+      "
+    />
+
+    <GlowOrb
+      className="
+      right-0
+      top-1/2
+      h-72
+      w-72
+      "
+    />
+
+
+    <div className="relative z-10">
+
       <Header />
+
       <Hero />
 
-      <section id="investigate" className="mx-auto max-w-5xl px-6 py-16 sm:py-20">
+
+      <section
+        id="investigate"
+        className="
+        mx-auto
+        max-w-6xl
+        px-6
+        py-16
+        "
+      >
+
+        <Reveal>
+          <div className="mb-8 flex items-center justify-between">
+
+            <div>
+              <h2
+                className="
+                text-3xl
+                font-bold
+                "
+              >
+                Investigation Workspace
+              </h2>
+
+              <p className="mt-2 text-textSecondary">
+                Paste evidence. Let Trace find the root cause.
+              </p>
+
+            </div>
+
+
+            <AIStatus />
+
+          </div>
+        </Reveal>
+
+
+
         {authError && (
-          <p className="mb-4 font-mono text-sm text-redAccent">{authError}</p>
+          <p className="mb-4 font-mono text-sm text-redAccent">
+            {authError}
+          </p>
         )}
-        <BugForm apiBaseUrl={API_BASE_URL} authToken={token} />
+
+
+
+        <Reveal delay={150}>
+          <GlassCard
+            className="
+            trace-hover-lift
+            p-6
+            sm:p-10
+            "
+          >
+
+            <BugForm
+              apiBaseUrl={API_BASE_URL}
+              authToken={token}
+            />
+
+          </GlassCard>
+        </Reveal>
+
+
       </section>
 
+
       <Footer />
+
     </div>
-  );
+
+  </div>
+);
 }
 
 function Header() {
   return (
-    <header className="border-b border-line/60">
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-5">
-        <div className="flex items-center gap-2">
-          <span className="h-2 w-2 rounded-full bg-cyan" />
-          <span className="font-mono-display text-sm font-bold tracking-tight text-textPrimary">
+    <header className="trace-nav sticky top-0 z-50">
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5">
+
+        <div className="flex items-center gap-3">
+          <div className="relative">
+            <span className="block h-3 w-3 rounded-full bg-cyan" />
+            <span className="absolute inset-0 h-3 w-3 animate-ping rounded-full bg-cyan opacity-50" />
+          </div>
+
+          <span className="font-mono-display text-lg font-bold tracking-tight text-textPrimary">
             trace
+          </span>
+
+          <span className="hidden rounded-full border border-line px-3 py-1 text-[10px] font-mono text-textDim sm:block">
+            AI BUG INVESTIGATOR
           </span>
         </div>
 
-        <a
-          href="#investigate"
-          className="rounded-md border border-line px-4 py-2 font-mono text-xs text-textSecondary transition-colors hover:border-cyan hover:text-cyan"
-        >
-          Investigate a bug →
-        </a>
+
+        <nav className="flex items-center gap-4">
+
+          <a
+            href="#investigate"
+            className="
+            hidden
+            text-xs
+            font-mono
+            text-textSecondary
+            transition-colors
+            hover:text-cyan
+            sm:block
+            "
+          >
+            Live demo
+          </a>
+
+
+          <a
+            href="#investigate"
+            className="
+            rounded-lg
+            border
+            border-cyan/40
+            bg-cyan/10
+            px-4
+            py-2
+            text-xs
+            font-mono
+            text-cyan
+            transition
+            hover:bg-cyan/20
+            "
+          >
+            Investigate →
+          </a>
+
+        </nav>
+
       </div>
     </header>
   );
@@ -119,38 +269,66 @@ function Header() {
 function Hero() {
   return (
     <section className="mx-auto grid max-w-6xl gap-12 px-6 py-16 sm:py-24 lg:grid-cols-2 lg:items-center lg:py-32">
-      <div>
-        <p className="font-mono text-xs uppercase tracking-[0.2em] text-cyan">
-          for python · fastapi · django
-        </p>
+      <Reveal direction="left">
+        <div>
+          <p className="font-mono text-xs uppercase tracking-[0.25em] text-cyan">
+          AI debugging infrastructure for modern engineering teams
+         </p>
 
-        <h1 className="mt-4 font-mono-display text-4xl font-bold leading-[1.1] tracking-tight text-textPrimary sm:text-5xl">
-          Stop guessing at
-          <br />
-          root causes.
-        </h1>
+          <h1 className="mt-6 font-mono-display text-5xl font-bold leading-[1.05] tracking-tight text-textPrimary sm:text-6xl lg:text-7xl">
 
-        <p className="mt-5 max-w-md text-base leading-relaxed text-textSecondary">
-          Paste a stack trace. Get a confidence-scored root cause, a
-          step-by-step investigation, and a fix — grounded in the actual
-          evidence in your error, not a generic guess.
-        </p>
+            Debugging
+            <br />
 
-        <div className="mt-8 flex items-center gap-4">
-          <a
-            href="#investigate"
-            className="rounded-md bg-amber px-5 py-3 font-mono-display text-sm font-semibold text-ink transition-opacity hover:opacity-90"
-          >
-            Investigate your first bug
-          </a>
+            powered by
+            <br />
 
-          <span className="font-mono text-xs text-textDim">
-            no signup required to try
-          </span>
+            AI investigation.
+
+           </h1>
+
+          <p className="mt-6 max-w-xl text-lg leading-relaxed text-textSecondary">
+
+          Trace reads your errors like a senior engineer.
+          It finds root causes, explains the evidence,
+          and gives you the fix — not another generic AI answer.
+
+         </p>
+          <div className="mt-10 flex flex-wrap items-center gap-4">
+
+          <a href="#investigate">
+            <PrimaryButton>
+              Start investigating →
+           </PrimaryButton>
+         </a>
+
+
+          <button
+          className="
+          rounded-xl
+          border
+          border-line
+          px-6
+          py-3
+          font-mono
+          text-sm
+          text-textSecondary
+          transition
+          hover:border-cyan
+          hover:text-cyan
+          "
+         >
+         View dashboard
+         </button>
+
+
+         </div>
         </div>
-      </div>
+      </Reveal>
 
-      <TraceHero />
+      <Reveal direction="right" delay={150}>
+        <TraceHero />
+      </Reveal>
     </section>
   );
 }

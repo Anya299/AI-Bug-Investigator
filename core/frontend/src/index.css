@@ -1,149 +1,192 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+@config "./tailwind.config.js";
+
+
+/* =========================
+   TRACE AI GLOBAL SYSTEM
+========================= */
 
 :root {
-  --ink: #0b0e14;
-  --surface: #12161f;
-  --surface-raised: #171c27;
-  --line: #232a38;
-  --text-primary: #e6edf3;
-  --text-secondary: #8b96a5;
-  --text-dim: #5a6472;
-  --amber: #ffb454;
-  --cyan: #39d9c5;
-  --red: #ff6b6b;
+  color-scheme: dark;
 }
+
 
 html {
   scroll-behavior: smooth;
 }
 
+
 body {
-  background-color: var(--ink);
-  color: var(--text-primary);
-  font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
-  -webkit-font-smoothing: antialiased;
+
+  margin: 0;
+
+  min-height: 100vh;
+
+  background:
+    radial-gradient(
+      circle at 50% -20%,
+      rgba(57,217,197,0.12),
+      transparent 40%
+    ),
+    #06080d;
+
+  color: #e6edf3;
+
+  font-family:
+    Inter,
+    system-ui,
+    sans-serif;
+
 }
 
-.font-mono-display {
-  font-family: "JetBrains Mono", ui-monospace, monospace;
+
+/* =========================
+   GRID BACKGROUND
+========================= */
+
+.trace-grid {
+
+  background-image:
+    linear-gradient(
+      rgba(255,255,255,.035) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      rgba(255,255,255,.035) 1px,
+      transparent 1px
+    );
+
+  background-size:
+    45px 45px;
+
 }
+
+
+/* =========================
+   SCROLLBAR
+========================= */
+
+::-webkit-scrollbar {
+
+  width: 8px;
+
+}
+
+
+::-webkit-scrollbar-track {
+
+  background:#06080d;
+
+}
+
+
+::-webkit-scrollbar-thumb {
+
+  background:#232a38;
+
+  border-radius:20px;
+
+}
+
+
+::-webkit-scrollbar-thumb:hover {
+
+  background:#39d9c5;
+
+}
+
+
+/* =========================
+   TEXT SELECTION
+========================= */
 
 ::selection {
-  background: var(--amber);
-  color: var(--ink);
+
+  background:
+  rgba(57,217,197,.25);
+
+  color:white;
+
 }
 
-/* Visible keyboard focus, always */
-a:focus-visible,
-button:focus-visible,
-input:focus-visible,
-select:focus-visible,
-textarea:focus-visible {
-  outline: 2px solid var(--cyan);
-  outline-offset: 2px;
+
+/* =========================
+   AI GLOW UTILITIES
+========================= */
+
+.ai-glow {
+
+  box-shadow:
+  0 0 40px
+  rgba(57,217,197,.18);
+
+}
+
+
+.glass {
+
+  background:
+  rgba(255,255,255,.04);
+
+  backdrop-filter:
+  blur(24px);
+
+  border:
+  1px solid
+  rgba(255,255,255,.08);
+
+}
+
+
+/* =========================
+   HOVER LIFT
+   Drop this class on any card/panel for the "premium" hover response.
+   Example: <GlassCard className="trace-hover-lift"> ... </GlassCard>
+========================= */
+
+.trace-hover-lift {
+  transition: transform .25s ease, border-color .25s ease, box-shadow .25s ease;
+}
+
+.trace-hover-lift:hover {
+  transform: translateY(-4px);
+  border-color: rgba(57,217,197,.35);
+  box-shadow: 0 20px 50px rgba(0,0,0,.4), 0 0 30px rgba(57,217,197,.12);
 }
 
 @media (prefers-reduced-motion: reduce) {
-  * {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
+  .trace-hover-lift {
+    transition: none;
+  }
+  .trace-hover-lift:hover {
+    transform: none;
   }
 }
 
-/* Trace typing cursor */
-.trace-cursor::after {
-  content: "▌";
-  color: var(--cyan);
-  animation: blink 1s step-start infinite;
+
+/* =========================
+   ROTATED BADGE SPACING FIX
+   Rotating an element with `transform` doesn't reserve extra layout
+   space for the corners it swings into — that's what caused
+   CASE CONFIRMED to visually collide with AI ENGINE ONLINE even though
+   they had a flex gap between them. Add this class to any rotated stamp
+   alongside a sibling to give it real reserved breathing room.
+========================= */
+
+.trace-rotated-badge {
+  margin-left: 10px;
+  margin-right: 10px;
 }
 
-@keyframes blink {
-  50% {
-    opacity: 0;
-  }
-}
 
-@keyframes trace-scan {
-  0% {
-    background-position: 0% 0%;
-  }
-  100% {
-    background-position: 0% 200%;
-  }
-}
+/* =========================
+   GLASS NAV
+   Add className="trace-nav" to your <nav> element.
+========================= */
 
-/* ---- Added for ResultPanel: staged-loading skeleton shimmer ---- */
-.skeleton-shimmer {
-  background: linear-gradient(
-    90deg,
-    var(--surface) 25%,
-    var(--surface-raised) 37%,
-    var(--surface) 63%
-  );
-  background-size: 400% 100%;
-}
-
-/* ---- Added for ResultPanel: confidence ring stroke animation ---- */
-.confidence-ring-fg {
-  transition: stroke-dashoffset 0.7s ease-out, stroke 0.3s ease;
-  transform: rotate(-90deg);
-  transform-origin: 50% 50%;
-}
-/* ---- Result panel entrance animation ---- */
-.result-enter {
-  animation: resultEnter 0.35s ease-out both;
-}
-
-@keyframes resultEnter {
-  from {
-    opacity: 0;
-    transform: translateY(12px) scale(0.98);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-/* Respect users who prefer reduced motion */
-@media (prefers-reduced-motion: reduce) {
-  .result-enter {
-    animation: none;
-  }
-}
-/* Result entrance animation */
-@keyframes fadeUp {
-  from {
-    opacity: 0;
-    transform: translateY(12px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.animate-fadeUp {
-  animation: fadeUp 0.35s ease-out;
-}
-
-/* Loading shimmer animation */
-@keyframes shimmer {
-  from {
-    background-position: 200% 0;
-  }
-
-  to {
-    background-position: -200% 0;
-  }
-}
-
-.animate-shimmer {
-  animation: shimmer 1.5s infinite;
+.trace-nav {
+  background: rgba(6,8,13,.7);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(255,255,255,.08);
 }

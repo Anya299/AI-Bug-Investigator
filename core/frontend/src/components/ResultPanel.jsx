@@ -1,258 +1,832 @@
 import { useEffect, useState } from "react";
 
-// Mirrors what analyze-bug actually does server-side: cache check, then
-// pattern match, then (if needed) the LLM call, then the quality guard
-// retry path. Timed to roughly typical latency since there's no SSE to
-// drive this off real progress.
+
 const LOADING_STAGES = [
-  { label: "Checking cache…", ms: 0 },
-  { label: "Matching known bug patterns…", ms: 550 },
-  { label: "Building investigation report…", ms: 1400 },
-  { label: "Validating output quality…", ms: 2600 },
+  "Checking memory database...",
+  "Matching known bug patterns...",
+  "Analyzing stack evidence...",
+  "Finding root cause...",
+  "Generating production fix..."
 ];
 
-function useLoadingStage(active) {
-  const [stageIndex, setStageIndex] = useState(0);
 
-  useEffect(() => {
-    if (!active) {
-      setStageIndex(0);
+function useLoadingStage(active) {
+
+  const [index,setIndex] = useState(0);
+
+
+  useEffect(()=>{
+
+    if(!active){
+      setIndex(0);
       return;
     }
-    const timers = LOADING_STAGES.slice(1).map((stage, i) =>
-      setTimeout(() => setStageIndex(i + 1), stage.ms)
-    );
-    return () => timers.forEach(clearTimeout);
-  }, [active]);
 
-  return LOADING_STAGES[stageIndex].label;
+
+    const timer=setInterval(()=>{
+
+      setIndex(i =>
+        i < LOADING_STAGES.length-1
+        ? i+1
+        : i
+      );
+
+    },900);
+
+
+    return ()=>clearInterval(timer);
+
+
+  },[active]);
+
+
+  return LOADING_STAGES[index];
+
 }
 
-function confidenceTier(score) {
-  if (score >= 80) return { color: "#39d9c5", label: "high" };
-  if (score >= 50) return { color: "#ffb454", label: "moderate" };
-  return { color: "#ff6b6b", label: "low" };
+
+
+
+function confidenceTier(score){
+
+  if(score>=80)
+    return "HIGH";
+
+  if(score>=50)
+    return "MEDIUM";
+
+  return "LOW";
+
 }
 
-function ConfidenceRing({ score = 0, size = 56 }) {
-  const radius = 22;
-  const circumference = 2 * Math.PI * radius;
-  const offset = circumference - (Math.min(Math.max(score, 0), 100) / 100) * circumference;
-  const { color, label } = confidenceTier(score);
+
+// Maps a confidence tier to the existing color tokens (ai / amber / redAccent)
+// so the stamp never introduces a color that isn't already in the palette.
+function tierStyles(tier){
+
+  if(tier==="HIGH")
+    return {
+      border: "border-ai/60",
+      text: "text-ai",
+      bg: "bg-aiSoft",
+      label: "ROOT CAUSE CONFIRMED"
+    };
+
+  if(tier==="MEDIUM")
+    return {
+      border: "border-amber/60",
+      text: "text-amber",
+      bg: "bg-amber/10",
+      label: "LIKELY ROOT CAUSE"
+    };
+
+  return {
+    border: "border-redAccent/60",
+    text: "text-redAccent",
+    bg: "bg-redAccent/10",
+    label: "NEEDS HUMAN REVIEW"
+  };
+
+}
+
+
+
+
+function ConfidenceCard({score=0}){
+
+
+return (
+
+<div
+className="
+rounded-2xl
+border
+border-white/10
+bg-white/5
+p-4
+text-center
+"
+>
+
+<p
+className="
+text-xs
+font-mono
+text-textSecondary
+"
+>
+CONFIDENCE
+</p>
+
+
+<p
+className="
+mt-2
+text-4xl
+font-bold
+text-ai
+"
+>
+{score}%
+</p>
+
+
+<p
+className="
+font-mono
+text-xs
+text-textDim
+"
+>
+{confidenceTier(score)}
+</p>
+
+
+</div>
+
+);
+
+}
+
+
+// The signature moment: a rotated stamp that "lands" on the report once
+// the investigation resolves. Tier drives both the label and the color,
+// so a low-confidence result visibly reads as "needs review", not a fake win.
+function CaseStamp({score=0}){
+
+  const tier = confidenceTier(score);
+  const styles = tierStyles(tier);
 
   return (
-    <div className="flex items-center gap-2.5" title={`${label} confidence`}>
-      <svg width={size} height={size} viewBox="0 0 56 56" className="shrink-0">
-        <circle cx="28" cy="28" r={radius} fill="none" stroke="var(--line)" strokeWidth="5" />
-        <circle
-          cx="28"
-          cy="28"
-          r={radius}
-          fill="none"
-          stroke={color}
-          strokeWidth="5"
-          strokeLinecap="round"
-          strokeDasharray={circumference}
-          strokeDashoffset={offset}
-          className="confidence-ring-fg"
-        />
-        <text
-          x="28"
-          y="32"
-          textAnchor="middle"
-          className="font-mono-display"
-          fontSize="13"
-          fontWeight="600"
-          fill={color}
-        >
-          {score}
-        </text>
-      </svg>
-      <div className="leading-tight">
-        <p className="font-mono text-xs uppercase tracking-wide text-textDim">Confidence</p>
-        <p className="font-mono text-xs font-semibold" style={{ color }}>
-          {label}
-        </p>
-      </div>
-    </div>
-  );
-}
 
-function SourceBadge({ source }) {
-  if (source === "pattern_match") {
-    return (
-      <span className="rounded-full border border-cyan/30 bg-cyan/10 px-2.5 py-1 font-mono text-xs text-cyan">
-        ⚡ instant · known pattern
+    <div
+      className={`
+      trace-stamp-in
+      pointer-events-none
+      select-none
+      inline-flex
+      items-center
+      gap-2
+      rounded-lg
+      border-2
+      border-dashed
+      ${styles.border}
+      ${styles.bg}
+      px-3
+      py-1.5
+      -rotate-6
+      `}
+    >
+      <span className={`font-mono text-[10px] tracking-widest font-bold ${styles.text}`}>
+        {styles.label}
       </span>
-    );
-  }
-  if (source === "cache") {
-    return (
-      <span className="rounded-full border border-line bg-ink px-2.5 py-1 font-mono text-xs text-textDim">
-        from cache
-      </span>
-    );
-  }
-  return (
-    <span className="rounded-full border border-line bg-ink px-2.5 py-1 font-mono text-xs text-textDim">
-      full investigation
-    </span>
+    </div>
+
   );
+
 }
 
-function ReportSection({ label, value, accent }) {
-  if (!value) return null;
-  const accentClass = accent === "cyan" ? "text-cyan" : "text-textPrimary";
-  return (
-    <div>
-      <p className="font-mono text-xs uppercase tracking-wide text-textDim">{label}</p>
-      <p className={`mt-1 whitespace-pre-wrap text-sm ${accentClass}`}>{value}</p>
-    </div>
-  );
+
+
+
+function Section({
+title,
+children
+}){
+
+if(!children)
+return null;
+
+
+return (
+
+<div
+className="
+rounded-2xl
+border
+border-white/10
+bg-black/20
+p-5
+"
+>
+
+<p
+className="
+mb-3
+font-mono
+text-xs
+tracking-widest
+text-textDim
+"
+>
+{title}
+</p>
+
+
+<div
+className="
+text-sm
+leading-relaxed
+text-textPrimary
+"
+>
+{children}
+</div>
+
+
+</div>
+
+);
+
 }
 
-export default function ResultPanel({ status, result, mode, elapsedMs, onCopyFix, copied }) {
-  const stageLabel = useLoadingStage(status === "loading");
 
-  if (status === "idle") {
-    return (
-      <div className="flex min-h-[300px] items-center justify-center rounded-lg border border-dashed border-line bg-surface/40 p-8 text-center">
-        <p className="max-w-xs text-sm text-textDim">
-          Drop a stack trace, terminal error, or bug description.
-          Trace will investigate the evidence, find likely causes,
-          and suggest the next fix.
-      </p>
-      </div>
-    );
-  }
 
-  if (status === "loading") {
-    return (
-      <div className="flex min-h-[300px] flex-col justify-center gap-4 rounded-lg border border-line bg-surface p-8 shadow-card">
-        <div className="flex items-center gap-3">
-          <div className="h-8 w-8 animate-spin rounded-full border-2 border-line border-t-cyan" />
-          <p key={stageLabel} className="animate-fadeUp font-mono text-sm text-textSecondary">
-            {stageLabel}
-          </p>
-        </div>
-        <div className="space-y-2">
-          <div className="skeleton-shimmer h-3 w-4/5 animate-shimmer rounded" />
-          <div className="skeleton-shimmer h-3 w-full animate-shimmer rounded" />
-          <div className="skeleton-shimmer h-3 w-3/5 animate-shimmer rounded" />
-        </div>
-      </div>
-    );
-  }
 
-  if (status === "error") {
-    return (
-      <div className="rounded-lg border border-redAccent/30 bg-redAccent/5 p-6">
-        <p className="font-mono-display text-sm font-semibold text-redAccent">
-          Trace couldn't complete this investigation
-       </p>
 
-       <p className="mt-2 text-sm text-textSecondary">
-         Retry once. If the issue continues, the bug report itself is useful —
-         share the trace and help improve future investigations.
-       </p>
-    </div>
-    );
-  }
+function Badge({children}){
 
-  if (!result) return null;
+return (
 
-  return (
-    <div className="result-enter space-y-4 rounded-lg border border-line bg-surface p-6 shadow-card">
-      <div className="flex flex-wrap items-start justify-between gap-3">
-        <div>
-          <h3 className="font-mono-display text-lg font-semibold text-textPrimary">
-            {mode === "quick" ? "Instant fix" : "Investigation report"}
-          </h3>
-          <div className="mt-2 flex flex-wrap items-center gap-2">
-            <SourceBadge source={result.source} />
-            {elapsedMs != null && (
-              <span className="rounded-full border border-line bg-ink px-2.5 py-1 font-mono text-xs text-textDim">
-                {(elapsedMs / 1000).toFixed(1)}s
-              </span>
-            )}
-          </div>
-        </div>
-        <ConfidenceRing score={result.confidence_score ?? 0} />
-      </div>
+<span
+className="
+rounded-full
+border
+border-ai/30
+bg-aiSoft
+px-3
+py-1
+font-mono
+text-xs
+text-ai
+"
+>
+{children}
+</span>
 
-      {/* Fix is always the top-line, most prominent thing regardless of mode. */}
-      <div className="rounded-md border border-cyan/20 bg-cyan/5 p-4 shadow-glowCyan">
-        <p className="font-mono text-xs uppercase tracking-wide text-textDim">Fix</p>
-        <p className="mt-1 whitespace-pre-wrap font-mono text-sm text-cyan">
-          {result.fix_recommendation}
-        </p>
-        <button
-          type="button"
-          onClick={onCopyFix}
-          className="mt-3 rounded-md border border-line px-3 py-1.5 font-mono text-xs text-textSecondary transition-colors hover:border-cyan hover:text-cyan"
-        >
-          {copied ? "Copied ✓" : "Copy fix"}
-        </button>
-      </div>
+);
 
-      {result.bug_summary && (
-        <ReportSection label="What's happening" value={result.bug_summary} />
-      )}
+}
 
-      {(result.root_cause || result.investigation_steps?.length > 0) && (
-        <details open={mode === "full"} className="group">
-          <summary className="cursor-pointer list-none font-mono text-xs uppercase tracking-wide text-textDim hover:text-cyan">
-            {mode === "quick" ? "▸ show reasoning + investigation" : "Investigation details"}
-          </summary>
-          <div className="mt-3 space-y-3 border-l border-line pl-4">
-            <ReportSection label="Root cause" value={result.root_cause} accent="cyan" />
 
-            {result.investigation_steps?.length > 0 && (
-              <div>
-                <p className="font-mono text-xs uppercase tracking-wide text-textDim">Investigation steps</p>
-                <ol className="mt-2 space-y-1.5">
-                  {result.investigation_steps.map((step, i) => (
-                    <li key={i} className="flex gap-2 text-sm text-textSecondary">
-                      <span className="font-mono text-cyan">{i + 1}.</span>
-                      {step}
-                    </li>
-                  ))}
-                </ol>
-              </div>
-            )}
 
-            {result.evidence?.length > 0 && (
-              <div>
-                <p className="font-mono text-xs uppercase tracking-wide text-textDim">Evidence</p>
-                <ul className="mt-2 space-y-1.5 border-l border-line/70 pl-3">
-                  {result.evidence.map((item, i) => (
-                    <li key={i} className="text-sm text-textSecondary">
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
 
-            {result.prevention && <ReportSection label="Prevention" value={result.prevention} />}
-          </div>
-        </details>
-      )}
 
-      <div className="flex items-center justify-between gap-2 border-t border-line pt-3">
-        <button
-          type="button"
-          onClick={() => navigator.clipboard.writeText(JSON.stringify(result, null, 2))}
-          className="flex-1 rounded-md border border-line px-4 py-2 font-mono text-xs text-textSecondary transition-colors hover:border-cyan hover:text-cyan"
-        >
-          Copy full report
-        </button>
-        {result.prompt_version && (
-          <span className="shrink-0 font-mono text-[11px] text-textDim">
-            v{result.prompt_version}
-          </span>
-        )}
-      </div>
-    </div>
-  );
+export default function ResultPanel({
+
+status,
+result,
+mode,
+elapsedMs,
+onCopyFix,
+copied
+
+}){
+
+
+const stage =
+useLoadingStage(status==="loading");
+
+
+const stampStyles = (
+  <style>{`
+    @keyframes traceStampIn {
+      0%   { transform: scale(1.6) rotate(-6deg); opacity: 0; }
+      55%  { transform: scale(0.92) rotate(-6deg); opacity: 1; }
+      100% { transform: scale(1) rotate(-6deg); opacity: 1; }
+    }
+    .trace-stamp-in { animation: traceStampIn 0.4s ease-out both; }
+    @media (prefers-reduced-motion: reduce) {
+      .trace-stamp-in { animation: none; }
+    }
+  `}</style>
+);
+
+
+
+
+if(status==="idle"){
+
+
+return (
+
+<div
+className="
+flex
+min-h-[420px]
+items-center
+justify-center
+rounded-3xl
+border
+border-dashed
+border-white/10
+bg-tracePanel/50
+p-10
+text-center
+"
+>
+
+<div>
+
+<div
+className="
+mx-auto
+mb-5
+h-16
+w-16
+rounded-full
+bg-aiSoft
+flex
+items-center
+justify-center
+text-3xl
+"
+>
+🤖
+</div>
+
+
+<h3
+className="
+text-xl
+font-semibold
+"
+>
+Waiting for evidence
+</h3>
+
+
+<p
+className="
+mt-3
+max-w-sm
+text-sm
+text-textSecondary
+"
+>
+Paste a stack trace and Trace AI will investigate the failure.
+</p>
+
+
+</div>
+
+
+</div>
+
+);
+
+}
+
+
+
+
+
+if(status==="loading"){
+
+
+return (
+
+<div
+className="
+rounded-3xl
+border
+border-ai/20
+bg-tracePanel
+p-8
+shadow-aiGlow
+"
+>
+
+
+<div
+className="
+flex
+items-center
+gap-4
+"
+>
+
+<div
+className="
+h-12
+w-12
+rounded-full
+border-4
+border-white/10
+border-t-ai
+animate-spin
+"
+/>
+
+
+<div>
+
+<p
+className="
+font-mono
+text-ai
+"
+>
+TRACE ENGINE RUNNING
+</p>
+
+
+<p
+className="
+mt-1
+text-sm
+text-textSecondary
+"
+>
+{stage}
+</p>
+
+
+</div>
+
+
+</div>
+
+
+
+<div
+className="
+mt-8
+space-y-3
+"
+>
+
+{
+LOADING_STAGES.map((item,i)=>(
+
+<div
+key={item}
+className={`
+flex
+gap-3
+font-mono
+text-sm
+${i <= LOADING_STAGES.indexOf(stage)
+? "text-ai"
+: "text-textDim"}
+`}
+>
+
+<span>
+{i <= LOADING_STAGES.indexOf(stage)
+?"●"
+:"○"}
+</span>
+
+{item}
+
+</div>
+
+))
+}
+
+
+</div>
+
+
+</div>
+
+);
+
+}
+
+
+
+
+
+if(status==="error"){
+
+
+return (
+
+<div
+className="
+rounded-3xl
+border
+border-redAccent/30
+bg-redAccent/10
+p-8
+"
+>
+
+<h3
+className="
+font-semibold
+text-redAccent
+"
+>
+Investigation failed
+</h3>
+
+
+<p
+className="
+mt-3
+text-sm
+text-textSecondary
+"
+>
+The AI engine could not complete the analysis. Try again.
+</p>
+
+
+</div>
+
+);
+
+}
+
+
+
+
+
+if(!result)
+return null;
+
+
+
+
+
+return (
+
+<div
+className="
+space-y-5
+rounded-3xl
+border
+border-white/10
+bg-tracePanel/80
+p-6
+shadow-glass
+animate-fadeUp
+"
+>
+
+{stampStyles}
+
+
+{/* Header */}
+
+<div
+className="
+flex
+items-center
+justify-between
+"
+>
+
+<div>
+
+<p
+className="
+font-mono
+text-xs
+tracking-widest
+text-ai
+"
+>
+AI INVESTIGATION REPORT
+</p>
+
+
+<h2
+className="
+mt-2
+text-2xl
+font-bold
+"
+>
+{
+mode==="quick"
+?"Instant Fix"
+:"Full Analysis"
+}
+</h2>
+
+
+<div className="mt-3 flex flex-wrap items-center gap-2">
+
+<Badge>
+{result.source || "AI analysis"}
+</Badge>
+
+
+{elapsedMs && (
+
+<Badge>
+{(elapsedMs/1000).toFixed(1)}s
+</Badge>
+
+)}
+
+<CaseStamp score={result.confidence_score ?? 0} />
+
+
+</div>
+
+
+</div>
+
+
+<ConfidenceCard
+score={result.confidence_score ?? 0}
+/>
+
+
+</div>
+
+
+
+
+
+{/* Fix */}
+
+<Section title="RECOMMENDED FIX">
+
+
+<p
+className="
+rounded-xl
+border
+border-ai/20
+bg-aiSoft
+p-4
+font-mono
+text-ai
+"
+>
+
+{result.fix_recommendation}
+
+</p>
+
+
+<button
+
+onClick={onCopyFix}
+
+className="
+mt-4
+rounded-xl
+border
+border-white/10
+px-4
+py-2
+font-mono
+text-xs
+hover:border-ai
+hover:text-ai
+transition-colors
+"
+
+>
+
+{
+copied
+?"Copied ✓"
+:"Copy fix"
+}
+
+
+</button>
+
+
+</Section>
+
+
+
+
+
+<Section title="ROOT CAUSE">
+
+{result.root_cause}
+
+</Section>
+
+
+
+
+
+{result.investigation_steps?.length>0 && (
+
+<Section title="INVESTIGATION TIMELINE">
+
+<div className="space-y-3">
+
+{
+result.investigation_steps.map((step,i)=>(
+
+<div
+key={i}
+className="
+flex
+gap-3
+"
+>
+
+<span
+className="
+text-ai
+font-mono
+"
+>
+0{i+1}
+</span>
+
+<span>
+{step}
+</span>
+
+
+</div>
+
+))
+}
+
+
+</div>
+
+
+</Section>
+
+)}
+
+
+
+
+
+{result.evidence?.length>0 && (
+
+<Section title="EVIDENCE">
+
+<ul className="space-y-3">
+
+{
+result.evidence.map((item,i)=>(
+
+<li
+key={i}
+className="
+border-l-2
+border-amber
+pl-3
+"
+>
+<span className="mr-2 font-mono text-[10px] tracking-widest text-amber">
+EVIDENCE #{String(i+1).padStart(2,"0")}
+</span>
+<span className="block mt-1">{item}</span>
+</li>
+
+))
+}
+
+</ul>
+
+
+</Section>
+
+)}
+
+
+
+
+
+<button
+
+onClick={()=>navigator.clipboard.writeText(
+JSON.stringify(result,null,2)
+)}
+
+className="
+w-full
+rounded-xl
+border
+border-white/10
+py-3
+font-mono
+text-sm
+hover:border-ai
+hover:text-ai
+transition-colors
+"
+
+>
+
+Copy full investigation report
+
+</button>
+
+
+
+</div>
+
+);
+
+
 }
