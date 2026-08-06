@@ -1,8 +1,11 @@
 import CursorGlow from "./components/CursorGlow";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import TraceHero from "./components/TraceHero";
 import BugForm from "./components/BugForm";
 import Reveal from "./components/Reveal";
+import IntroScreen from "./components/IntroScreen";
+import HowItWorks from "./components/HowItWorks";
+import SectionNav from "./components/SectionNav";
 
 import GlassCard from "./components/ui/GlassCard";
 import AIStatus from "./components/ui/AIStatus";
@@ -12,6 +15,12 @@ import PrimaryButton from "./components/ui/PrimaryButton";
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL ||
   "http://127.0.0.1:8000";
+
+const SECTIONS = [
+  { id: "hero", label: "Home" },
+  { id: "how", label: "How it works" },
+  { id: "investigate", label: "Workspace" },
+];
 
 /**
  * Provisions an invisible guest account on first visit and stores the
@@ -83,119 +92,126 @@ function useGuestAuth(apiBaseUrl) {
 
 function App() {
   const { token, authError } = useGuestAuth(API_BASE_URL);
+  const [introDone, setIntroDone] = useState(false);
+
+  const scrollContainerRef = useRef(null);
+  const heroRef = useRef(null);
+  const howRef = useRef(null);
+  const workspaceRef = useRef(null);
+  const sectionRefs = { hero: heroRef, how: howRef, investigate: workspaceRef };
+
+  // Once the intro finishes, jump straight to the workspace slide —
+  // no click, no scroll needed from the visitor.
+  useEffect(() => {
+    if (!introDone) return;
+    workspaceRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, [introDone]);
 
   return (
   <div
     className="
     relative
-    min-h-screen
+    h-screen
     overflow-hidden
     bg-traceBg
     text-textPrimary
     "
   >
 
-    {/* Cursor ambient glow */}
+    {!introDone && <IntroScreen onComplete={() => setIntroDone(true)} />}
+
+    {/* Ambient background — fixed so it stays put as slides change,
+        instead of scrolling away with the content. */}
     <CursorGlow />
+    <div className="pointer-events-none fixed inset-0 trace-grid opacity-40" />
+    <GlowOrb className="fixed -top-40 left-1/3 h-96 w-96" />
+    <GlowOrb className="fixed right-0 top-1/2 h-72 w-72" />
 
-    {/* AI ambient background */}
-    <div className="pointer-events-none absolute inset-0 trace-grid opacity-40" />
+    <Header />
+    <SectionNav sections={SECTIONS} refs={sectionRefs} containerRef={scrollContainerRef} />
 
-    <GlowOrb
-      className="
-      -top-40
-      left-1/3
-      h-96
-      w-96
-      "
-    />
+    {/* Scroll-snap slide container — one full-viewport section at a time,
+        the way Apple/Framer-style product pages move between slides,
+        instead of one continuous long scroll. */}
+    <main
+      ref={scrollContainerRef}
+      className="relative z-10 h-screen snap-y snap-mandatory overflow-y-auto scroll-smooth"
+    >
 
-    <GlowOrb
-      className="
-      right-0
-      top-1/2
-      h-72
-      w-72
-      "
-    />
+      <Hero innerRef={heroRef} />
 
-
-    <div className="relative z-10">
-
-      <Header />
-
-      <Hero />
-
+      <HowItWorks innerRef={howRef} />
 
       <section
+        ref={workspaceRef}
         id="investigate"
         className="
-        mx-auto
-        max-w-6xl
-        px-6
-        py-16
+        flex
+        min-h-screen
+        snap-start
+        snap-always
+        flex-col
+        justify-center
+        pt-24
         "
       >
 
-        <Reveal>
-          <div className="mb-8 flex items-center justify-between">
+        <div className="mx-auto w-full max-w-6xl px-6 py-10">
 
-            <div>
-              <h2
-                className="
-                text-3xl
-                font-bold
-                "
-              >
-                Investigation Workspace
-              </h2>
+          <Reveal>
+            <div className="mb-8 flex items-center justify-between">
 
-              <p className="mt-2 text-textSecondary">
-                Paste evidence. Let Trace find the root cause.
-              </p>
+              <div>
+                <h2 className="text-3xl font-bold">
+                  Investigation Workspace
+                </h2>
+
+                <p className="mt-2 text-textSecondary">
+                  Paste evidence. Let Trace find the root cause.
+                </p>
+
+              </div>
+
+
+              <AIStatus />
 
             </div>
-
-
-            <AIStatus />
-
-          </div>
-        </Reveal>
+          </Reveal>
 
 
 
-        {authError && (
-          <p className="mb-4 font-mono text-sm text-redAccent">
-            {authError}
-          </p>
-        )}
+          {authError && (
+            <p className="mb-4 font-mono text-sm text-redAccent">
+              {authError}
+            </p>
+          )}
 
 
 
-        <Reveal delay={150}>
-          <GlassCard
-            className="
-            trace-hover-lift
-            p-6
-            sm:p-10
-            "
-          >
+          <Reveal delay={150}>
+            <GlassCard
+              className="
+              trace-hover-lift
+              p-6
+              sm:p-10
+              "
+            >
 
-            <BugForm
-              apiBaseUrl={API_BASE_URL}
-              authToken={token}
-            />
+              <BugForm
+                apiBaseUrl={API_BASE_URL}
+                authToken={token}
+              />
 
-          </GlassCard>
-        </Reveal>
+            </GlassCard>
+          </Reveal>
 
+        </div>
+
+        <Footer />
 
       </section>
 
-
-      <Footer />
-
-    </div>
+    </main>
 
   </div>
 );
@@ -203,7 +219,7 @@ function App() {
 
 function Header() {
   return (
-    <header className="trace-nav sticky top-0 z-50">
+    <header className="trace-nav fixed inset-x-0 top-0 z-50">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5">
 
         <div className="flex items-center gap-3">
@@ -212,12 +228,8 @@ function Header() {
             <span className="absolute inset-0 h-3 w-3 animate-ping rounded-full bg-cyan opacity-50" />
           </div>
 
-          <span className="font-mono-display text-lg font-bold tracking-tight text-textPrimary">
+          <span className="font-display text-lg font-bold tracking-tight text-textPrimary">
             trace
-          </span>
-
-          <span className="hidden rounded-full border border-line px-3 py-1 text-[10px] font-mono text-textDim sm:block">
-            AI BUG INVESTIGATOR
           </span>
         </div>
 
@@ -266,69 +278,72 @@ function Header() {
   );
 }
 
-function Hero() {
+function Hero({ innerRef }) {
   return (
-    <section className="mx-auto grid max-w-6xl gap-12 px-6 py-16 sm:py-24 lg:grid-cols-2 lg:items-center lg:py-32">
-      <Reveal direction="left">
-        <div>
-          <p className="font-mono text-xs uppercase tracking-[0.25em] text-cyan">
-          AI debugging infrastructure for modern engineering teams
-         </p>
+    <section
+      ref={innerRef}
+      id="hero"
+      className="flex h-screen snap-start snap-always items-center"
+    >
+      <div className="mx-auto grid w-full max-w-6xl gap-12 px-6 pt-20 lg:grid-cols-2 lg:items-center">
 
-          <h1 className="mt-6 font-mono-display text-5xl font-bold leading-[1.05] tracking-tight text-textPrimary sm:text-6xl lg:text-7xl">
+        <Reveal direction="left">
+          <div>
+            <p className="font-mono text-xs uppercase tracking-[0.25em] text-textDim">
+            AI debugging infrastructure
+           </p>
 
-            Debugging
-            <br />
+            <h1 className="mt-6 font-display text-5xl font-bold leading-[1.05] tracking-tight text-textPrimary sm:text-6xl lg:text-7xl">
 
-            powered by
-            <br />
+              Debugging,
+              <br />
 
-            AI investigation.
+              investigated.
 
-           </h1>
+             </h1>
 
-          <p className="mt-6 max-w-xl text-lg leading-relaxed text-textSecondary">
+            <p className="mt-6 max-w-xl text-lg leading-relaxed text-textSecondary">
 
-          Trace reads your errors like a senior engineer.
-          It finds root causes, explains the evidence,
-          and gives you the fix — not another generic AI answer.
+            Paste an error. Get the root cause and the fix — not a guess.
 
-         </p>
-          <div className="mt-10 flex flex-wrap items-center gap-4">
+           </p>
+            <div className="mt-10 flex flex-wrap items-center gap-4">
 
-          <a href="#investigate">
-            <PrimaryButton>
-              Start investigating →
-           </PrimaryButton>
-         </a>
-
-
-          <button
-          className="
-          rounded-xl
-          border
-          border-line
-          px-6
-          py-3
-          font-mono
-          text-sm
-          text-textSecondary
-          transition
-          hover:border-cyan
-          hover:text-cyan
-          "
-         >
-         View dashboard
-         </button>
+            <a href="#investigate">
+              <PrimaryButton>
+                Start investigating →
+             </PrimaryButton>
+           </a>
 
 
-         </div>
-        </div>
-      </Reveal>
+            <button
+            className="
+            rounded-xl
+            border
+            border-line
+            px-6
+            py-3
+            font-mono
+            text-sm
+            text-textSecondary
+            transition
+            hover:border-cyan
+            hover:text-cyan
+            "
+           >
+           View dashboard
+           </button>
 
-      <Reveal direction="right" delay={150}>
-        <TraceHero />
-      </Reveal>
+
+           </div>
+          </div>
+        </Reveal>
+
+        <Reveal direction="right" delay={150}>
+          <TraceHero />
+        </Reveal>
+
+      </div>
     </section>
   );
 }
