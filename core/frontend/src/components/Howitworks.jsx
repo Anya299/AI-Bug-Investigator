@@ -4,28 +4,24 @@ const STEPS = [
   {
     n: "01",
     title: "Paste the error",
-    text: "Stack trace, log, or a one-line description — Trace detects your stack automatically.",
+    text: "Trace detects your stack automatically.",
   },
   {
     n: "02",
     title: "Trace investigates",
-    text: "It reads the evidence, checks known failure patterns, and finds the actual root cause.",
+    text: "Evidence, patterns, root cause.",
   },
   {
     n: "03",
     title: "Get the fix",
-    text: "A confidence-scored report, the fix, and the reasoning behind it — not a guess.",
+    text: "Confidence-scored. Not a guess.",
   },
 ];
 
-export default function HowItWorks({ innerRef }) {
+export default function HowItWorks() {
   return (
-    <section
-      ref={innerRef}
-      id="how"
-      className="flex h-screen snap-start snap-always items-center"
-    >
-      <div className="mx-auto w-full max-w-6xl px-6">
+    <section className="mx-auto flex min-h-screen max-w-6xl items-center px-6 py-24">
+      <div className="w-full">
 
         <Reveal>
           <p className="font-mono text-xs uppercase tracking-[0.25em] text-textDim">
